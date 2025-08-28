@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.databinding.FragmentCadastroEnderecoBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 class CadastroEnderecoFragment : Fragment() {
     private var _binding: FragmentCadastroEnderecoBinding? = null
@@ -18,6 +19,11 @@ class CadastroEnderecoFragment : Fragment() {
     ): View {
         _binding = FragmentCadastroEnderecoBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 

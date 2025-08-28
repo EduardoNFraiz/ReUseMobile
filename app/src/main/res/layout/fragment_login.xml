@@ -6,16 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.auth.LoginFragment">
 
-    <ImageButton
-        android:id="@+id/imageButtonVoltar"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="68dp"
-        android:background="@android:color/transparent"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_arrow_back_24" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="10dp"
+            android:paddingTop="40dp"
+            app:navigationIcon="@drawable/baseline_arrow_back_24" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView3"

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.projetointegrador.reuse.ui.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_telaInicialFragment"
+            app:destination="@id/telaInicialFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/telaInicialFragment"
+        android:name="com.projetointegrador.reuse.ui.auth.TelaInicialFragment"
+        android:label="fragment_tela_inicial"
+        tools:layout="@layout/fragment_tela_inicial" >
+        <action
+            android:id="@+id/action_telaInicialFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_telaInicialFragment_to_escolherPerfilCFragment"
+            app:destination="@id/cadastro" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.projetointegrador.reuse.ui.auth.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_receberCodigoFragment"
+            app:destination="@id/recuperarsenha" />
+    </fragment>
+    <navigation
+        android:id="@+id/recuperarsenha"
+        app:startDestination="@id/receberCodigoFragment">
+        <fragment
+            android:id="@+id/receberCodigoFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.recuperarsenha.ReceberCodigoFragment"
+            android:label="fragment_receber_codigo"
+            tools:layout="@layout/fragment_receber_codigo">
+            <action
+                android:id="@+id/action_receberCodigoFragment_to_codigoConfFragment"
+                app:destination="@id/codigoConfFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/codigoConfFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.recuperarsenha.CodigoConfFragment"
+            android:label="fragment_codigo_conf"
+            tools:layout="@layout/fragment_codigo_conf">
+            <action
+                android:id="@+id/action_codigoConfFragment_to_recuperarSenhaFragment"
+                app:destination="@id/recuperarSenhaFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/recuperarSenhaFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.recuperarsenha.RecuperarSenhaFragment"
+            android:label="fragment_recuperar_senha"
+            tools:layout="@layout/fragment_recuperar_senha">
+            <action
+                android:id="@+id/action_recuperarSenhaFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+        </fragment>
+    </navigation>
+    <navigation android:id="@+id/cadastro"
+        app:startDestination="@id/escolherPerfilCFragment">
+        <fragment
+            android:id="@+id/escolherPerfilCFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.EscolherPerfilCFragment"
+            android:label="fragment_escolher_perfil_c"
+            tools:layout="@layout/fragment_escolher_perfil_c">
+            <action
+                android:id="@+id/action_escolherPerfilCFragment_to_cadastroInstituicaoFragment2"
+                app:destination="@id/cadastroInstituicaoFragment2" />
+            <action
+                android:id="@+id/action_escolherPerfilCFragment_to_cadatroBrechoFragment2"
+                app:destination="@id/cadatroBrechoFragment" />
+            <action
+                android:id="@+id/action_escolherPerfilCFragment_to_cadastroUsuarioFragment2"
+                app:destination="@id/cadastroUsuarioFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/cadatroBrechoFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadatroBrechoFragment"
+            android:label="fragment_cadatro_brecho"
+            tools:layout="@layout/fragment_cadatro_brecho">
+            <action
+                android:id="@+id/action_cadatroBrechoFragment_to_cadastroEnderecoFragment2"
+                app:destination="@id/cadastroEnderecoFragment2" />
+        </fragment>
+        <fragment
+            android:id="@+id/cadastroUsuarioFragment"
+            android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadastroUsuarioFragment"
+            android:label="fragment_cadastro_usuario"
+            tools:layout="@layout/fragment_cadastro_usuario">
+            <action
+                android:id="@+id/action_cadastroUsuarioFragment_to_cadastroEnderecoFragment2"
+                app:destination="@id/cadastroEnderecoFragment2" />
+        </fragment>
+        <fragment
+            android:id="@+id/cadastroInstituicaoFragment2"
+            android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadastroInstituicaoFragment"
+            android:label="fragment_cadastro_instituicao"
+            tools:layout="@layout/fragment_cadastro_instituicao">
+            <action
+                android:id="@+id/action_cadastroInstituicaoFragment2_to_cadastroEnderecoFragment2"
+                app:destination="@id/cadastroEnderecoFragment2" />
+        </fragment>
+        <fragment
+            android:id="@+id/cadastroEnderecoFragment2"
+            android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadastroEnderecoFragment"
+            android:label="fragment_cadastro_endereco"
+            tools:layout="@layout/fragment_cadastro_endereco">
+            <action
+                android:id="@+id/action_cadastroEnderecoFragment2_to_addFotoperfilFragment2"
+                app:destination="@id/addFotoperfilFragment2" />
+        </fragment>
+        <fragment
+            android:id="@+id/addFotoperfilFragment2"
+            android:name="com.projetointegrador.reuse.ui.auth.cadastro.AddFotoperfilFragment"
+            android:label="fragment_add_fotoperfil"
+            tools:layout="@layout/fragment_add_fotoperfil" />
+    </navigation>
+</navigation>

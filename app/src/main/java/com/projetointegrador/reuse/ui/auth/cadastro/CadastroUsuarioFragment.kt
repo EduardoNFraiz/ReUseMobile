@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentCadastroUsuarioBinding
 import com.projetointegrador.reuse.databinding.FragmentLoginBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 class CadastroUsuarioFragment : Fragment() {
 
@@ -21,6 +22,11 @@ class CadastroUsuarioFragment : Fragment() {
     ): View {
         _binding = FragmentCadastroUsuarioBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 

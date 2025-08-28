@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.databinding.FragmentRecuperarSenhaBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 class RecuperarSenhaFragment : Fragment() {
     private var _binding: FragmentRecuperarSenhaBinding? = null
@@ -18,6 +19,11 @@ class RecuperarSenhaFragment : Fragment() {
     ): View {
         _binding = FragmentRecuperarSenhaBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 
