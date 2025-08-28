@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.auth.recuperarsenha.RecuperarSenhaFragment"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        android:paddingTop="40dp"
+        android:paddingStart="10dp"/>
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Recuperação de Senha"
+        android:textColor="#134313"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/editTextNvSenha"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/edittextestilo"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Nova senha"
+        android:inputType="textPassword"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
+        android:textColor="#85134313"
+        android:textColorHint="#85134313"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/editTextRepNvSenha"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edittextestilo"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Repita a nova senha"
+        android:inputType="textPassword"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
+        android:textColor="#85134313"
+        android:textColorHint="#85134313"
+        android:textSize="18dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonConfirmarNvSenha"
+        android:layout_gravity="center"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="144dp"
+        android:background="@drawable/estilobtt1"
+        android:fontFamily="@font/plus_jakarta_sans_extrabold"
+        android:text="Alterar senha"
+        android:textAllCaps="false"
+        android:textColor="#5E7858"
+        android:textSize="18dp"/>
+</LinearLayout>

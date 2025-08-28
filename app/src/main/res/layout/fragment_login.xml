@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.auth.LoginFragment">
+
+    <ImageButton
+        android:id="@+id/imageButtonVoltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="68dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Bem-vindo(a) de volta!"
+        android:textColor="#134313"
+        android:textSize="26dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_text_nome"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:layout_weight="1"
+        android:background="@drawable/edittextestilo"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Nome de usuário ou email"
+        android:inputType="text"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
+        android:textColor="#85134313"
+        android:textColorHint="#85134313"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewEsqueceuASenha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="60dp"
+        android:fontFamily="@font/playfair_display"
+        android:text="Esqueceu a senha?"
+        android:textColor="#344A1E"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etSenha" />
+
+    <EditText
+        android:id="@+id/etSenha"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="380dp"
+        android:background="@drawable/edittextestilo"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Senha"
+        android:inputType="textPassword"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
+        android:textColor="#85134313"
+        android:textColorHint="#85134313"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivToggleSenha"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:contentDescription="Mostrar ou ocultar senha"
+        android:padding="4dp"
+        android:src="@drawable/olhoocultar"
+        app:layout_constraintBottom_toBottomOf="@+id/etSenha"
+        app:layout_constraintEnd_toEndOf="@+id/etSenha"
+        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintStart_toStartOf="@+id/etSenha"
+        app:layout_constraintTop_toTopOf="@+id/etSenha"
+        app:layout_constraintVertical_bias="0.714"
+        app:tint="#85134313" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonLogar"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/estilobtt1"
+        android:fontFamily="@font/plus_jakarta_sans_extrabold"
+        android:text="Login"
+        android:textAllCaps="false"
+        android:textColor="#5E7858"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etSenha" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

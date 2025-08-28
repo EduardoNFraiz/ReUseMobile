@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.auth.cadastro.CadastroEnderecoFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        android:paddingTop="40dp"
+        android:paddingStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Endereço"
+        android:textColor="#134313"
+        android:textSize="26dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="CEP"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_cep"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="xxxxx-xxx"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Rua"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_rua"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o nome da rua"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Número"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_nmrrua"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o número da propriedade"
+        android:inputType="number"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Complemento (opcional)"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_complemento"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Ex: Casa, Apartamento, etc."
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Bairro"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_bairro"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o nome do bairro"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Cidade"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_cidade"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o nome da cidade"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Estado"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_estado"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o nome do Estado"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="País"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_pais"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Informe o nome do país"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bttProximo"
+        android:layout_gravity="center"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/estilobtt1"
+        android:textColor="@color/VerdeEscuro"
+        android:textAllCaps="false"
+        android:text="Próximo"
+        android:textSize="20dp"
+        android:fontFamily="@font/nunito_sans_semibold"/>
+</LinearLayout>

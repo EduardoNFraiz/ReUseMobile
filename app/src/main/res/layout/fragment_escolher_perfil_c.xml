@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.auth.EscolherPerfilCFragment"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        android:paddingTop="40dp"
+        android:paddingStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Em que perfil você se encaixa?"
+        android:textColor="@color/VerdeEscuro"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:textSize="24dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"/>
+    
+    <LinearLayout
+        android:id="@+id/LinearLayoutIconsContas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="60dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/personclaro"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/baseline_local_mall_24"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/baseline_home_work_24"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutBttContas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bttContaUsuario"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/estilobtt2"
+            android:textColor="@color/VerdeEscuro"
+            android:textAllCaps="false"
+            android:text="Usuário"
+            android:textSize="16dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bttContaBrecho"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/estilobtt2"
+            android:textColor="@color/VerdeEscuro"
+            android:textAllCaps="false"
+            android:text="Brechó"
+            android:textSize="16dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bttContaInstituicao"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/estilobtt2"
+            android:textColor="@color/VerdeEscuro"
+            android:textAllCaps="false"
+            android:text="Instituição"
+            android:textSize="16dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

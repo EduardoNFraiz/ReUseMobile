@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.auth.cadastro.CadatroBrechoFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        android:paddingTop="40dp"
+        android:paddingStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Cadastro Brechó"
+        android:textColor="#134313"
+        android:textSize="26dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Nome"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_nome"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Digite o nome da instituição"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Usuário"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_usuario"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Digite um nome de usuário"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="E-mail"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_email"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Digite um endereço de e-mail"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Senha"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_senha"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Digite uma senha"
+        android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Confirmar Senha"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_confsenha"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Digite novamente a senha"
+        android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="Telefone"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_telefone"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="(xxx) xxxxx-xxxx"
+        android:inputType="phone"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:text="CNPJ"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <EditText
+        android:id="@+id/edit_text_cpf"
+        android:layout_gravity="center"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edittextcadastro"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="xx. xxx. xxx/0001-xx"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="15dp"
+        android:text="Tipo:"
+        android:textSize="16dp"
+        android:textColor="#757575"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/radioBrecho"
+            android:layout_marginEnd="141dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brechó"
+            android:checked="true"
+            android:enabled="false" />
+
+        <RadioButton
+            android:id="@+id/radioInstituicao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instituição"
+            android:enabled="false" />
+    </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bttProximo"
+        android:layout_gravity="center"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/estilobtt1"
+        android:textColor="@color/VerdeEscuro"
+        android:textAllCaps="false"
+        android:text="Próximo"
+        android:textSize="20dp"
+        android:fontFamily="@font/nunito_sans_semibold"/>
+</LinearLayout>

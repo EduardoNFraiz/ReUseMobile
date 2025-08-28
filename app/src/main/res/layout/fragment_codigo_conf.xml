@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.auth.recuperarsenha.CodigoConfFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        android:paddingTop="40dp"
+        android:paddingStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Digite o código de confirmação"
+        android:textColor="@color/VerdeEscuro"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/textViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/plus_jakarta_sans"
+        android:text="Um código de 4 dígitos foi enviado para"
+        android:textAlignment="center"
+        android:textColor="@color/VerdeClarinho"
+        android:textSize="16dp" />
+
+    <com.chaos.view.PinView
+        android:id="@+id/pinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:cursorVisible="true"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="8dp"
+        app:itemCount="4"
+        app:itemHeight="60dp"
+        app:itemWidth="60dp"
+        app:itemRadius="12dp"
+        app:lineWidth="2dp"
+        app:lineColor="@color/VerdeClaro"
+        app:cursorColor="@color/VerdeEscuro"
+        android:textColor="@color/VerdeEscuro"
+        android:textSize="18sp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonLogar"
+        android:layout_gravity="center"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/estilobtt2"
+        android:fontFamily="@font/nunito_sans_semibold"
+        android:text="Reenviar código"
+        android:textAllCaps="false"
+        android:textColor="#5E7858"
+        android:textSize="18dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bttContaUsuario"
+        android:layout_gravity="center"
+        android:layout_width="328dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/estilobtt1"
+        android:textColor="@color/VerdeEscuro"
+        android:textAllCaps="false"
+        android:text="Próximo"
+        android:textSize="20dp"
+        android:fontFamily="@font/nunito_sans_semibold"/>
+
+</LinearLayout>
