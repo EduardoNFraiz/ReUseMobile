@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentEscolherPerfilCBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 class EscolherPerfilCFragment : Fragment() {
     private var _binding: FragmentEscolherPerfilCBinding? = null
@@ -19,6 +20,11 @@ class EscolherPerfilCFragment : Fragment() {
     ): View {
         _binding = FragmentEscolherPerfilCBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 

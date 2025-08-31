@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.databinding.FragmentCadatroBrechoBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 
 class CadatroBrechoFragment : Fragment() {
@@ -19,6 +20,11 @@ class CadatroBrechoFragment : Fragment() {
     ): View {
         _binding = FragmentCadatroBrechoBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 

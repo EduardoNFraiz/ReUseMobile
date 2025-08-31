@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.databinding.FragmentCadastroInstituicaoBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 class CadastroInstituicaoFragment : Fragment() {
     private var _binding: FragmentCadastroInstituicaoBinding? = null
@@ -18,6 +19,11 @@ class CadastroInstituicaoFragment : Fragment() {
     ): View {
         _binding = FragmentCadastroInstituicaoBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 

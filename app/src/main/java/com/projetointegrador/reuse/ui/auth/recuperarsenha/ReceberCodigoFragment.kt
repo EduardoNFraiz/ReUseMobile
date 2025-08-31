@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.databinding.FragmentReceberCodigoBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 
 class ReceberCodigoFragment : Fragment() {
@@ -19,6 +20,11 @@ class ReceberCodigoFragment : Fragment() {
     ): View {
         _binding = FragmentReceberCodigoBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
     }
 
 
