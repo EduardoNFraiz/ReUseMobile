@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.auth.cadastro
+package com.projetointegrador.reuse.ui.perfil
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentAddFotoperfilBinding
+import com.projetointegrador.reuse.databinding.FragmentInfoPerfilBinding
 import com.projetointegrador.reuse.util.initToolbar
 
 
-class AddFotoperfilFragment : Fragment() {
-    private var _binding: FragmentAddFotoperfilBinding? = null
+class InfoPerfilFragment : Fragment() {
+    private var _binding: FragmentInfoPerfilBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -20,24 +20,40 @@ class AddFotoperfilFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddFotoperfilBinding.inflate(inflater, container, false)
+        _binding = FragmentInfoPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initToolbar(binding.toolbar)
         initListeners()
+        barraDeNavegacao()
     }
 
     private fun initListeners() {
-        binding.buttonContSemFoto.setOnClickListener {
-            findNavController().navigate(R.id.action_global_closetFragment)
-        }
-        binding.bttCriarConta.setOnClickListener {
-            findNavController().navigate(R.id.action_global_closetFragment)
+        binding.bttEndereco.setOnClickListener {
+            findNavController().navigate(R.id.action_infoPerfilFragment_to_editEnderecoFragment)
         }
     }
+
+    private fun barraDeNavegacao() {
+        binding.closet.setOnClickListener {
+            findNavController().navigate(R.id.action_global_closetFragment)
+        }
+        binding.pesquisar.setOnClickListener {
+
+        }
+        binding.cadastrarRoupa.setOnClickListener {
+
+        }
+        binding.doacao.setOnClickListener {
+
+        }
+        binding.perfil.setOnClickListener {
+
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

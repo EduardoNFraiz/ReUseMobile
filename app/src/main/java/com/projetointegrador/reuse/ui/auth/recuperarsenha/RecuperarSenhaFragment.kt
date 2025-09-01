@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentRecuperarSenhaBinding
 import com.projetointegrador.reuse.util.initToolbar
 
@@ -24,6 +26,13 @@ class RecuperarSenhaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
+        initListeners()
+    }
+
+    private fun initListeners(){
+        binding.buttonConfirmarNvSenha.setOnClickListener {
+            findNavController().navigate(R.id.action_recuperarSenhaFragment_to_loginFragment)
+        }
     }
 
 

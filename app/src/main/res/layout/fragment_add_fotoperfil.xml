@@ -51,7 +51,7 @@
     </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonLogar"
+        android:id="@+id/buttonContSemFoto"
         android:layout_gravity="center"
         android:layout_width="328dp"
         android:layout_height="42dp"
@@ -64,7 +64,7 @@
         android:textSize="18dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/bttContaUsuario"
+        android:id="@+id/bttCriarConta"
         android:layout_gravity="center"
         android:layout_width="328dp"
         android:layout_height="42dp"
