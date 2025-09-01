@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">ReUse</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="aba_usuarios">Usuários</string>
+    <string name="aba_brechos">Brechós</string>
+    <string name="aba_vendas">Vendas</string>
 </resources>

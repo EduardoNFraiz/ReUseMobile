@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.auth.cadastro
+package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentCadastroUsuarioBinding
-import com.projetointegrador.reuse.databinding.FragmentLoginBinding
-import com.projetointegrador.reuse.util.initToolbar
+import com.projetointegrador.reuse.databinding.FragmentPesquisaVendasBinding
 
-class CadastroUsuarioFragment : Fragment() {
-
-    private var _binding: FragmentCadastroUsuarioBinding? = null
+class PesquisaVendasFragment : Fragment() {
+    private var _binding: FragmentPesquisaVendasBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -21,21 +18,19 @@ class CadastroUsuarioFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCadastroUsuarioBinding.inflate(inflater, container, false)
+        _binding = FragmentPesquisaVendasBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initToolbar(binding.toolbar)
         initListeners()
     }
 
     private fun initListeners() {
-        binding.bttProximo.setOnClickListener {
-            findNavController().navigate(R.id.action_cadastroUsuarioFragment_to_cadastroEnderecoFragment)
-        }
+
     }
+
 
 
     override fun onDestroyView() {

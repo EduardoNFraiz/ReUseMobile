@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.closet
+package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentClosetBinding
+import com.projetointegrador.reuse.databinding.FragmentInfoPerfilBinding
+import com.projetointegrador.reuse.databinding.FragmentPesquisaBinding
+import com.projetointegrador.reuse.ui.adapter.ViewPagerAdapter
 
 
-class ClosetFragment : Fragment() {
-    private var _binding: FragmentClosetBinding? = null
+class PesquisaFragment : Fragment() {
+    private var _binding: FragmentPesquisaBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +22,7 @@ class ClosetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentClosetBinding.inflate(inflater, container, false)
+        _binding = FragmentPesquisaBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -27,15 +30,27 @@ class ClosetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         barraDeNavegacao()
+        initTabs()
+    }
+    private fun initTabs() {
+        val pageAdapter = ViewPagerAdapter(requireActivity())
+        binding.viewPager.adapter = pageAdapter
+        pageAdapter.addFragment(PesquisaUsuariosFragment(), R.string.aba_usuarios)
+        pageAdapter.addFragment(PesquisaBrechosFragment(), R.string.aba_brechos)
+        pageAdapter.addFragment(PesquisaVendasFragment(), R.string.aba_vendas)
+
+        binding.viewPager.offscreenPageLimit = pageAdapter.itemCount
+
+        TabLayoutMediator(binding.tabs, binding.viewPager){tab, position ->
+            tab.text = getString(pageAdapter.getTitle(position))
+        }.attach()
     }
 
+
+
+
     private fun initListeners() {
-        binding.buttonCriarGaveta.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment)
-        }
-        binding.gavetacasacos.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
-        }
+
     }
 
     private fun barraDeNavegacao() {
@@ -49,7 +64,7 @@ class ClosetFragment : Fragment() {
             //findNavController().navigate(R.id.cadastrarpeca)
         }
         binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.closet)
+
         }
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)

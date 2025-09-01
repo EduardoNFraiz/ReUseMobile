@@ -33,6 +33,16 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
         mostrarOcultarSenha()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        binding.buttonLogar.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_closetFragment)
+        }
+        binding.textViewEsqueceuASenha.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_receberCodigoFragment)
+        }
     }
 
     private fun mostrarOcultarSenha() {

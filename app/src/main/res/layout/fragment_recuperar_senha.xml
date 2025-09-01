@@ -66,9 +66,9 @@
         android:layout_height="42dp"
         android:layout_marginTop="144dp"
         android:background="@drawable/estilobtt1"
-        android:fontFamily="@font/plus_jakarta_sans_extrabold"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
         android:text="Alterar senha"
         android:textAllCaps="false"
-        android:textColor="#5E7858"
+        android:textColor="#134313"
         android:textSize="18dp"/>
 </LinearLayout>

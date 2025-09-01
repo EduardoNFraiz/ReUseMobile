@@ -1,81 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.closet.GavetaFragment">
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="10dp"
-            android:paddingTop="40dp"
-            app:navigationIcon="@drawable/baseline_arrow_back_24" />
-    </LinearLayout>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.pesquisar.PesquisaFragment">
 
     <TextView
-        android:id="@+id/textViewGaveta"
+        android:id="@+id/textViewMeuCloset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="70dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="Casacos"
+        android:text="Pesquisa"
         android:textColor="#134313"
-        android:textSize="25sp"
+        android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonCadastrarRoupa"
+    <EditText
+        android:id="@+id/edit_text_procurar"
         android:layout_width="350dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edt_btt_testilo"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/editext_perfil"
+        android:backgroundTint="#995E7858"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:text="Cadastrar roupa"
-        android:drawableEnd="@drawable/baseline_add_24"
-        android:textAllCaps="false"
-        android:textColor="#134313"
-        android:textAlignment="textStart"
+        android:hint="Procurar"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
         android:paddingHorizontal="20dp"
-        android:textSize="20sp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp"
+        android:drawableEnd="@drawable/search_verde"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewGaveta"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewMeuCloset" />
 
-    <ImageView
-        android:id="@+id/iconCloset"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/iconecloset_verde"
-        app:layout_constraintBottom_toBottomOf="@+id/rodape"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
-
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:text="A gaveta está vazia. \n Adicione uma roupa!"
-        android:textSize="18dp"
-        android:textAlignment="center"
-        android:textColor="#134313"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconCloset" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_procurar">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:contentDescription="Tabs"
+            app:tabGravity="fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:tabIndicatorColor="@color/VerdeEscuro"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabTextAppearance="@style/CustomTabLayout"
+            app:tabTextColor="@color/VerdeClaro"
+            app:tabSelectedTextColor="@color/VerdeEscuro"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="350dp"
+        android:layout_height="610dp"
+        app:layout_constraintBottom_toTopOf="@+id/rodape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:id="@+id/rodape"

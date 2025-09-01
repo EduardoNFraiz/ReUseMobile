@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.auth.cadastro
+package com.projetointegrador.reuse.ui.perfil
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,13 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentCadastroUsuarioBinding
-import com.projetointegrador.reuse.databinding.FragmentLoginBinding
+import com.projetointegrador.reuse.databinding.FragmentEditEnderecoBinding
 import com.projetointegrador.reuse.util.initToolbar
 
-class CadastroUsuarioFragment : Fragment() {
 
-    private var _binding: FragmentCadastroUsuarioBinding? = null
+class EditEnderecoFragment : Fragment() {
+    private var _binding: FragmentEditEnderecoBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -21,19 +20,19 @@ class CadastroUsuarioFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCadastroUsuarioBinding.inflate(inflater, container, false)
+        _binding = FragmentEditEnderecoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initToolbar(binding.toolbar)
         initListeners()
+        initToolbar(binding.toolbar)
     }
 
     private fun initListeners() {
-        binding.bttProximo.setOnClickListener {
-            findNavController().navigate(R.id.action_cadastroUsuarioFragment_to_cadastroEnderecoFragment)
+        binding.bttSalvar.setOnClickListener {
+            findNavController().navigate(R.id.action_editEnderecoFragment_to_infoPerfilFragment)
         }
     }
 

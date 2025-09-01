@@ -5,6 +5,19 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/splashFragment">
 
+    <action
+        android:id="@id/closet"
+        app:destination="@id/closetFragment"/>
+    <action
+        android:id="@+id/pesquisar"
+        app:destination="@+id/pesquisaFragment"/>
+    <action
+        android:id="@+id/cadastrarRoupa"
+        app:destination="@+id/cadastrarRoupa"/>
+    <action
+        android:id="@+id/perfil"
+        app:destination="@+id/infoPerfilFragment"/>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.projetointegrador.reuse.ui.SplashFragment"
@@ -34,6 +47,9 @@
         <action
             android:id="@+id/action_loginFragment_to_receberCodigoFragment"
             app:destination="@id/recuperarsenha" />
+        <action
+            android:id="@+id/action_loginFragment_to_closetFragment"
+            app:destination="@id/closetFragment" />
     </fragment>
     <navigation
         android:id="@+id/recuperarsenha"
@@ -74,13 +90,13 @@
             android:label="fragment_escolher_perfil_c"
             tools:layout="@layout/fragment_escolher_perfil_c">
             <action
-                android:id="@+id/action_escolherPerfilCFragment_to_cadastroInstituicaoFragment2"
-                app:destination="@id/cadastroInstituicaoFragment2" />
+                android:id="@+id/action_escolherPerfilCFragment_to_cadastroInstituicaoFragment"
+                app:destination="@id/cadastroInstituicaoFragment" />
             <action
-                android:id="@+id/action_escolherPerfilCFragment_to_cadatroBrechoFragment2"
+                android:id="@+id/action_escolherPerfilCFragment_to_cadatroBrechoFragment"
                 app:destination="@id/cadatroBrechoFragment" />
             <action
-                android:id="@+id/action_escolherPerfilCFragment_to_cadastroUsuarioFragment2"
+                android:id="@+id/action_escolherPerfilCFragment_to_cadastroUsuarioFragment"
                 app:destination="@id/cadastroUsuarioFragment" />
         </fragment>
         <fragment
@@ -89,8 +105,8 @@
             android:label="fragment_cadatro_brecho"
             tools:layout="@layout/fragment_cadatro_brecho">
             <action
-                android:id="@+id/action_cadatroBrechoFragment_to_cadastroEnderecoFragment2"
-                app:destination="@id/cadastroEnderecoFragment2" />
+                android:id="@+id/action_cadatroBrechoFragment_to_cadastroEnderecoFragment"
+                app:destination="@id/cadastroEnderecoFragment" />
         </fragment>
         <fragment
             android:id="@+id/cadastroUsuarioFragment"
@@ -98,31 +114,89 @@
             android:label="fragment_cadastro_usuario"
             tools:layout="@layout/fragment_cadastro_usuario">
             <action
-                android:id="@+id/action_cadastroUsuarioFragment_to_cadastroEnderecoFragment2"
-                app:destination="@id/cadastroEnderecoFragment2" />
+                android:id="@+id/action_cadastroUsuarioFragment_to_cadastroEnderecoFragment"
+                app:destination="@id/cadastroEnderecoFragment" />
         </fragment>
         <fragment
-            android:id="@+id/cadastroInstituicaoFragment2"
+            android:id="@+id/cadastroInstituicaoFragment"
             android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadastroInstituicaoFragment"
             android:label="fragment_cadastro_instituicao"
             tools:layout="@layout/fragment_cadastro_instituicao">
             <action
-                android:id="@+id/action_cadastroInstituicaoFragment2_to_cadastroEnderecoFragment2"
-                app:destination="@id/cadastroEnderecoFragment2" />
+                android:id="@+id/action_cadastroInstituicaoFragment_to_cadastroEnderecoFragment"
+                app:destination="@id/cadastroEnderecoFragment" />
         </fragment>
         <fragment
-            android:id="@+id/cadastroEnderecoFragment2"
+            android:id="@+id/cadastroEnderecoFragment"
             android:name="com.projetointegrador.reuse.ui.auth.cadastro.CadastroEnderecoFragment"
             android:label="fragment_cadastro_endereco"
             tools:layout="@layout/fragment_cadastro_endereco">
             <action
-                android:id="@+id/action_cadastroEnderecoFragment2_to_addFotoperfilFragment2"
-                app:destination="@id/addFotoperfilFragment2" />
+                android:id="@+id/action_cadastroEnderecoFragment_to_addFotoperfilFragment"
+                app:destination="@id/addFotoperfilFragment" />
         </fragment>
         <fragment
-            android:id="@+id/addFotoperfilFragment2"
+            android:id="@+id/addFotoperfilFragment"
             android:name="com.projetointegrador.reuse.ui.auth.cadastro.AddFotoperfilFragment"
             android:label="fragment_add_fotoperfil"
             tools:layout="@layout/fragment_add_fotoperfil" />
+        <action
+            android:id="@+id/action_global_closetFragment"
+            app:destination="@id/closetFragment" />
     </navigation>
+    <fragment
+        android:id="@+id/closetFragment"
+        android:name="com.projetointegrador.reuse.ui.closet.ClosetFragment"
+        android:label="fragment_closet"
+        tools:layout="@layout/fragment_closet" >
+        <action
+            android:id="@+id/action_closetFragment_to_criarGavetaFragment"
+            app:destination="@id/criarGavetaFragment" />
+        <action
+            android:id="@+id/action_closetFragment_to_gavetaFragment"
+            app:destination="@id/gavetaFragment" />
+        <action
+            android:id="@+id/action_closetFragment_to_infoPerfilFragment"
+            app:destination="@id/infoPerfilFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/criarGavetaFragment"
+        android:name="com.projetointegrador.reuse.ui.closet.CriarGavetaFragment"
+        android:label="fragment_criar_gaveta"
+        tools:layout="@layout/fragment_criar_gaveta" >
+        <action
+            android:id="@+id/action_criarGavetaFragment_to_gavetaFragment"
+            app:destination="@id/gavetaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gavetaFragment"
+        android:name="com.projetointegrador.reuse.ui.closet.GavetaFragment"
+        android:label="fragment_gaveta"
+        tools:layout="@layout/fragment_gaveta" />
+    <fragment
+        android:id="@+id/infoPerfilFragment"
+        android:name="com.projetointegrador.reuse.ui.perfil.InfoPerfilFragment"
+        android:label="fragment_info_perfil"
+        tools:layout="@layout/fragment_info_perfil" >
+        <action
+            android:id="@+id/action_infoPerfilFragment_to_editEnderecoFragment"
+            app:destination="@id/editEnderecoFragment" />
+        <action
+            android:id="@+id/action_infoPerfilFragment_to_closetFragment"
+            app:destination="@id/closetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editEnderecoFragment"
+        android:name="com.projetointegrador.reuse.ui.perfil.EditEnderecoFragment"
+        android:label="fragment_edit_endereco"
+        tools:layout="@layout/fragment_edit_endereco" >
+        <action
+            android:id="@+id/action_editEnderecoFragment_to_infoPerfilFragment"
+            app:destination="@id/infoPerfilFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pesquisaFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaFragment"
+        android:label="fragment_pesquisa"
+        tools:layout="@layout/fragment_pesquisa" />
 </navigation>

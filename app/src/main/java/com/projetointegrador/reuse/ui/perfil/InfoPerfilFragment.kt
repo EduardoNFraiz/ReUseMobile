@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.closet
+package com.projetointegrador.reuse.ui.perfil
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentClosetBinding
+import com.projetointegrador.reuse.databinding.FragmentInfoPerfilBinding
+import com.projetointegrador.reuse.util.initToolbar
 
 
-class ClosetFragment : Fragment() {
-    private var _binding: FragmentClosetBinding? = null
+class InfoPerfilFragment : Fragment() {
+    private var _binding: FragmentInfoPerfilBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +20,7 @@ class ClosetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentClosetBinding.inflate(inflater, container, false)
+        _binding = FragmentInfoPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -30,11 +31,8 @@ class ClosetFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.buttonCriarGaveta.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment)
-        }
-        binding.gavetacasacos.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
+        binding.bttEndereco.setOnClickListener {
+            findNavController().navigate(R.id.action_infoPerfilFragment_to_editEnderecoFragment)
         }
     }
 
@@ -43,13 +41,13 @@ class ClosetFragment : Fragment() {
             findNavController().navigate(R.id.closet)
         }
         binding.pesquisar.setOnClickListener {
-            findNavController().navigate(R.id.pesquisar)
+
         }
         binding.cadastrarRoupa.setOnClickListener {
-            //findNavController().navigate(R.id.cadastrarpeca)
+
         }
         binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.closet)
+
         }
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)

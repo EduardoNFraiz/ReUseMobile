@@ -7,6 +7,152 @@
     android:layout_height="match_parent"
     tools:context=".ui.closet.ClosetFragment">
 
+    <TextView
+        android:id="@+id/textViewMeuCloset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Meu Closet"
+        android:textColor="#134313"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/editTextPesquisarGavetas"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edt_btt_testilo"
+        android:ems="10"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Pesquisar gavetas"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="#134313"
+        android:textColorHint="#134313"
+        android:textSize="18sp"
+        android:drawableEnd="@drawable/search_verde"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMeuCloset" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonCriarGaveta"
+        android:layout_width="350dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edt_btt_testilo"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:text="Criar gaveta"
+        android:drawableEnd="@drawable/baseline_add_24"
+        android:textAllCaps="false"
+        android:textColor="#134313"
+        android:textAlignment="textStart"
+        android:paddingHorizontal="20dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPesquisarGavetas"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/gavetacasacos"
+        android:layout_width="150dp"
+        android:layout_height="180dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
+        android:backgroundTint="@color/VerdeClarinho"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonCriarGaveta"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/drawer_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@drawable/ic_launcher_background"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/drawer_name"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/drawer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="casacos"
+                android:fontFamily="@font/plus_jakarta_sans_medium"
+                android:textSize="18sp"
+                android:textColor="#134313"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:id="@+id/item_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:fontFamily="@font/plus_jakarta_sans_medium"
+                android:textSize="18sp"
+                android:textColor="#134313"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/drawer_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/rodape"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="@color/VerdeClaro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <ImageView
+            android:id="@+id/closet"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/closeticon"/>
+        <ImageView
+            android:id="@+id/pesquisar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/search_branco" />
+        <ImageView
+            android:id="@+id/cadastrarRoupa"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="10dp"
+            android:src="@drawable/baseline_add_circle_24" />
+        <ImageView
+            android:id="@+id/doacao"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/iconedoacao" />
+        <ImageView
+            android:id="@+id/perfil"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/person_branco" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
