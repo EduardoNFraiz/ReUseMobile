@@ -32,6 +32,7 @@ class GavetaFragment : Fragment() {
 
     private fun initListeners() {
         binding.buttonCadastrarRoupa.setOnClickListener {
+            findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment)
 
         }
     }

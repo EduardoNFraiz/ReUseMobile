@@ -172,7 +172,11 @@
         android:id="@+id/gavetaFragment"
         android:name="com.projetointegrador.reuse.ui.closet.GavetaFragment"
         android:label="fragment_gaveta"
-        tools:layout="@layout/fragment_gaveta" />
+        tools:layout="@layout/fragment_gaveta" >
+        <action
+            android:id="@+id/action_gavetaFragment_to_cadRoupaFragment"
+            app:destination="@id/cadRoupaFragment" />
+    </fragment>
     <fragment
         android:id="@+id/infoPerfilFragment"
         android:name="com.projetointegrador.reuse.ui.perfil.InfoPerfilFragment"
@@ -199,4 +203,22 @@
         android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaFragment"
         android:label="fragment_pesquisa"
         tools:layout="@layout/fragment_pesquisa" />
+    <fragment
+        android:id="@+id/cadRoupaFragment"
+        android:name="com.projetointegrador.reuse.ui.closet.CadRoupaFragment"
+        android:label="fragment_cad_roupa"
+        tools:layout="@layout/fragment_cad_roupa" >
+        <action
+            android:id="@+id/action_cadRoupaFragment_to_cadRoupa2Fragment"
+            app:destination="@id/cadRoupa2Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cadRoupa2Fragment"
+        android:name="com.projetointegrador.reuse.ui.closet.CadRoupa2Fragment"
+        android:label="fragment_cad_roupa2"
+        tools:layout="@layout/fragment_cad_roupa2" >
+        <action
+            android:id="@+id/action_cadRoupa2Fragment_to_gavetaFragment"
+            app:destination="@id/gavetaFragment" />
+    </fragment>
 </navigation>

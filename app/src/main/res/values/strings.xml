@@ -5,4 +5,45 @@
     <string name="aba_usuarios">Usuários</string>
     <string name="aba_brechos">Brechós</string>
     <string name="aba_vendas">Vendas</string>
+
+    <string name="cad_peca">Cadastro de peça</string>
+    <string name="app_photo">croup</string>
+    <string name="app_cor">Cores</string>
+    <string name="app_categoria">Categoria</string>
+    <string name="app_tamanho">Tamanho</string>
+    <string name="app_final">Finalidade</string>
+
+    <string name="app_pp">PP</string>
+    <string name="app_p">P</string>
+    <string name="app_m">M</string>
+    <string name="app_g">G</string>
+    <string name="app_gg">GG</string>
+    <string name="app_xgg">XGG</string>
+
+    <string name="app_roupa">Roupa</string>
+    <string name="app_acessorio">Acessório</string>
+    <string name="app_calcado">Calçado</string>
+    <string name="app_trajebanho">Traje banho</string>
+    <string name="app_esporte">Esporte</string>
+    <string name="app_infantil">Infantil</string>
+    <string name="app_masculino">Masculino</string>
+    <string name="app_unissex">Unissex</string>
+    <string name="app_intima">Íntimo</string>
+    <string name="app_feminino">Feminino</string>
+
+    <string name="app_prox">Próximo</string>
+
+    <string name="app_doar">Doar</string>
+    <string name="app_vender">Vender</string>
+    <string name="app_organizar">Organizar</string>
+
+    <string name="app_cadpeca">Cadastrar peça</string>
+    <string name="app_salvar">Salvar alterações</string>
+    <string name="app_pesquisargav">Pesquisar minhas gavetas</string>
+    <string name="pesquisar">Pesquisar</string>
+    <string name="imagem_da_gaveta">Imagem da gaveta</string>
+    <string name="casacos">casacos</string>
+    <string name="digite_o_pre_o">Digite o preço</string>
+    <string name="digite_o_pre">Digite o preço</string>
+    <string name="r">R$</string>
 </resources>
