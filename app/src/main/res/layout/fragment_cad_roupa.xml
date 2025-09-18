@@ -162,6 +162,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
+            android:id="@+id/roupa"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -173,6 +174,7 @@
             android:text="@string/app_roupa" />
 
         <CheckBox
+            android:id="@+id/acess"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_row="0"
@@ -187,6 +189,7 @@
             android:textSize="11sp" />
 
         <CheckBox
+            android:id="@+id/calcado"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -199,6 +202,7 @@
             android:textSize="13sp" />
 
         <CheckBox
+            android:id="@+id/traje"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -211,6 +215,7 @@
             android:textSize="10sp" />
 
         <CheckBox
+            android:id="@+id/esporte"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -224,6 +229,7 @@
         <!-- Segunda fileira -->
 
         <CheckBox
+            android:id="@+id/masc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -236,6 +242,7 @@
             android:textSize="11sp" />
 
         <CheckBox
+            android:id="@+id/fem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -248,6 +255,7 @@
             android:textSize="12sp" />
 
         <CheckBox
+            android:id="@+id/infantil"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -259,6 +267,7 @@
             android:text="@string/app_infantil" />
 
         <CheckBox
+            android:id="@+id/intimo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -270,6 +279,7 @@
             android:text="@string/app_intima" />
 
         <CheckBox
+            android:id="@+id/uni"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -452,30 +462,32 @@
         android:id="@+id/Proximo"
         android:layout_width="350dp"
         android:layout_height="40dp"
-        android:layout_marginTop="68dp"
         android:background="@drawable/estilobtt1"
         android:text="@string/app_prox"
-        android:textColor="@color/VerdeEscuro"
         android:textAllCaps="false"
+        android:textColor="@color/VerdeEscuro"
         android:textSize="18dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Tamanho" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonEditar" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonEditar"
         android:layout_width="350dp"
         android:layout_height="42dp"
         android:layout_gravity="center"
+        android:layout_marginTop="48dp"
         android:background="@drawable/estilobtt2"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Continuar Editando"
+        android:text="Editar"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Proximo"/>
+        app:layout_constraintTop_toBottomOf="@+id/Tamanho" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

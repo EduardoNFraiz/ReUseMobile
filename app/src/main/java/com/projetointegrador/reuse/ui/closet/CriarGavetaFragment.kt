@@ -29,6 +29,7 @@ class CriarGavetaFragment : Fragment() {
         initToolbar(binding.toolbar)
         initListeners()
         modoEditor()
+        initToolbar(binding.toolbar)
 
         val hideButtons = arguments?.getBoolean("HIDE_EDIT_BUTTONS") ?: false
         if (hideButtons) {

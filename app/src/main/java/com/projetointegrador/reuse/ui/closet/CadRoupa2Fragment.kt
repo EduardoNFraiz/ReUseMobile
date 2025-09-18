@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentCadRoupa2Binding
+import com.projetointegrador.reuse.util.initToolbar
 
 
 class CadRoupa2Fragment : Fragment() {
@@ -71,6 +72,7 @@ class CadRoupa2Fragment : Fragment() {
         }
         initListeners()
         barraDeNavegacao()
+        initToolbar(binding.toolbar)
     }
 
     private fun barraDeNavegacao() {
