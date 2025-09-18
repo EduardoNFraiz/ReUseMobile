@@ -30,11 +30,20 @@ class ClosetFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.buttonCriarGaveta.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment)
-        }
         binding.gavetacasacos.setOnClickListener {
             findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
+        }
+        binding.buttonCriarGaveta.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("HIDE_EDIT_BUTTONS", true)
+            }
+            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
+        }
+        binding.bttThreePoint.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("VISUALIZAR_INFO", true)
+            }
+            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }
     }
 

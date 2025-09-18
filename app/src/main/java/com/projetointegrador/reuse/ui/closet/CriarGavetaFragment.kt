@@ -28,11 +28,36 @@ class CriarGavetaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
         initListeners()
+        modoEditor()
+
+        val hideButtons = arguments?.getBoolean("HIDE_EDIT_BUTTONS") ?: false
+        if (hideButtons) {
+            binding.bttEditar.visibility = View.INVISIBLE
+            binding.bttEditar.visibility = View.INVISIBLE
+            binding.editTextGaveta.isEnabled = true
+            binding.rbPrivado.isEnabled = true
+            binding.rbPublico.isEnabled = true
+        }
     }
 
     private fun initListeners() {
         binding.bttCriarGaveta.setOnClickListener {
             findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment)
+        }
+    }
+
+    private fun modoEditor(){
+        binding.bttEditar.setOnClickListener {
+            binding.bttSalvar.visibility = View.VISIBLE
+            binding.editTextGaveta.isEnabled = true
+            binding.rbPrivado.isEnabled = true
+            binding.rbPublico.isEnabled = true
+        }
+        binding.bttSalvar.setOnClickListener {
+            binding.editTextGaveta.isEnabled = false
+            binding.rbPrivado.isEnabled = false
+            binding.rbPublico.isEnabled = false
+            findNavController().navigate(R.id.closet)
         }
     }
 
