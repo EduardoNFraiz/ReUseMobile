@@ -147,6 +147,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <GridLayout
+        android:id="@+id/categoria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="356dp"
@@ -462,13 +463,13 @@
         app:layout_constraintTop_toBottomOf="@+id/Tamanho" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/bttEditar"
+        android:id="@+id/buttonEditar"
         android:layout_width="350dp"
         android:layout_height="42dp"
         android:layout_gravity="center"
         android:background="@drawable/estilobtt2"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Editar"
+        android:text="Continuar Editando"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18dp"

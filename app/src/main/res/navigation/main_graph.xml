@@ -211,6 +211,9 @@
         <action
             android:id="@+id/action_cadRoupaFragment_to_cadRoupa2Fragment"
             app:destination="@id/cadRoupa2Fragment" />
+        <action
+            android:id="@+id/action_cadRoupaFragment_to_cadRoupa2Fragment2"
+            app:destination="@id/cadRoupa2Fragment" />
     </fragment>
     <fragment
         android:id="@+id/cadRoupa2Fragment"

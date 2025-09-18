@@ -55,6 +55,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewGaveta"/>
 
+    <ImageButton
+        android:id="@+id/buttThreePoint"
+        android:layout_width="38dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="236dp"
+        android:background="@android:color/transparent"
+        android:paddingStart="15dp"
+        android:src="@drawable/threepoint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/VerdeEscuro" />
+
     <ImageView
         android:id="@+id/iconCloset"
         android:layout_width="100dp"

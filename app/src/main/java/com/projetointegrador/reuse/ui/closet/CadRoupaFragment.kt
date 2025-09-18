@@ -25,9 +25,31 @@ class CadRoupaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
+        modoEditor()
+
+        val hideButtons = arguments?.getBoolean("HIDE_EDIT_BUTTONS") ?: false
+        if (hideButtons) {
+            binding.buttonEditar.visibility = View.INVISIBLE
+            binding.Proximo.isEnabled = true
+            binding.categoria.isEnabled = true
+            binding.Tamanho.isEnabled = true
+        }
         barraDeNavegacao()
     }
-
+    private fun modoEditor(){
+        binding.buttonEditar.setOnClickListener {
+            binding.buttonEditar.visibility = View.VISIBLE
+            binding.Proximo.isEnabled = true
+            binding.categoria.isEnabled = true
+            binding.Tamanho.isEnabled = true
+        }
+        binding.buttonEditar.setOnClickListener {
+            binding.Proximo.isEnabled = false
+            binding.categoria.isEnabled = false
+            binding.Tamanho.isEnabled = false
+            findNavController().navigate(R.id.closet)
+        }
+    }
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener {
             findNavController().navigate(R.id.closet)

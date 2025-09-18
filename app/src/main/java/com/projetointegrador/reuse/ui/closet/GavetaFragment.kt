@@ -32,11 +32,18 @@ class GavetaFragment : Fragment() {
 
     private fun initListeners() {
         binding.buttonCadastrarRoupa.setOnClickListener {
-            findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment)
-
+            val bundle = Bundle().apply {
+                putBoolean("HIDE_EDIT_BUTTONS", true)
+            }
+            findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
+        }
+        binding.buttThreePoint.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("VISUALIZAR_INFO", true)
+            }
+            findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
