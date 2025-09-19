@@ -27,23 +27,37 @@ class CadRoupa2Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // aqui você acessa os componentes direto pelo binding
+        val criar_roupa = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
+        if (criar_roupa) {
+            binding.radioButton5.isEnabled = true
+            binding.radioButton6.isEnabled = true
+            binding.radioButton7.isEnabled = true
+            binding.editEditText.isEnabled = true
+            binding.bttSalvar.visibility = View.GONE
+        }
+        else {
+            val editando = arguments?.getBoolean("EDITANDO") ?: false
+            if (editando) {
+                binding.btnCadastrarPeca.visibility = View.VISIBLE
+                binding.bttSalvar.visibility = View.GONE
+                binding.radioButton5.isEnabled = true
+                binding.radioButton6.isEnabled = true
+                binding.radioButton7.isEnabled = true
+                binding.editEditText.isEnabled = true
+            }
+            else {
+                binding.btnCadastrarPeca.visibility = View.GONE
+                binding.bttSalvar.visibility = View.VISIBLE
+                binding.radioButton5.isEnabled = false
+                binding.radioButton6.isEnabled = false
+                binding.radioButton7.isEnabled = false
+                binding.editEditText.isEnabled = false
+            }
+        }
+
         val radioGroup = binding.Finalidade
         val spinner = binding.spinner
         val editPreco = binding.editEditText
-
-        val isEditing = arguments?.getBoolean("isEditing", false) ?: false
-
-        val btnCadastrarPeca = binding.btnCadastrarPeca
-        val btnSalvarAlteracoes = binding.bttSalvar
-
-        if (isEditing) {
-            btnCadastrarPeca.visibility = View.GONE
-            btnSalvarAlteracoes.visibility = View.VISIBLE
-        } else {
-            btnCadastrarPeca.visibility = View.VISIBLE
-            btnSalvarAlteracoes.visibility = View.GONE
-        }
 
         fun atualizarSpinner(opcoes: List<String>) {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opcoes)
@@ -74,7 +88,6 @@ class CadRoupa2Fragment : Fragment() {
         barraDeNavegacao()
         initToolbar(binding.toolbar)
     }
-
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener {
             findNavController().navigate(R.id.closet)
@@ -92,7 +105,6 @@ class CadRoupa2Fragment : Fragment() {
             findNavController().navigate(R.id.perfil)
         }
     }
-
     private fun initListeners(){
         binding.btnCadastrarPeca.setOnClickListener {
             findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment)

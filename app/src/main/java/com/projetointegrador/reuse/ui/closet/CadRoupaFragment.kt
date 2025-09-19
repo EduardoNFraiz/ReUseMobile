@@ -25,10 +25,9 @@ class CadRoupaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initListeners()
         modoEditor()
 
-        val hideButtons = arguments?.getBoolean("HIDE_EDIT_BUTTONS") ?: false
+        val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
         if (hideButtons) {
             binding.buttonEditar.visibility = View.INVISIBLE
             binding.roupa.isEnabled = true
@@ -68,15 +67,15 @@ class CadRoupaFragment : Fragment() {
             binding.rbXGG.isEnabled = false
         }
         barraDeNavegacao()
+        initListeners()
         initToolbar(binding.toolbar)
     }
+
     private fun modoEditor() {
         var editando = false
         binding.buttonEditar.setOnClickListener {
-            // Alterna o valor da variável editando
             editando = !editando
 
-            // Habilita ou desabilita os componentes com base no estado de 'editando'
             val isEnabled = editando
 
             binding.roupa.isEnabled = isEnabled
@@ -95,8 +94,17 @@ class CadRoupaFragment : Fragment() {
             binding.rbG.isEnabled = isEnabled
             binding.rbGG.isEnabled = isEnabled
             binding.rbXGG.isEnabled = isEnabled
+
+            binding.Proximo.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putBoolean("EDITANDO", editando)
+                }
+                findNavController().navigate(
+                    R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
+            }
         }
     }
+
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener {
             findNavController().navigate(R.id.closet)
@@ -115,9 +123,18 @@ class CadRoupaFragment : Fragment() {
         }
     }
 
-    private fun initListeners(){
+    private fun initListeners() {
         binding.Proximo.setOnClickListener {
-            findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
+            val bundle = Bundle().apply {
+                putBoolean("CRIANDO_ROUPA", true)
+            }
+            val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
+            if (hideButtons) {
+                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
+            }
+            else {
+                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
+            }
         }
     }
 }

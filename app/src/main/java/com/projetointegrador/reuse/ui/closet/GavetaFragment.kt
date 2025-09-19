@@ -33,7 +33,7 @@ class GavetaFragment : Fragment() {
     private fun initListeners() {
         binding.buttonCadastrarRoupa.setOnClickListener {
             val bundle = Bundle().apply {
-                putBoolean("HIDE_EDIT_BUTTONS", true)
+                putBoolean("CRIANDO_ROUPA", true)
             }
             findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
         }
