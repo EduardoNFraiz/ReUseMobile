@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentCadRoupaBinding
@@ -25,7 +26,6 @@ class CadRoupaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        modoEditor()
 
         val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
         if (hideButtons) {
@@ -46,6 +46,12 @@ class CadRoupaFragment : Fragment() {
             binding.rbG.isEnabled = true
             binding.rbGG.isEnabled = true
             binding.rbXGG.isEnabled = true
+            binding.Proximo.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putBoolean("CRIANDO_ROUPA", true)
+                }
+                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment,bundle)
+            }
         }
         val info = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
         if (info) {
@@ -65,9 +71,9 @@ class CadRoupaFragment : Fragment() {
             binding.rbG.isEnabled = false
             binding.rbGG.isEnabled = false
             binding.rbXGG.isEnabled = false
+            modoEditor()
         }
         barraDeNavegacao()
-        initListeners()
         initToolbar(binding.toolbar)
     }
 
@@ -75,7 +81,6 @@ class CadRoupaFragment : Fragment() {
         var editando = false
         binding.buttonEditar.setOnClickListener {
             editando = !editando
-
             val isEnabled = editando
 
             binding.roupa.isEnabled = isEnabled
@@ -99,9 +104,16 @@ class CadRoupaFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putBoolean("EDITANDO", editando)
                 }
-                findNavController().navigate(
-                    R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
+                if (binding.buttonEditar.isVisible) {
+                    findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
+                }
+                else{
+                    findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
+                }
             }
+        }
+        binding.Proximo.setOnClickListener {
+            findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
         }
     }
 
@@ -120,21 +132,6 @@ class CadRoupaFragment : Fragment() {
         }
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)
-        }
-    }
-
-    private fun initListeners() {
-        binding.Proximo.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
-            if (hideButtons) {
-                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
-            }
-            else {
-                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
-            }
         }
     }
 }

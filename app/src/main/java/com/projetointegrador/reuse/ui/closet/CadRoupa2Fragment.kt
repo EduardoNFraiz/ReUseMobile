@@ -38,8 +38,8 @@ class CadRoupa2Fragment : Fragment() {
         else {
             val editando = arguments?.getBoolean("EDITANDO") ?: false
             if (editando) {
-                binding.btnCadastrarPeca.visibility = View.VISIBLE
-                binding.bttSalvar.visibility = View.GONE
+                binding.btnCadastrarPeca.visibility = View.GONE
+                binding.bttSalvar.visibility = View.VISIBLE
                 binding.radioButton5.isEnabled = true
                 binding.radioButton6.isEnabled = true
                 binding.radioButton7.isEnabled = true
@@ -47,7 +47,6 @@ class CadRoupa2Fragment : Fragment() {
             }
             else {
                 binding.btnCadastrarPeca.visibility = View.GONE
-                binding.bttSalvar.visibility = View.VISIBLE
                 binding.radioButton5.isEnabled = false
                 binding.radioButton6.isEnabled = false
                 binding.radioButton7.isEnabled = false
@@ -107,6 +106,9 @@ class CadRoupa2Fragment : Fragment() {
     }
     private fun initListeners(){
         binding.btnCadastrarPeca.setOnClickListener {
+            findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment)
+        }
+        binding.bttSalvar.setOnClickListener {
             findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment)
         }
     }

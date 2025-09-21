@@ -31,10 +31,17 @@ class CriarGavetaFragment : Fragment() {
         modoEditor()
         initToolbar(binding.toolbar)
 
-        val hideButtons = arguments?.getBoolean("HIDE_EDIT_BUTTONS") ?: false
-        if (hideButtons) {
-            binding.bttEditar.visibility = View.INVISIBLE
-            binding.bttEditar.visibility = View.INVISIBLE
+        val vizualizarInfo = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
+        if (vizualizarInfo) {
+            binding.bttEditar.visibility = View.VISIBLE
+            binding.bttCriarGaveta.visibility = View.GONE
+            binding.editTextGaveta.isEnabled = false
+            binding.rbPrivado.isEnabled = false
+            binding.rbPublico.isEnabled = false
+        }
+        else {
+            binding.bttEditar.visibility = View.GONE
+            binding.bttCriarGaveta.visibility = View.VISIBLE
             binding.editTextGaveta.isEnabled = true
             binding.rbPrivado.isEnabled = true
             binding.rbPublico.isEnabled = true
@@ -48,16 +55,23 @@ class CriarGavetaFragment : Fragment() {
     }
 
     private fun modoEditor(){
+        var editando = false
         binding.bttEditar.setOnClickListener {
-            binding.bttSalvar.visibility = View.VISIBLE
-            binding.editTextGaveta.isEnabled = true
-            binding.rbPrivado.isEnabled = true
-            binding.rbPublico.isEnabled = true
+            editando = !editando
+            val isEnabled = editando
+
+            binding.editTextGaveta.isEnabled = isEnabled
+            binding.rbPrivado.isEnabled = isEnabled
+            binding.rbPublico.isEnabled = isEnabled
+
+            if(isEnabled) {
+                binding.bttSalvar.visibility = View.VISIBLE
+            }
+            else{
+                binding.bttSalvar.visibility = View.INVISIBLE
+            }
         }
         binding.bttSalvar.setOnClickListener {
-            binding.editTextGaveta.isEnabled = false
-            binding.rbPrivado.isEnabled = false
-            binding.rbPublico.isEnabled = false
             findNavController().navigate(R.id.closet)
         }
     }

@@ -17,6 +17,9 @@
     <action
         android:id="@+id/perfil"
         app:destination="@+id/infoPerfilFragment"/>
+    <action
+        android:id="@+id/perfiluser"
+        app:destination="@+id/visualizarPUsuarioFragment"/>
 
     <fragment
         android:id="@+id/splashFragment"
@@ -224,4 +227,9 @@
             android:id="@+id/action_cadRoupa2Fragment_to_gavetaFragment"
             app:destination="@id/gavetaFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/visualizarPUsuarioFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.VisualizarPUsuarioFragment"
+        android:label="fragment_visualizar_p_usuario"
+        tools:layout="@layout/fragment_visualizar_p_usuario" />
 </navigation>

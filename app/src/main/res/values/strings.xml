@@ -6,6 +6,9 @@
     <string name="aba_brechos">Brechós</string>
     <string name="aba_vendas">Vendas</string>
 
+    <string name="aba_closet_usuario">Closet</string>
+    <string name="aba_avenda">À venda</string>
+
     <string name="cad_peca">Cadastro de peça</string>
     <string name="app_photo">croup</string>
     <string name="app_cor">Cores</string>

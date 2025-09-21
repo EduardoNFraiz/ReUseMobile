@@ -1,4 +1,4 @@
-package com.projetointegrador.reuse.ui.closet
+package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.databinding.FragmentClosetBinding
+import com.projetointegrador.reuse.databinding.FragmentVisualizarPUsuarioBinding
+import com.projetointegrador.reuse.ui.adapter.ViewPagerAdapter
+import com.projetointegrador.reuse.util.initToolbar
 
 
-class ClosetFragment : Fragment() {
-    private var _binding: FragmentClosetBinding? = null
+class VisualizarPUsuarioFragment : Fragment() {
+    private var _binding: FragmentVisualizarPUsuarioBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +22,7 @@ class ClosetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentClosetBinding.inflate(inflater, container, false)
+        _binding = FragmentVisualizarPUsuarioBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -27,24 +30,24 @@ class ClosetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         barraDeNavegacao()
+        initTabs()
+        initToolbar(binding.toolbar)
+    }
+    private fun initTabs() {
+        val pageAdapter = ViewPagerAdapter(requireActivity())
+        binding.viewPager.adapter = pageAdapter
+        pageAdapter.addFragment(UsuarioClosetFragment(),R.string.aba_closet_usuario)
+        pageAdapter.addFragment(AVendaFragment(), R.string.aba_avenda)
+
+        binding.viewPager.offscreenPageLimit = pageAdapter.itemCount
+
+        TabLayoutMediator(binding.tabs, binding.viewPager){tab, position ->
+            tab.text = getString(pageAdapter.getTitle(position))
+        }.attach()
     }
 
     private fun initListeners() {
-        binding.gavetacasacos.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
-        }
-        binding.buttonCriarGaveta.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("HIDE_EDIT_BUTTONS", true)
-            }
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
-        }
-        binding.bttThreePoint.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("VISUALIZAR_INFO", true)
-            }
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
-        }
+
     }
 
     private fun barraDeNavegacao() {
@@ -58,7 +61,7 @@ class ClosetFragment : Fragment() {
             //findNavController().navigate(R.id.cadastrarpeca)
         }
         binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.perfiluser)
+
         }
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)

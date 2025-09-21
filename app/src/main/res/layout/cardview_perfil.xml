@@ -23,20 +23,20 @@
             android:layout_height="79dp">
 
             <ImageView
-                android:id="@+id/imageProfile1"
+                android:id="@+id/imageProfile"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="5dp"
-                android:background="@drawable/circleimage"
+                android:background="@drawable/img_redonda"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/person"
+                tools:src="@drawable/person"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textViewNome1"
+                android:id="@+id/textViewName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -45,11 +45,11 @@
                 android:text="Eduardo Neumann"
                 android:textSize="20dp"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toEndOf="@+id/imageProfile1"
+                app:layout_constraintStart_toEndOf="@+id/imageProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textViewNomep1"
+                android:id="@+id/textViewUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -58,53 +58,22 @@
                 android:text="@eduardo_neumann"
                 android:textSize="12dp"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toEndOf="@+id/imageProfile1"
+                app:layout_constraintStart_toEndOf="@+id/imageProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="20dp"
-                android:layout_margin="10dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/estrelapreenchida"
-                    tools:layout_editor_absoluteX="193dp"
-                    tools:layout_editor_absoluteY="30dp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/estrelapreenchida"
-                    tools:layout_editor_absoluteX="193dp"
-                    tools:layout_editor_absoluteY="30dp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/estrelapreenchida"
-                    tools:layout_editor_absoluteX="193dp"
-                    tools:layout_editor_absoluteY="30dp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/estrelapreenchida"
-                    tools:layout_editor_absoluteX="193dp"
-                    tools:layout_editor_absoluteY="30dp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/estrelavazia"
-                    tools:layout_editor_absoluteX="193dp"
-                    tools:layout_editor_absoluteY="30dp" />
-            </LinearLayout>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="160dp"
+                android:layout_marginTop="35dp"
+                android:numStars="5"
+                android:progressTint="#FF9800"
+                android:rating="3"
+                android:scaleX="0.5"
+                android:scaleY="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
