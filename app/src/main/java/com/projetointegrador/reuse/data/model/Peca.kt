@@ -6,5 +6,5 @@ import kotlinx.android.parcel.Parcelize
 data class Peca(
     val image: Int,
     val descricao: String,
-    val preco: String,
+    val preco: String? = null
 ):Parcelable

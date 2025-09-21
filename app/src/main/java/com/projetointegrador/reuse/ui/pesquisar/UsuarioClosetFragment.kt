@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Peca
 import com.projetointegrador.reuse.databinding.FragmentUsuarioClosetBinding
@@ -38,14 +39,13 @@ class UsuarioClosetFragment : Fragment() {
 
     private fun initRecyclerViewTask(pecaList: List<Peca>){
         pecaAdapter = PecaAdapter(pecaList)
-        binding.recyclerViewTask.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTask.setHasFixedSize(true)
         binding. recyclerViewTask.adapter = pecaAdapter
     }
 
     private fun getTask() = listOf(
-        Peca(R.drawable.person, "Eduardo Neumam", "@eduardo_neumam"),
-        Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "@eduardo"),
+        Peca(R.drawable.person, "Eduardo Neumam"),
+        Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "R$60,00"),
         Peca(R.drawable.baseline_image_24, "Neumam", "@neumam"),
         Peca(R.drawable.baseline_image_24, "Eduardo", "@_neumam"),
         Peca(R.drawable.baseline_image_24, "Neumam", "@edu"),

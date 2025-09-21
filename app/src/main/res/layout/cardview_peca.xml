@@ -3,16 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/constraintLayout1">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/constraintLayout1"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="27dp">
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,8 +22,8 @@
 
         <ImageView
             android:id="@+id/imagePeca"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="10dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -32,12 +34,12 @@
     <!-- Nome do item -->
     <TextView
         android:id="@+id/itemTitle"
-        android:layout_width="160dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:text="Camisa de time GG"
-        android:textSize="16sp"
+        android:textSize="13sp"
         android:fontFamily="@font/plus_jakarta_sans_medium"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/cardViewItem"
@@ -48,10 +50,10 @@
         android:id="@+id/itemPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="R$81,00"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="16sp"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/itemTitle"
         app:layout_constraintStart_toStartOf="@id/itemTitle"
