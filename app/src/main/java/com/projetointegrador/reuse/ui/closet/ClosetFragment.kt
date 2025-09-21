@@ -55,7 +55,10 @@ class ClosetFragment : Fragment() {
             findNavController().navigate(R.id.pesquisar)
         }
         binding.cadastrarRoupa.setOnClickListener {
-            //findNavController().navigate(R.id.cadastrarpeca)
+            val bundle = Bundle().apply {
+                putBoolean("CRIANDO_ROUPA", true)
+            }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle)
         }
         binding.doacao.setOnClickListener {
             findNavController().navigate(R.id.perfiluser)

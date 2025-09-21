@@ -13,13 +13,13 @@
         app:destination="@+id/pesquisaFragment"/>
     <action
         android:id="@+id/cadastrarRoupa"
-        app:destination="@+id/cadastrarRoupa"/>
+        app:destination="@+id/cadRoupaFragment"/>
     <action
         android:id="@+id/perfil"
         app:destination="@+id/infoPerfilFragment"/>
     <action
         android:id="@+id/perfiluser"
-        app:destination="@+id/visualizarPUsuarioFragment"/>
+        app:destination="@+id/visualizarPBrechoFragment"/>
 
     <fragment
         android:id="@+id/splashFragment"
@@ -232,4 +232,34 @@
         android:name="com.projetointegrador.reuse.ui.pesquisar.VisualizarPUsuarioFragment"
         android:label="fragment_visualizar_p_usuario"
         tools:layout="@layout/fragment_visualizar_p_usuario" />
+    <fragment
+        android:id="@+id/pesquisaUsuariosFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaUsuariosFragment"
+        android:label="fragment_pesquisa_usuarios"
+        tools:layout="@layout/fragment_pesquisa_usuarios" />
+    <fragment
+        android:id="@+id/pesquisaBrechosFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaBrechosFragment"
+        android:label="fragment_pesquisa_brechos"
+        tools:layout="@layout/fragment_pesquisa_brechos" />
+    <fragment
+        android:id="@+id/pesquisaVendasFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaVendasFragment"
+        android:label="fragment_pesquisa_vendas"
+        tools:layout="@layout/fragment_pesquisa_vendas" />
+    <fragment
+        android:id="@+id/visualizarPBrechoFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.VisualizarPBrechoFragment"
+        android:label="fragment_visualizar_p_brecho"
+        tools:layout="@layout/fragment_visualizar_p_brecho" />
+    <fragment
+        android:id="@+id/usuarioClosetFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.UsuarioClosetFragment"
+        android:label="fragment_usuario_closet"
+        tools:layout="@layout/fragment_usuario_closet" />
+    <fragment
+        android:id="@+id/AVendaFragment"
+        android:name="com.projetointegrador.reuse.ui.pesquisar.AVendaFragment"
+        android:label="fragment_a_venda"
+        tools:layout="@layout/fragment_a_venda" />
 </navigation>

@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Peca
 import com.projetointegrador.reuse.databinding.FragmentPesquisaVendasBinding

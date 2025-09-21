@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Peca
 import com.projetointegrador.reuse.databinding.FragmentUsuarioClosetBinding
 import com.projetointegrador.reuse.ui.adapter.PecaAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 
 
 class UsuarioClosetFragment : Fragment() {
