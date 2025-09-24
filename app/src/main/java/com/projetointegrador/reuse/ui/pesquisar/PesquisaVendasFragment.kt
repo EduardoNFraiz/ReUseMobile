@@ -6,14 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projetointegrador.reuse.R
+import com.projetointegrador.reuse.data.model.FilterItem
 import com.projetointegrador.reuse.data.model.Peca
+import com.projetointegrador.reuse.data.model.toChip
 import com.projetointegrador.reuse.databinding.FragmentPesquisaVendasBinding
 import com.projetointegrador.reuse.ui.adapter.PecaAdapter
 
-class PesquisaVendasFragment : Fragment() {
+class PesquisaVendasFragment : Fragment(){
     private var _binding: FragmentPesquisaVendasBinding? = null
     private val binding get() = _binding!!
     private lateinit var pecaAdapter: PecaAdapter
+
+    private var filter = arrayOf(
+        FilterItem(1, "Cor", closeIcon = R.drawable.outline_arrow_drop_down_24 ),
+        FilterItem(2, "Categoria", closeIcon = R.drawable.outline_arrow_drop_down_24),
+        FilterItem(3, "Tamanho", closeIcon = R.drawable.outline_arrow_drop_down_24),
+        FilterItem(4, "até R$20", icon = R.drawable.money),
+        FilterItem(5, "R$20-50", icon = R.drawable.money),
+        FilterItem(6, "acima de R$100", icon = R.drawable.money)
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +37,13 @@ class PesquisaVendasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.let {
+            filter.forEach { filter ->
+                it.chipGroupFilter.addView(filter.toChip(requireContext()))
+            }
+        }
+
         initListeners()
         initRecyclerViewTask(getTask())
     }
@@ -54,8 +72,6 @@ class PesquisaVendasFragment : Fragment() {
         Peca(R.drawable.baseline_image_24, "Neumam", "@edu"),
         Peca(R.drawable.baseline_image_24, "Eduardo", "@eduardoneumam"),
     )
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
