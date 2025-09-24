@@ -12,5 +12,8 @@
     </style>
 
 
-    <style name="Theme.ReUse" parent="Base.Theme.ReUse" />
+    <style name="Theme.ReUse" parent="Base.Theme.ReUse">
+        <item name="color">@color/VerdeEscuro</item>
+
+    </style>
 </resources>

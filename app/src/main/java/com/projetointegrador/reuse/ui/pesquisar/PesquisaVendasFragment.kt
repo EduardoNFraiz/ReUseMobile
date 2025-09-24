@@ -21,9 +21,7 @@ class PesquisaVendasFragment : Fragment(){
         FilterItem(1, "Cor", closeIcon = R.drawable.outline_arrow_drop_down_24 ),
         FilterItem(2, "Categoria", closeIcon = R.drawable.outline_arrow_drop_down_24),
         FilterItem(3, "Tamanho", closeIcon = R.drawable.outline_arrow_drop_down_24),
-        FilterItem(4, "até R$20", icon = R.drawable.money),
-        FilterItem(5, "R$20-50", icon = R.drawable.money),
-        FilterItem(6, "acima de R$100", icon = R.drawable.money)
+        FilterItem(4, "Faixa de preço", closeIcon = R.drawable.money)
     )
 
     override fun onCreateView(
