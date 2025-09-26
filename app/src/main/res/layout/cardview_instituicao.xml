@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout1"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView1"
@@ -49,30 +49,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textViewUsername"
+                android:id="@+id/textViewDistancia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="52dp"
                 android:fontFamily="@font/alata"
-                android:text="@eduardo_neumann"
-                android:textSize="12dp"
+                android:text="2,0 km de distância"
                 android:textColor="@color/black"
+                android:textSize="14dp"
                 app:layout_constraintStart_toEndOf="@+id/imageProfile"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="160dp"
-                android:layout_marginTop="35dp"
-                android:numStars="5"
-                android:progressTint="#FF9800"
-                android:rating="3"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

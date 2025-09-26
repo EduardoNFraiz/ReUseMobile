@@ -21,6 +21,11 @@
         android:id="@+id/perfiluser"
         app:destination="@+id/visualizarPBrechoFragment"/>
 
+    <action android:id="@+id/doacao"
+        app:destination="@+id/doacaoFragment"/>
+    <action android:id="@+id/sobreInstituicao"
+        app:destination="@+id/sobreInstituicaoFragment"/>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.projetointegrador.reuse.ui.SplashFragment"
@@ -262,4 +267,41 @@
         android:name="com.projetointegrador.reuse.ui.pesquisar.AVendaFragment"
         android:label="fragment_a_venda"
         tools:layout="@layout/fragment_a_venda" />
+    <fragment
+        android:id="@+id/doacaoFragment"
+        android:name="com.projetointegrador.reuse.ui.doacao.DoacaoFragment"
+        android:label="fragment_doacao"
+        tools:layout="@layout/fragment_doacao" />
+    <fragment
+        android:id="@+id/sobreInstituicaoFragment"
+        android:name="com.projetointegrador.reuse.ui.doacao.SobreInstituicaoFragment"
+        android:label="fragment_sobre_instituicao"
+        tools:layout="@layout/fragment_sobre_instituicao" >
+        <action
+            android:id="@+id/action_sobreInstituicaoFragment_to_realizarDoacaoFragment"
+            app:destination="@id/realizarDoacaoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/realizarDoacaoFragment"
+        android:name="com.projetointegrador.reuse.ui.doacao.RealizarDoacaoFragment"
+        android:label="fragment_realizar_doacao"
+        tools:layout="@layout/fragment_realizar_doacao" >
+        <action
+            android:id="@+id/action_realizarDoacaoFragment_to_confirmDoacaoFragment"
+            app:destination="@id/confirmDoacaoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmDoacaoFragment"
+        android:name="com.projetointegrador.reuse.ui.doacao.ConfirmDoacaoFragment"
+        android:label="fragment_confirm_doacao"
+        tools:layout="@layout/fragment_confirm_doacao" >
+        <action
+            android:id="@+id/action_confirmDoacaoFragment_to_envioDoacaoFragment"
+            app:destination="@id/envioDoacaoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/envioDoacaoFragment"
+        android:name="com.projetointegrador.reuse.ui.doacao.EnvioDoacaoFragment"
+        android:label="fragment_envio_doacao"
+        tools:layout="@layout/fragment_envio_doacao" />
 </navigation>

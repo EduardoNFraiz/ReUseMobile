@@ -61,7 +61,7 @@ class ClosetFragment : Fragment() {
             findNavController().navigate(R.id.cadastrarRoupa,bundle)
         }
         binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.perfiluser)
+            findNavController().navigate(R.id.doacao)
         }
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)

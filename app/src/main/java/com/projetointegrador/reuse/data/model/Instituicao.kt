@@ -3,8 +3,9 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Peca(
+data class Instituicao(
     val image: Int,
-    val descricao: String? = null,
-    val preco: String? = null
-):Parcelable
+    val name: String,
+    val distancia: String,
+    val conta: TipoConta = TipoConta.INSTITUICAO
+): Parcelable

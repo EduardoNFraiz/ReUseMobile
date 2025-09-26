@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.doacao.DoacaoFragment">
+
+    <TextView
+        android:id="@+id/textViewDoacao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Doação"
+        android:textColor="#134313"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_text_procurar"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/editext_perfil"
+        android:backgroundTint="#995E7858"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:hint="Procurar Instituições"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/VerdeEscuro"
+        android:textColorHint="@color/VerdeEscuro"
+        android:textSize="16dp"
+        android:drawableEnd="@drawable/search_verde"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDoacao" />
+
+    <TextView
+        android:id="@+id/textViewInstiuicoesProx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/playfair_display_semibold"
+        android:text="Instituições Próximas"
+        android:textColor="#134313"
+        android:textSize="27sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_procurar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTask"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:listitem="@layout/cardview_instituicao"
+        app:layout_constraintTop_toBottomOf="@+id/textViewInstiuicoesProx"
+        app:layout_constraintBottom_toTopOf="@+id/rodape"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/rodape"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="@color/VerdeClaro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <ImageView
+            android:id="@+id/closet"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/closeticon"/>
+        <ImageView
+            android:id="@+id/pesquisar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/search_branco" />
+        <ImageView
+            android:id="@+id/cadastrarRoupa"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="10dp"
+            android:src="@drawable/baseline_add_circle_24" />
+        <ImageView
+            android:id="@+id/doacao"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/iconedoacao" />
+        <ImageView
+            android:id="@+id/perfil"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/person_branco" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ class PesquisaVendasFragment : Fragment(){
         }
 
         initListeners()
-        initRecyclerViewTask(getTask())
+        initRecyclerViewTask(getPeca())
     }
 
     private fun initListeners() {
@@ -56,7 +56,7 @@ class PesquisaVendasFragment : Fragment(){
         binding. recyclerViewTask.adapter = pecaAdapter
     }
 
-    private fun getTask() = listOf(
+    private fun getPeca() = listOf(
         Peca(R.drawable.person, "Eduardo Neumam"),
         Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "R$60,00"),
         Peca(R.drawable.baseline_image_24, "Neumam", "@neumam"),

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.doacao.EnvioDoacaoFragment"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingTop="40dp"
+        app:navigationIcon="@drawable/baseline_arrow_back_24" />
+
+    <TextView
+        android:id="@+id/tituloEnvio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_extrabold"
+        android:text="Envio"
+        android:textSize="30sp"
+        android:textColor="@color/VerdeEscuro"
+        android:gravity="center"
+        android:layout_marginTop="24dp" />
+
+    <!-- Texto explicativo -->
+    <TextView
+        android:id="@+id/textoEscolha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Escolha uma forma de envio"
+        android:textSize="22sp"
+        android:fontFamily="@font/raleway_medium"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/caixaOpcoes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/estilobtt1">
+
+        <RadioGroup
+            android:id="@+id/radioGroupOpcoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/opcaoCorreios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Envio do pacote via correios"
+                android:checked="false"
+                android:textSize="17dp"
+                android:textColor="@color/VerdeEscuro"
+                app:buttonTint="@color/VerdeEscuro"/>/>
+
+            <RadioButton
+                android:id="@+id/opcaoEntrega"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vou entregar por conta própria no endereço da instituição"
+                android:checked="false"
+                android:textSize="17dp"
+                android:textColor="@color/VerdeEscuro"
+                app:buttonTint="@color/VerdeEscuro"/>/>
+
+            <RadioButton
+                android:id="@+id/opcaoCombinar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Combinar um local com a instituição para ela buscar o pacote"
+                android:textSize="17dp"
+                android:textColor="@color/VerdeEscuro"
+                app:buttonTint="@color/VerdeEscuro"/>/>
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDoacao"
+        android:layout_width="350dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/estilobtt1"
+        android:fontFamily="@font/nunito_sans_semibold"
+        android:text="Doar"
+        android:textAllCaps="false"
+        android:textColor="@color/VerdeEscuro"
+        android:textSize="20dp" />
+
+</LinearLayout>
