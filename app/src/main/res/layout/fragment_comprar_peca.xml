@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ComprarPecaFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="10dp"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            tools:layout_editor_absoluteX="-3dp"
+            tools:layout_editor_absoluteY="70dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rodape"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="@color/VerdeClaro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/closet"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/closeticon"/>
+        <ImageView
+            android:id="@+id/pesquisar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/search_branco" />
+        <ImageView
+            android:id="@+id/cadastrarRoupa"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="10dp"
+            android:src="@drawable/baseline_add_circle_24" />
+        <ImageView
+            android:id="@+id/doacao"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/iconedoacao" />
+        <ImageView
+            android:id="@+id/perfil"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="22dp"
+            android:src="@drawable/person_branco" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="220dp"
+        android:layout_height="231dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="96dp"
+        android:src="@drawable/camisa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="312dp"
+        android:text="R$240"
+        android:textSize="30dp"
+        android:fontFamily="@font/plus_jakarta_sans_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="356dp"
+        android:fontFamily="@font/plus_jakarta_sans_bold"
+        android:text="Camiseta Flamengo"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="396dp"
+        android:fontFamily="@font/plus_jakarta_sans_bold"
+        android:paddingEnd="20dp"
+        android:text="Camiseta masculina tamanho G do fluminense. Seminova. Possui modelagem justa, decote V, confeccionada em malha dupla 100% poliéster reciclado, possui barras das mangas caneladas e barra traseira alongada. Medidas aproximadas(cm): G: 53x78"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/appCompatButton"
+        android:layout_width="350dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="496dp"
+        android:background="@drawable/estilobtt1"
+        android:text="Comprar"
+        android:textAllCaps="false"
+        android:textColor="@color/VerdeEscuro"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="350dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/estilobtt1"
+        android:text="Adicionar ao carrinho"
+        android:textAllCaps="false"
+        android:textColor="@color/VerdeEscuro"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:layout_width="390dp"
+        android:layout_height="180dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="92dp"
+        android:background="@drawable/estilobtt1"
+        android:orientation="vertical"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgPerfil"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/avatar_background"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_foreground" />
+
+            <TextView
+                android:id="@+id/txtNome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Thiago"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/estrelapreenchida" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/estrelapreenchida" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/estrelapreenchida" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/estrelapreenchida" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/estrelameiapreenchida" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto."
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnVerMais"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/estilobtt1"
+            android:gravity="center"
+            android:text="Ver mais"
+            android:textColor="@color/VerdeEscuro" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
