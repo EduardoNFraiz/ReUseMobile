@@ -33,6 +33,9 @@ class ClosetFragment : Fragment() {
         binding.gavetacasacos.setOnClickListener {
             findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
         }
+        binding.buttonTeste.setOnClickListener {
+            findNavController().navigate(R.id.compra)
+        }
         binding.buttonCriarGaveta.setOnClickListener {
             val bundle = Bundle().apply {
                 putBoolean("HIDE_EDIT_BUTTONS", true)

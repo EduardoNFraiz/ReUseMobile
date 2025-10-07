@@ -26,6 +26,9 @@
     <action android:id="@+id/sobreInstituicao"
         app:destination="@+id/sobreInstituicaoFragment"/>
 
+    <action android:id="@+id/compra"
+        app:destination="@+id/comprarPecaFragment"/>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.projetointegrador.reuse.ui.SplashFragment"
@@ -304,4 +307,18 @@
         android:name="com.projetointegrador.reuse.ui.doacao.EnvioDoacaoFragment"
         android:label="fragment_envio_doacao"
         tools:layout="@layout/fragment_envio_doacao" />
+    <fragment
+        android:id="@+id/comprarPecaFragment"
+        android:name="com.projetointegrador.reuse.ui.compra.ComprarPecaFragment"
+        android:label="fragment_comprar_peca"
+        tools:layout="@layout/fragment_comprar_peca" >
+        <action
+            android:id="@+id/action_comprarPecaFragment_to_confirmarCompraFragment"
+            app:destination="@id/confirmarCompraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmarCompraFragment"
+        android:name="com.projetointegrador.reuse.ui.compra.ConfirmarCompraFragment"
+        android:label="fragment_confirmar_compra"
+        tools:layout="@layout/fragment_confirmar_compra" />
 </navigation>

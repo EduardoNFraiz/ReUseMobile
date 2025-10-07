@@ -2,6 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/alata</item>
+        <item>@font/inter</item>
         <item>@font/nunito_sans</item>
         <item>@font/nunito_sans_light</item>
         <item>@font/nunito_sans_semibold</item>
@@ -12,5 +13,6 @@
         <item>@font/plus_jakarta_sans_bold</item>
         <item>@font/plus_jakarta_sans_extrabold</item>
         <item>@font/plus_jakarta_sans_medium</item>
+        <item>@font/poppins_semibold</item>
     </array>
 </resources>
