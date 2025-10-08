@@ -33,6 +33,8 @@ class CadRoupa2Fragment : Fragment() {
             binding.radioButton6.isEnabled = true
             binding.radioButton7.isEnabled = true
             binding.editEditText.isEnabled = true
+            binding.editTextTitulo.isEnabled = true
+            binding.editTextDetalhes.isEnabled = true
             binding.bttSalvar.visibility = View.GONE
         }
         else {
@@ -44,6 +46,8 @@ class CadRoupa2Fragment : Fragment() {
                 binding.radioButton6.isEnabled = true
                 binding.radioButton7.isEnabled = true
                 binding.editEditText.isEnabled = true
+                binding.editTextTitulo.isEnabled = true
+                binding.editTextDetalhes.isEnabled = true
             }
             else {
                 binding.btnCadastrarPeca.visibility = View.GONE
@@ -51,12 +55,16 @@ class CadRoupa2Fragment : Fragment() {
                 binding.radioButton6.isEnabled = false
                 binding.radioButton7.isEnabled = false
                 binding.editEditText.isEnabled = false
+                binding.editTextTitulo.isEnabled = false
+                binding.editTextDetalhes.isEnabled = false
             }
         }
 
         val radioGroup = binding.Finalidade
         val spinner = binding.spinner
         val editPreco = binding.editEditText
+        val editTituilo = binding.editTextTitulo
+        val editDetalhes = binding.editTextDetalhes
 
         fun atualizarSpinner(opcoes: List<String>) {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opcoes)
@@ -69,16 +77,22 @@ class CadRoupa2Fragment : Fragment() {
                 R.id.radioButton5 -> {
                     atualizarSpinner(listOf("Casacos", "Blusas", "Calças"))
                     editPreco.visibility = View.GONE
+                    editTituilo.visibility = View.GONE
+                    editDetalhes.visibility = View.GONE
                     binding.textview6.visibility = View.GONE
                 }
                 R.id.radioButton6 -> {
                     atualizarSpinner(listOf("Doações"))
                     editPreco.visibility = View.GONE
+                    editTituilo.visibility = View.GONE
+                    editDetalhes.visibility = View.GONE
                     binding.textview6.visibility = View.GONE
                 }
                 R.id.radioButton7 -> {
                     atualizarSpinner(listOf("Peças à venda"))
                     editPreco.visibility = View.VISIBLE
+                    editTituilo.visibility = View.VISIBLE
+                    editDetalhes.visibility = View.VISIBLE
                     binding.textview6.visibility = View.VISIBLE
                 }
             }
