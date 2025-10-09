@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentComprarPecaBinding
+import com.projetointegrador.reuse.ui.doacao.DialogDoacaoFragment
 import com.projetointegrador.reuse.util.initToolbar
 
 class ComprarPecaFragment : Fragment() {
@@ -27,6 +29,16 @@ class ComprarPecaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         initToolbar(binding.toolbar)
+        setFragmentResultListener("requestKey") { key, bundle ->
+            if (key == "requestKey") {
+                mostrardialog()
+            }
+        }
+    }
+
+    private fun mostrardialog() {
+        val dialog = DialogCompraFragment()
+        dialog.show(parentFragmentManager,"compra concluida")
     }
 
     private fun initListeners() {

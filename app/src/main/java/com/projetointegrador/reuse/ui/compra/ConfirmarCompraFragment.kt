@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentComprarPecaBinding
 import com.projetointegrador.reuse.databinding.FragmentConfirmarCompraBinding
@@ -30,6 +33,11 @@ class ConfirmarCompraFragment : Fragment() {
     }
 
     private fun initListeners() {
+        binding.btnConfirmarPedido.setOnClickListener {
+            val resultadoBundle = bundleOf("REALIZEI_COMPRA" to true)
+            setFragmentResult("requestKey", resultadoBundle)
+            findNavController().navigateUp()
+        }
     }
 
     override fun onDestroyView() {

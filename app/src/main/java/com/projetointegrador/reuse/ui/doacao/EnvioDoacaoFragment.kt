@@ -44,7 +44,12 @@ class EnvioDoacaoFragment : Fragment() {
     }
 
     private fun initListeners(){
-
+        binding.btnDoacao.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("REALIZEI_DOACAO", true)
+            }
+            findNavController().navigate(R.id.doacao, bundle)
+        }
     }
 
 

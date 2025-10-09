@@ -37,7 +37,8 @@ class DoacaoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         initRecyclerViewTask(getTask())
-        mostrardialog()
+        val doacaoRealizada = arguments?.getBoolean("REALIZEI_DOACAO") ?: false
+        if (doacaoRealizada) { mostrardialog() }
     }
 
     private fun mostrardialog() {
