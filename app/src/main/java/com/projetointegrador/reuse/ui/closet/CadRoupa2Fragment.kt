@@ -96,6 +96,7 @@ class CadRoupa2Fragment : Fragment() {
                     binding.textview6.visibility = View.VISIBLE
                 }
             }
+
         }
         initListeners()
         barraDeNavegacao()
