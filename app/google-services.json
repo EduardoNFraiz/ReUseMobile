@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "296992709188",
+    "firebase_url": "https://reuse-1512f-default-rtdb.firebaseio.com",
+    "project_id": "reuse-1512f",
+    "storage_bucket": "reuse-1512f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296992709188:android:5006508771f1e48e1f7a11",
+        "android_client_info": {
+          "package_name": "com.projetointegrador.reuse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA51rNanHw83WQs6c1M6o7u4vB1xUz6V7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

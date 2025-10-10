@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edit_text_nome"
+        android:id="@+id/editTextEmail"
         android:layout_width="324dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="380dp"
@@ -44,7 +44,7 @@
         android:background="@drawable/edittextestilo"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Nome de usuário ou email"
+        android:hint="Email"
         android:inputType="text"
         android:paddingHorizontal="25dp"
         android:paddingVertical="10dp"
@@ -67,10 +67,10 @@
         android:textColor="#344A1E"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSenha" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextSenha" />
 
     <EditText
-        android:id="@+id/etSenha"
+        android:id="@+id/editTextSenha"
         android:layout_width="324dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="440dp"
@@ -95,11 +95,11 @@
         android:contentDescription="Mostrar ou ocultar senha"
         android:padding="4dp"
         android:src="@drawable/olhoocultar"
-        app:layout_constraintBottom_toBottomOf="@+id/etSenha"
-        app:layout_constraintEnd_toEndOf="@+id/etSenha"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextSenha"
+        app:layout_constraintEnd_toEndOf="@+id/editTextSenha"
         app:layout_constraintHorizontal_bias="0.936"
-        app:layout_constraintStart_toStartOf="@+id/etSenha"
-        app:layout_constraintTop_toTopOf="@+id/etSenha"
+        app:layout_constraintStart_toStartOf="@+id/editTextSenha"
+        app:layout_constraintTop_toTopOf="@+id/editTextSenha"
         app:layout_constraintVertical_bias="0.714"
         app:tint="#85134313" />
 
@@ -117,6 +117,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSenha" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextSenha" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

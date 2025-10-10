@@ -60,7 +60,9 @@
             app:destination="@id/recuperarsenha" />
         <action
             android:id="@+id/action_loginFragment_to_closetFragment"
-            app:destination="@id/closetFragment" />
+            app:destination="@id/closetFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <navigation
         android:id="@+id/recuperarsenha"
@@ -153,7 +155,9 @@
             tools:layout="@layout/fragment_add_fotoperfil" />
         <action
             android:id="@+id/action_global_closetFragment"
-            app:destination="@id/closetFragment" />
+            app:destination="@id/closetFragment"
+            app:popUpTo="@id/addFotoperfilFragment"
+            app:popUpToInclusive="true"/>
     </navigation>
     <fragment
         android:id="@+id/closetFragment"
@@ -199,6 +203,10 @@
         <action
             android:id="@+id/action_infoPerfilFragment_to_closetFragment"
             app:destination="@id/closetFragment" />
+        <action
+            android:id="@+id/action_infoPerfilFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/telaInicialFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEnderecoFragment"
