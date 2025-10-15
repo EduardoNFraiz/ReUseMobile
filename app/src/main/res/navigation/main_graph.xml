@@ -323,10 +323,18 @@
         <action
             android:id="@+id/action_comprarPecaFragment_to_confirmarCompraFragment"
             app:destination="@id/confirmarCompraFragment" />
+        <action
+            android:id="@+id/action_comprarPecaFragment_to_avaliacoesFragment"
+            app:destination="@id/avaliacoesFragment" />
     </fragment>
     <fragment
         android:id="@+id/confirmarCompraFragment"
         android:name="com.projetointegrador.reuse.ui.compra.ConfirmarCompraFragment"
         android:label="fragment_confirmar_compra"
         tools:layout="@layout/fragment_confirmar_compra" />
+    <fragment
+        android:id="@+id/avaliacoesFragment"
+        android:name="com.projetointegrador.reuse.ui.avaliacao.AvaliacoesFragment"
+        android:label="fragment_avaliacoes"
+        tools:layout="@layout/fragment_avaliacoes" />
 </navigation>

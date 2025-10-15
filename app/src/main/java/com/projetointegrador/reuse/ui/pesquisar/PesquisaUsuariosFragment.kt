@@ -13,7 +13,6 @@ import com.projetointegrador.reuse.data.model.TipoConta
 import com.projetointegrador.reuse.databinding.FragmentPesquisaUsuariosBinding
 import com.projetointegrador.reuse.ui.adapter.TaskAdapter
 
-
 class PesquisaUsuariosFragment : Fragment() {
     private var _binding: FragmentPesquisaUsuariosBinding? = null
     private val binding get() = _binding!!
@@ -54,7 +53,6 @@ class PesquisaUsuariosFragment : Fragment() {
         Task(R.drawable.baseline_image_24, "Eduardo", "@eduardoneumam", 3.5F, TipoConta.USUARIO),
 
     )
-
 
     override fun onDestroyView() {
         super.onDestroyView()

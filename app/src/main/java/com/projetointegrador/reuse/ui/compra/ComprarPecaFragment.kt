@@ -45,6 +45,9 @@ class ComprarPecaFragment : Fragment() {
         binding.btnComprar.setOnClickListener {
             findNavController().navigate(R.id.action_comprarPecaFragment_to_confirmarCompraFragment)
         }
+        binding.btnVerMais.setOnClickListener {
+            findNavController().navigate(R.id.action_comprarPecaFragment_to_avaliacoesFragment)
+        }
     }
 
     override fun onDestroyView() {
