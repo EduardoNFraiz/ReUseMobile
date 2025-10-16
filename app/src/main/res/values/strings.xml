@@ -59,4 +59,7 @@
     <string name="text_message_dialog_confirm_logout">Aperte em confirmar para sair da sua conta</string>
     <string name="password_empty">Preencha a senha!</string>
     <string name="email_empty">Preencha seu email!</string>
+
+    <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
+
 </resources>
