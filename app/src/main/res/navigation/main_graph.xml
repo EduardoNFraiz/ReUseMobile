@@ -173,6 +173,9 @@
         <action
             android:id="@+id/action_closetFragment_to_infoPerfilFragment"
             app:destination="@id/infoPerfilFragment" />
+        <action
+            android:id="@+id/action_closetFragment_to_historicoFragment"
+            app:destination="@id/historicoFragment" />
     </fragment>
     <fragment
         android:id="@+id/criarGavetaFragment"
@@ -337,4 +340,22 @@
         android:name="com.projetointegrador.reuse.ui.avaliacao.AvaliacoesFragment"
         android:label="fragment_avaliacoes"
         tools:layout="@layout/fragment_avaliacoes" />
+    <fragment
+        android:id="@+id/historicoFragment"
+        android:name="com.projetointegrador.reuse.ui.closet.HistoricoFragment"
+        android:label="fragment_historico"
+        tools:layout="@layout/fragment_historico" >
+        <action
+            android:id="@+id/action_historicoFragment_to_adicionarAvaliacaoFragment"
+            app:destination="@id/adicionarAvaliacaoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adicionarAvaliacaoFragment"
+        android:name="com.projetointegrador.reuse.ui.avaliacao.AdicionarAvaliacaoFragment"
+        android:label="fragment_adicionar_avaliacao"
+        tools:layout="@layout/fragment_adicionar_avaliacao" >
+        <action
+            android:id="@+id/action_adicionarAvaliacaoFragment_to_historicoFragment"
+            app:destination="@id/historicoFragment" />
+    </fragment>
 </navigation>

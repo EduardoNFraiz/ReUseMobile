@@ -33,6 +33,10 @@ class ClosetFragment : Fragment() {
         binding.gavetacasacos.setOnClickListener {
             findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
         }
+        binding.bttHistorico.setOnClickListener {
+            findNavController().navigate(R.id.action_closetFragment_to_historicoFragment)
+        }
+
         binding.buttonTeste.setOnClickListener {
             findNavController().navigate(R.id.compra)
         }

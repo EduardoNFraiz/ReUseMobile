@@ -36,20 +36,20 @@ class HistoricoFragment : Fragment() {
 
     }
 
-    private fun initRecyclerViewTask(taskList: List<Historico>){
-        HistoricoAdapter = HistoricoAdapter(taskList)
-        binding.recyclerViewAvaliacao.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewAvaliacao.setHasFixedSize(true)
-        binding. recyclerViewAvaliacao.adapter = HistoricoAdapter
+    private fun initRecyclerViewTask(historicoList: List<Historico>){
+        HistoricoAdapter = HistoricoAdapter(historicoList)
+        binding.recyclerViewHist.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewHist.setHasFixedSize(true)
+        binding. recyclerViewHist.adapter = HistoricoAdapter
     }
 
     private fun getTask() = listOf(
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 1.0F),
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 2.0F),
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 3.0F),
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 4.0F),
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 5.0F),
-        Historico(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 2.0F),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", true ),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", true),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", true),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", true),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", false),
+        Historico(R.drawable.camisa, "Camiseta Flamengo 2024/2", "@string/text_message_historico", false),
 
         )
 
