@@ -30,29 +30,29 @@ class ClosetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         barraDeNavegacao()
+        initRecyclerViewTask(getGaveta())
     }
 
     private fun initRecyclerViewTask(gavetaList: List<Gaveta>){
         GavetaAdapter = GavetaAdapter(gavetaList)
-        binding.recyclerViewGaveta.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewGaveta.setHasFixedSize(true)
         binding. recyclerViewGaveta.adapter = GavetaAdapter
     }
 
     private fun getGaveta() = listOf(
-        Gaveta(R.drawable.drawer, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 1.0F),
-        Gaveta(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 2.0F),
-        Gaveta(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 3.0F),
-        Gaveta(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 4.0F),
-        Gaveta(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 5.0F),
-        Gaveta(R.drawable.avatar_background, "Thiago", "Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.", 2.0F),
+        Gaveta(R.drawable.avatar_background, "Doação", "4"),
+        Gaveta(R.drawable.avatar_background, "Carrinho", "3"),
+        Gaveta(R.drawable.avatar_background, "Camisas", "5"),
+        Gaveta(R.drawable.avatar_background, "Calças", "10"),
+        Gaveta(R.drawable.avatar_background, "Tenis", "1"),
+        Gaveta(R.drawable.avatar_background, "Meia", "2"),
 
         )
 
     private fun initListeners() {
-        binding.gaveta.setOnClickListener {
-            findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
-        }
+        //binding.gaveta.setOnClickListener {
+          //  findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment)
+        //}
         binding.bttHistorico.setOnClickListener {
             findNavController().navigate(R.id.action_closetFragment_to_historicoFragment)
         }
@@ -63,12 +63,6 @@ class ClosetFragment : Fragment() {
         binding.buttonCriarGaveta.setOnClickListener {
             val bundle = Bundle().apply {
                 putBoolean("HIDE_EDIT_BUTTONS", true)
-            }
-            findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
-        }
-        binding.bttThreePoint.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("VISUALIZAR_INFO", true)
             }
             findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }
