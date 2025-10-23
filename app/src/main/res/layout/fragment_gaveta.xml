@@ -55,40 +55,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewGaveta"/>
 
-    <ImageButton
-        android:id="@+id/buttThreePoint"
-        android:layout_width="38dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="236dp"
-        android:background="@android:color/transparent"
-        android:paddingStart="15dp"
-        android:src="@drawable/threepoint"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPecaCloset"
+        android:layout_width="match_parent"
+        android:layout_height="580dp"
+        android:layout_marginStart="16dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/rodape"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/VerdeEscuro" />
-
-    <ImageView
-        android:id="@+id/iconCloset"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/iconecloset_verde"
-        app:layout_constraintBottom_toBottomOf="@+id/rodape"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:text="A gaveta está vazia. \n Adicione uma roupa!"
-        android:textSize="18dp"
-        android:textAlignment="center"
-        android:textColor="#134313"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconCloset" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrarRoupa"
+        app:spanCount="2"
+        tools:listitem="@layout/cardview_pecacloset" />
 
     <LinearLayout
         android:id="@+id/rodape"
