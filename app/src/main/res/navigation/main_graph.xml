@@ -152,12 +152,32 @@
             <action
                 android:id="@+id/action_cadastroEnderecoFragment_to_addFotoperfilFragment"
                 app:destination="@id/addFotoperfilFragment" />
+            <argument
+                android:name="contaPessoaFisica"
+                app:argType="com.projetointegrador.reuse.data.model.ContaPessoaFisica"
+                app:nullable="true" />
+            <argument
+                android:name="contaPessoaJuridica"
+                app:argType="com.projetointegrador.reuse.data.model.ContaPessoaJuridica"
+                app:nullable="true" />
         </fragment>
         <fragment
             android:id="@+id/addFotoperfilFragment"
             android:name="com.projetointegrador.reuse.ui.auth.cadastro.AddFotoperfilFragment"
             android:label="fragment_add_fotoperfil"
-            tools:layout="@layout/fragment_add_fotoperfil" />
+            tools:layout="@layout/fragment_add_fotoperfil" >
+            <argument
+                android:name="contaPessoaFisica"
+                app:argType="com.projetointegrador.reuse.data.model.ContaPessoaFisica"
+                app:nullable="true" />
+            <argument
+                android:name="contaPessoaJuridica"
+                app:argType="com.projetointegrador.reuse.data.model.ContaPessoaJuridica"
+                app:nullable="true" />
+            <argument
+                android:name="endereco"
+                app:argType="com.projetointegrador.reuse.data.model.Endereco" />
+        </fragment>
         <action
             android:id="@+id/action_global_closetFragment"
             app:destination="@id/closetFragment"
@@ -214,7 +234,8 @@
         <action
             android:id="@+id/action_infoPerfilFragment_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:popUpTo="@id/telaInicialFragment" />
+            app:popUpTo="@id/telaInicialFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/editEnderecoFragment"

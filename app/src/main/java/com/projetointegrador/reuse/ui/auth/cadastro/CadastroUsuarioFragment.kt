@@ -9,10 +9,16 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.projetointegrador.reuse.R
+import com.projetointegrador.reuse.data.model.ContaPessoaFisica
+import com.projetointegrador.reuse.data.model.ContaPessoaJuridica
 import com.projetointegrador.reuse.databinding.FragmentCadastroUsuarioBinding
 import com.projetointegrador.reuse.databinding.FragmentLoginBinding
 import com.projetointegrador.reuse.util.initToolbar
 import kotlin.toString
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class CadastroUsuarioFragment : Fragment() {
 
@@ -20,6 +26,9 @@ class CadastroUsuarioFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var contaPessoaFisica: ContaPessoaFisica
+    private lateinit var contaPessoaJuridica: ContaPessoaJuridica
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,27 +46,76 @@ class CadastroUsuarioFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.bttProximo.setOnClickListener {
-            findNavController().navigate(R.id.action_cadastroUsuarioFragment_to_cadastroEnderecoFragment)
-        }
         binding.bttProximo.setOnClickListener{
             valideData()
         }
     }
 
-    private fun valideData(){
+    private fun gerarDataAtual(): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val dataAtual = Date()
+
+        return formatter.format(dataAtual)
+    }
+    private fun valideData() {
+        // 1. Obter todos os valores dos campos
+        val nome = binding.editTextNome.text.toString().trim()
+        val usuario = binding.editTextUsuario.text.toString().trim()
         val email = binding.editTextEmail.text.toString().trim()
         val senha = binding.editTextSenha.text.toString().trim()
-        if(email.isNotBlank()) {
-            if (senha.isNotBlank()) {
-                registerUser(email, senha)
-                findNavController().navigate(R.id.action_cadastroUsuarioFragment_to_cadastroEnderecoFragment)
-            } else {
-                Toast.makeText(requireContext(), "Preencha a senha!", Toast.LENGTH_SHORT).show()
+        val confSenha = binding.editTextConfsenha.text.toString().trim()
+        val telefone = binding.editTextTelefone.text.toString().trim()
+        val dataNascimento = binding.editTextDatanasc.text.toString().trim()
+        val cpf = binding.editTextCpf.text.toString().trim()
+        val endereco = ""
+        val dataCadastro = gerarDataAtual()
+        val tipoPessoa = "pessoaFisica"
+        val tipoUsuario = "comum"
+
+        // 2. Definir uma lista de campos para verificação (todos são obrigatórios)
+        val campos = listOf(
+            "Nome" to nome,
+            "Usuário" to usuario,
+            "E-mail" to email,
+            "Senha" to senha,
+            "Confirmação de Senha" to confSenha,
+            "Telefone" to telefone,
+            "Data de Nascimento" to dataNascimento,
+            "CPF" to cpf
+        )
+
+        // 3. Verificar se todos os campos estão preenchidos
+        for ((nomeCampo, valorCampo) in campos) {
+            if (valorCampo.isBlank()) {
+                Toast.makeText(requireContext(), "Preencha o campo $nomeCampo!", Toast.LENGTH_SHORT).show()
+                // Sai da função no primeiro campo vazio
+                return
             }
-        }else{
-            Toast.makeText(requireContext(), "Preencha o email!", Toast.LENGTH_SHORT).show()
         }
+
+        // 4. Verificar se a senha e a confirmação de senha coincidem
+        if (senha != confSenha) {
+            Toast.makeText(requireContext(), "As senhas não coincidem!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 5. Se todas as validações passarem, registra o usuário e navega
+        registerUser(email, senha)
+        contaPessoaFisica = ContaPessoaFisica(
+            nomeCompleto = nome,
+            nomeDeUsuario = usuario,
+            email = email,
+            telefone = telefone,
+            dataNascimento = dataNascimento,
+            cpf = cpf,
+            endereço = "",
+            dataCadastro = dataCadastro,
+            tipoPessoa = tipoPessoa,
+            tipoUsuario = tipoUsuario,
+        )
+        val action = CadastroUsuarioFragmentDirections.actionCadastroUsuarioFragmentToCadastroEnderecoFragment(contaPessoaFisica,null)
+        findNavController().navigate(action)
     }
 
     private fun registerUser(email: String, password: String){
@@ -66,7 +124,7 @@ class CadastroUsuarioFragment : Fragment() {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener() { task ->
                     if (task.isSuccessful) {
-                        findNavController().navigate(R.id.action_cadastroUsuarioFragment_to_cadastroEnderecoFragment)
+                        Toast.makeText(requireContext(), "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), task.exception?.message, Toast.LENGTH_SHORT).show()
                     }
