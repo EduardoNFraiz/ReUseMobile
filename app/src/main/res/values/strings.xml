@@ -61,5 +61,10 @@
     <string name="email_empty">Preencha seu email!</string>
 
     <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
+    <string name="excluir">Excluir</string>
+    <string name="click_para_excluir">Clique no botão se você realmente deseja excluir</string>
+    <string name="deseja_excluir">Deseja excluir esta gaveta?</string>
 
+    <string name="text_delete_sucess_gaveta">Gaveta excluída com sucesso</string>
+    <string name="text_delete_sucess_peca">Peça excluída com sucesso</string>
 </resources>

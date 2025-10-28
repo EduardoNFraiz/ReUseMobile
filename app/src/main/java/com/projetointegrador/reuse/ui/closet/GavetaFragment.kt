@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Gaveta
@@ -12,6 +13,7 @@ import com.projetointegrador.reuse.data.model.PecaCloset
 import com.projetointegrador.reuse.databinding.FragmentGavetaBinding
 import com.projetointegrador.reuse.ui.adapter.PecaClosetAdapter
 import com.projetointegrador.reuse.util.initToolbar
+import com.projetointegrador.reuse.util.showBottomSheet
 
 class GavetaFragment : Fragment() {
     private var _binding: FragmentGavetaBinding? = null
@@ -56,7 +58,33 @@ class GavetaFragment : Fragment() {
             }
             findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
         }
+
+        binding.trash1.setOnClickListener {
+            showBottomSheet(
+                titleButton = R.string.excluir,
+                titleDialog = R.string.deseja_excluir,
+                message = getString(R.string.click_para_excluir),
+
+                //onClick = {
+                    //deleteGaveta(gaveta)
+                //}
+            )
+        }
     }
+
+    //private fun deleteGaveta(gaveta: Gaveta){
+        //reference
+            //.child("gaveta")
+            //.child(auth.currentUser?.uid ?: "")
+            //.child(gaveta.id)
+            //.removeValue().addonCompleteListener { result ->
+                //if(result.isSuccessful){
+                    //Toast.makeText(requireContext(), R.string.text_delete_sucess_gaveta, Toast.LENGHT_SHORT).show()
+                //}else{
+                    //Toast.makeText(requireContext(), R.string.error_generic, Toast.LENGHT_SHORT).show()
+                //}
+            //}
+    //}
 
     override fun onDestroyView() {
         super.onDestroyView()

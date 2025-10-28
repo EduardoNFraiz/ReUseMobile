@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentCadRoupa2Binding
 import com.projetointegrador.reuse.util.initToolbar
+import com.projetointegrador.reuse.util.showBottomSheet
 
 
 class CadRoupa2Fragment : Fragment() {
@@ -126,7 +127,32 @@ class CadRoupa2Fragment : Fragment() {
         binding.bttSalvar.setOnClickListener {
             findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment)
         }
+        binding.trash2.setOnClickListener {
+            showBottomSheet(
+                titleButton = R.string.excluir,
+                titleDialog = R.string.deseja_excluir,
+                message = getString(R.string.click_para_excluir),
+
+                //onClick = {
+                //deleteGaveta(gaveta)
+                //}
+            )
+        }
     }
+
+    //private fun deletePeca(peca: Peca){
+        //reference
+            //.child("peca")
+            //.child(auth.currentUser?.uid ?: "")
+            //.child(peca.id)
+            //.removeValue().addonCompleteListener { result ->
+                //if(result.isSuccessful){
+                    //Toast.makeText(requireContext(), R.string.text_delete_sucess_peca, Toast.LENGHT_SHORT).show()
+                //}else{
+                    //Toast.makeText(requireContext(), R.string.error_generic, Toast.LENGHT_SHORT).show()
+            //}
+        //}
+    //}
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

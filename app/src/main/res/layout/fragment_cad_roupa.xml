@@ -65,8 +65,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <RadioGroup
+        android:id="@+id/radioGroupCores"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="230dp"
@@ -76,62 +76,71 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Círculo cinza -->
-        <View
+        <RadioButton
+            android:id="@+id/radioCinza"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_gray" />
 
-        <!-- Círculo preto -->
-        <View
+        <RadioButton
+            android:id="@+id/radioPreto"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_black" />
 
-        <!-- Círculo azul -->
-        <View
+        <RadioButton
+            android:id="@+id/radioAzul"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_blue" />
 
-        <!-- Círculo vermelho -->
-        <View
+        <RadioButton
+            android:id="@+id/radioVermelho"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_red" />
 
-        <!-- Círculo verde -->
-        <View
+        <RadioButton
+            android:id="@+id/radioVerde"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_green" />
 
-        <!-- Círculo amarelo -->
-        <View
+        <RadioButton
+            android:id="@+id/radioAmarelo"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_yellow" />
 
-        <!-- Círculo roxo -->
-        <View
+        <RadioButton
+            android:id="@+id/radioRoxo"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/circle_purple" />
 
-        <!-- Círculo arco-íris (gradiente) -->
-        <View
+        <RadioButton
+            android:id="@+id/radioArcoIris"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_margin="4dp"
+            android:button="@null"
             android:background="@drawable/rainbow" />
-    </LinearLayout>
+    </RadioGroup>
+
 
     <TextView
         android:id="@+id/textView3"
