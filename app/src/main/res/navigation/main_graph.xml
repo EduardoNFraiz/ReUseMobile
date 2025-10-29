@@ -234,8 +234,7 @@
         <action
             android:id="@+id/action_infoPerfilFragment_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:popUpTo="@id/telaInicialFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/main_graph" />
     </fragment>
     <fragment
         android:id="@+id/editEnderecoFragment"

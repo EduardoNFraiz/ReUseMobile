@@ -173,7 +173,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="(xxx) xxxxx-xxxx"
+        android:hint="(xx) xxxxx-xxxx"
         android:inputType="phone"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"

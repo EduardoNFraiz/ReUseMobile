@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-// import com.google.firebase.storage.FirebaseStorage // REMOVIDO: Não usaremos mais o Storage
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentAddFotoperfilBinding
 import com.projetointegrador.reuse.util.initToolbar
@@ -26,7 +25,7 @@ import com.projetointegrador.reuse.data.model.Endereco
 
 // IMPORTS NECESSÁRIOS PARA BASE64 E COROUTINES
 import android.util.Base64
-import androidx.lifecycle.lifecycleScope // Para rodar Coroutines no ciclo de vida do Fragment
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,7 +38,6 @@ class AddFotoperfilFragment : Fragment() {
     // Inicialização do Firebase
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
-    // REMOVIDO: private val storage = FirebaseStorage.getInstance()
 
     // Acessa os argumentos passados pelo Safe Args
     private val args: AddFotoperfilFragmentArgs by navArgs()
@@ -121,7 +119,6 @@ class AddFotoperfilFragment : Fragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            // Não usa Toast aqui, pois não estamos na thread principal
             return null
         }
     }
@@ -132,7 +129,7 @@ class AddFotoperfilFragment : Fragment() {
     private fun uploadAndFinalizeRegistration(shouldUploadPhoto: Boolean) {
         val user = auth.currentUser
         if (user == null) {
-            Toast.makeText(requireContext(), "Erro: Usuário não autenticado.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Erro: Usuário não autenticado. Redirecionando para login.", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.loginFragment)
             return
         }
@@ -143,20 +140,40 @@ class AddFotoperfilFragment : Fragment() {
 
         val contaASerSalva = contaFisica ?: contaJuridica
 
-        // Define o caminho no Firebase com base no tipo de conta
-        val dbRootNode = if (contaFisica != null) {
-            "usuarios/pessoaFisica"
-        } else {
-            "usuarios/pessoaJuridica" // Assumindo 'pessoaJuridica' para PJ
-        }
-
         if (contaASerSalva == null) {
             Toast.makeText(requireContext(), "Erro: Dados de conta não encontrados.", Toast.LENGTH_LONG).show()
             return
         }
 
+        // --- 🎯 AJUSTE DO NÓ RAIZ COM BASE NO TIPO DE CONTA E TIPO DE USUÁRIO (Brechós/Instituições) ---
+        val dbRootNode: String
+
+        if (contaFisica != null) {
+            // Caminho para Pessoa Física: usuarios/pessoaFisica/{UID}
+            dbRootNode = "usuarios/pessoaFisica"
+        } else if (contaJuridica != null) {
+            // Caminho para Pessoa Jurídica: usuarios/pessoaJuridica/{tipoUsuario_plural}/{UID}
+            val tipoUsuario = contaJuridica.tipoUsuario // Deve ser "brecho" ou "instituicao"
+
+            // Adiciona o plural 's' para o nó do banco de dados
+            val tipoUsuarioPlural = when (tipoUsuario) {
+                "brecho" -> "brechos"
+                "instituicao" -> "instituicoes"
+                else -> {
+                    Toast.makeText(requireContext(), "Erro: Tipo de usuário PJ desconhecido.", Toast.LENGTH_LONG).show()
+                    return // Sai da função em caso de erro
+                }
+            }
+            dbRootNode = "usuarios/pessoaJuridica/$tipoUsuarioPlural"
+        } else {
+            Toast.makeText(requireContext(), "Erro interno: Tipo de conta desconhecido.", Toast.LENGTH_LONG).show()
+            return
+        }
+        // ------------------------------------------------------------------------------------------
+
         // --- SALVAMENTO DO ENDEREÇO (ASYNC) ---
 
+        // Assume-se que o Endereço será salvo em um nó separado para normalização
         val enderecoRef = database.getReference("enderecos").push()
         val enderecoId = enderecoRef.key
 
@@ -191,7 +208,6 @@ class AddFotoperfilFragment : Fragment() {
 
     /**
      * PASSO 2: Lida com a conversão da foto para Base64.
-     * Esta função é uma 'suspend fun' e deve ser chamada dentro de uma coroutine.
      */
     private suspend fun handlePhotoBase64AndSaveAccount(
         uid: String,
@@ -208,7 +224,7 @@ class AddFotoperfilFragment : Fragment() {
             }
         }
 
-        // 2. Atualiza o campo Base64 na conta (na thread principal após o I/O)
+        // 2. Atualiza o campo Base64 na conta
         when (contaASerSalva) {
             is ContaPessoaFisica -> contaASerSalva.fotoBase64 = base64String
             is ContaPessoaJuridica -> contaASerSalva.fotoBase64 = base64String
@@ -223,10 +239,12 @@ class AddFotoperfilFragment : Fragment() {
      * PASSO 3: Salva o objeto final da conta no Realtime Database e navega.
      */
     private fun saveFinalAccountData(uid: String, contaASerSalva: Any, dbRootNode: String) {
-        // userRef aponta para /usuarios/pessoaFisica/{UID} ou /usuarios/pessoaJuridica/{UID}
+        // userRef aponta para o caminho correto:
+        // PF: /usuarios/pessoaFisica/{UID}
+        // PJ: /usuarios/pessoaJuridica/brechos/{UID} ou /usuarios/pessoaJuridica/instituicoes/{UID}
         val userRef = database.getReference(dbRootNode).child(uid)
 
-        // Salva o objeto completo, incluindo o novo campo 'fotoBase64'
+        // Salva o objeto completo, incluindo o novo campo 'fotoBase64' e o ID do endereço
         userRef.setValue(contaASerSalva)
             .addOnCompleteListener { result ->
                 if (result.isSuccessful) {
