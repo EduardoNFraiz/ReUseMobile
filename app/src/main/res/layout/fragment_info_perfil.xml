@@ -50,27 +50,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/edit_button_card_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="#78a679"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintEnd_toEndOf="@id/profile_card_view"
-        app:layout_constraintTop_toTopOf="@id/profile_card_view">
-
-        <ImageView
-            android:id="@+id/edit_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:src="@drawable/edit_icone"/>
-
-    </androidx.cardview.widget.CardView>
-
     <EditText
         android:id="@+id/etNome"
         android:layout_width="350dp"
@@ -123,23 +102,6 @@
         app:layout_constraintTop_toBottomOf="@+id/etUsuario"/>
 
     <EditText
-        android:id="@+id/etSenha"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:text="12345"
-        android:textSize="18sp"
-        android:textColor="#134313"
-        android:inputType="textPassword"
-        android:enabled="false"
-        android:background="@drawable/editext_perfil"
-        android:paddingVertical="12dp"
-        android:paddingHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
-
-    <EditText
         android:id="@+id/etTelefone"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
@@ -154,7 +116,24 @@
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSenha"/>
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
+
+    <EditText
+        android:id="@+id/etCpfCnpj"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:hint="CPF ou CNPJ"
+        android:textSize="18sp"
+        android:textColor="#134313"
+        android:inputType="number"
+        android:enabled="false"
+        android:background="@drawable/editext_perfil"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTelefone"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttEndereco"
@@ -171,8 +150,7 @@
         android:drawableEnd="@drawable/baseline_arrow_forward_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTelefone"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/etCpfCnpj"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttEditar"

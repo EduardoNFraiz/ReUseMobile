@@ -50,6 +50,15 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <ImageView
+            android:id="@+id/imageViewGaveta"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/iconPlaceholder"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
