@@ -4,7 +4,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Gaveta (
-    val image: Int,
+    var fotoBase64: String? = null,
     val name: String,
     val number: String,
 ):Parcelable

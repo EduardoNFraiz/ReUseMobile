@@ -6,7 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 import com.projetointegrador.reuse.R
+import com.projetointegrador.reuse.data.model.Gaveta
 import com.projetointegrador.reuse.databinding.FragmentCriarGavetaBinding
 import com.projetointegrador.reuse.util.initToolbar
 
@@ -14,6 +20,11 @@ import com.projetointegrador.reuse.util.initToolbar
 class CriarGavetaFragment : Fragment() {
     private var _binding: FragmentCriarGavetaBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var gaveta: Gaveta
+    private var newGaveta: Boolean = true
+    private lateinit var reference: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
 
     override fun onCreateView(
@@ -31,6 +42,8 @@ class CriarGavetaFragment : Fragment() {
         initListeners()
         modoEditor()
         initToolbar(binding.toolbar)
+        reference = Firebase.database.reference
+        auth = Firebase.auth
 
         val vizualizarInfo = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
         if (vizualizarInfo) {
@@ -52,6 +65,17 @@ class CriarGavetaFragment : Fragment() {
     private fun initListeners() {
         binding.bttCriarGaveta.setOnClickListener {
             findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment)
+        }
+        binding.bttCriarGaveta.setOnClickListener {
+            valideData()
+        }
+    }
+
+    private fun valideData(){
+        val nome = binding.editTextGaveta.text.toString().trim()
+        if(nome.isNotBlank()){
+            if(newGaveta) gaveta = Gaveta()
+            gaveta.fotoBase64
         }
     }
 
