@@ -33,24 +33,19 @@ class CadastroUsuarioFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
-    private lateinit var contaPessoaFisica: ContaPessoaFisica
-    private lateinit var contaPessoaJuridica: ContaPessoaJuridica
-
-    // Expressões Regulares
+    // Expressões Regulares (mantidas)
     private val EMAIL_PATTERN = Pattern.compile(
         "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
     )
     private val USERNAME_PATTERN = Pattern.compile(
-        "^\\S+$" // Nenhuma letra de espaço em branco
+        "^\\S+$"
     )
-    // ATUALIZADO: Aceita (xx) xxxx-xxxx ou (xx) xxxxx-xxxx
     private val PHONE_PATTERN = Pattern.compile(
         "^\\(\\d{2}\\) \\d{4,5}-\\d{4}$"
     )
     private val CPF_PATTERN = Pattern.compile(
-        "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$" // Formato xxx.xxx.xxx-xx
+        "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$"
     )
-    // NOVO: Formato dd/mm/aaaa
     private val DATE_PATTERN = Pattern.compile(
         "^\\d{2}/\\d{2}/\\d{4}$"
     )
@@ -79,7 +74,6 @@ class CadastroUsuarioFragment : Fragment() {
         // Aplicar máscaras de formatação automática
         binding.editTextTelefone.addTextChangedListener(MaskEditUtil.mask(binding.editTextTelefone, MaskEditUtil.FORMAT_PHONE_BR))
         binding.editTextCpf.addTextChangedListener(MaskEditUtil.mask(binding.editTextCpf, MaskEditUtil.FORMAT_CPF))
-        // NOVO: Máscara para Data de Nascimento dd/mm/aaaa
         binding.editTextDatanasc.addTextChangedListener(MaskEditUtil.mask(binding.editTextDatanasc, MaskEditUtil.FORMAT_DATE))
 
 
@@ -106,6 +100,10 @@ class CadastroUsuarioFragment : Fragment() {
         val dataNascimento = binding.editTextDatanasc.text.toString().trim()
         val cpf = binding.editTextCpf.text.toString().trim()
 
+        val dataCadastro = gerarDataAtual()
+        val tipoPessoa = "pessoaFisica"
+        val tipoUsuario = "comum"
+
         // 2. Definir uma lista de campos para verificação de preenchimento
         val campos = listOf(
             "Nome" to nome, "Usuário" to usuario, "E-mail" to email,
@@ -121,21 +119,15 @@ class CadastroUsuarioFragment : Fragment() {
             }
         }
 
-        // 4. Validações de Formato e Requisitos Mínimos
-
-        // Nome de Usuário: Sem espaços em branco
+        // 4. Validações de Formato e Requisitos Mínimos (mantidas)
         if (!USERNAME_PATTERN.matcher(usuario).matches()) {
             Toast.makeText(requireContext(), "O nome de usuário não pode conter espaços em branco!", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // E-mail: Formato válido
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             Toast.makeText(requireContext(), "E-mail inválido. Verifique o formato.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Senha: Mínimo 6 caracteres e confirmação
         if (senha.length < 6) {
             Toast.makeText(requireContext(), "A senha deve ter pelo menos 6 caracteres!", Toast.LENGTH_SHORT).show()
             return
@@ -144,20 +136,14 @@ class CadastroUsuarioFragment : Fragment() {
             Toast.makeText(requireContext(), "As senhas não coincidem!", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Telefone: Formato (xx) xxxxx-xxxx ou (xx) xxxx-xxxx
         if (!PHONE_PATTERN.matcher(telefone).matches()) {
             Toast.makeText(requireContext(), "Telefone inválido. Formato esperado: (xx) xxxxx-xxxx", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Data de Nascimento: Formato dd/mm/aaaa
         if (!DATE_PATTERN.matcher(dataNascimento).matches()) {
             Toast.makeText(requireContext(), "Data de Nascimento inválida. Formato esperado: dd/mm/aaaa", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // CPF: Formato xxx.xxx.xxx-xx
         if (!CPF_PATTERN.matcher(cpf).matches()) {
             Toast.makeText(requireContext(), "CPF inválido. Formato esperado: xxx.xxx.xxx-xx", Toast.LENGTH_SHORT).show()
             return
@@ -168,12 +154,9 @@ class CadastroUsuarioFragment : Fragment() {
     }
 
     private fun checkUnicidadeAndProceed(email: String, usuario: String, cpf: String) {
-        // Assumimos que seus dados de ContaPessoaFisica estão em um nó pai como 'contasPessoaFisica'
-        val refContas = database.child("contasPessoaFisica") // Use o nome exato do seu nó no RTDB
+        val refContas = database.child("contasPessoaFisica")
 
         // Etapa 1: Checagem de CPF
-        // ATENÇÃO: Para consultas no Realtime Database que não são a chave primária,
-        // você PRECISA de uma regra de indexação (.indexOn) no seu arquivo firebase.json ou nas Regras do Database.
         refContas.orderByChild("cpf").equalTo(cpf).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -218,10 +201,9 @@ class CadastroUsuarioFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid ?: ""
 
-                    // 6. Criar objeto e salvar dados no Realtime Database (RTDB)
-                    contaPessoaFisica = ContaPessoaFisica(
+                    // 1. Cria o objeto ContaPessoaFisica sem salvar no RTDB
+                    val contaPessoaFisica = ContaPessoaFisica(
                         nomeCompleto = nome,
                         nomeDeUsuario = usuario,
                         email = email,
@@ -234,25 +216,15 @@ class CadastroUsuarioFragment : Fragment() {
                         tipoUsuario = tipoUsuario,
                     )
 
-                    // Salvar no RTDB usando o UID como chave
-                    if (userId.isNotEmpty()) {
-                        database.child("contasPessoaFisica").child(userId).setValue(contaPessoaFisica)
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Dados salvos no Database com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Autenticação criada! Continue para o endereço.", Toast.LENGTH_SHORT).show()
 
-                                // Navegar após salvar no RTDB
-                                val action = CadastroUsuarioFragmentDirections.actionCadastroUsuarioFragmentToCadastroEnderecoFragment(contaPessoaFisica,null)
-                                findNavController().navigate(action)
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(requireContext(), "Erro ao salvar dados no Database: ${it.message}", Toast.LENGTH_LONG).show()
-                            }
-                    } else {
-                        Toast.makeText(requireContext(), "Erro interno: UID do usuário não encontrado.", Toast.LENGTH_LONG).show()
-                    }
+                    // 2. Navegar para a próxima tela, passando o objeto ContaPessoaFisica
+                    // O salvamento no RTDB ocorrerá na última etapa.
+                    val action = CadastroUsuarioFragmentDirections.actionCadastroUsuarioFragmentToCadastroEnderecoFragment(contaPessoaFisica,null)
+                    findNavController().navigate(action)
 
                 } else {
-                    // Trata falhas de cadastro no Firebase Auth (Ex: E-mail já cadastrado, senha fraca)
+                    // Trata falhas de cadastro no Firebase Auth
                     val errorMessage = task.exception?.message
                     if (errorMessage != null && errorMessage.contains("email address is already in use")) {
                         Toast.makeText(requireContext(), "Este E-mail já está cadastrado!", Toast.LENGTH_LONG).show()

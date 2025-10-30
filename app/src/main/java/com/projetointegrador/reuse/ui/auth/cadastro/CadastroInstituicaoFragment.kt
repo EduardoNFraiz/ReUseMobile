@@ -31,16 +31,14 @@ class CadastroInstituicaoFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+    // Mantemos a referência do database apenas para a checagem de unicidade (CNPJ/Usuário).
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-
-    private lateinit var contaPessoaFisica: ContaPessoaFisica
-    private lateinit var contaPessoaJuridica: ContaPessoaJuridica
 
     // Expressões Regulares
     private val EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
     private val USERNAME_PATTERN = Pattern.compile("^\\S+$")
     private val PHONE_PATTERN = Pattern.compile("^\\(\\d{2}\\) \\d{4,5}-\\d{4}$")
-    private val CNPJ_PATTERN = Pattern.compile("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$") // CNPJ
+    private val CNPJ_PATTERN = Pattern.compile("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,7 +146,6 @@ class CadastroInstituicaoFragment : Fragment() {
         checkUnicidadeAndProceed(email, usuario, cnpj, nomeFantasia, telefone, dataCadastro, tipoPessoa, tipoUsuario)
     }
 
-    // A lógica de checagem de unicidade é a mesma para Brechó e Instituição
     private fun checkUnicidadeAndProceed(
         email: String, usuario: String, cnpj: String,
         nomeFantasia: String, telefone: String, dataCadastro: String,
@@ -197,37 +194,27 @@ class CadastroInstituicaoFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid ?: ""
 
-                    // 6. Criar objeto e salvar dados no Realtime Database (RTDB)
-                    contaPessoaJuridica = ContaPessoaJuridica(
+                    // 1. Criar objeto ContaPessoaJuridica sem salvar no RTDB
+                    // O salvamento no RTDB foi REMOVIDO daqui.
+                    val contaPessoaJuridica = ContaPessoaJuridica(
                         nomeCompleto = nomeFantasia,
                         nomeDeUsuario = usuario,
                         email = email,
                         telefone = telefone,
                         cnpj = cnpj,
+                        // Endereço e Foto Base64 serão adicionados no próximo fragmento.
                         endereço = "",
                         dataCadastro = dataCadastro,
                         tipoPessoa = tipoPessoa,
                         tipoUsuario = tipoUsuario,
                     )
 
-                    // Salvar no RTDB usando o UID como chave
-                    if (userId.isNotEmpty()) {
-                        database.child("contasPessoaJuridica").child(userId).setValue(contaPessoaJuridica)
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Cadastro realizado e dados salvos!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Autenticação criada! Continue para o endereço.", Toast.LENGTH_SHORT).show()
 
-                                // Navegar após salvar no RTDB
-                                val action = CadastroInstituicaoFragmentDirections.actionCadastroInstituicaoFragmentToCadastroEnderecoFragment(null, contaPessoaJuridica)
-                                findNavController().navigate(action)
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(requireContext(), "Erro ao salvar dados no Database: ${it.message}", Toast.LENGTH_LONG).show()
-                            }
-                    } else {
-                        Toast.makeText(requireContext(), "Erro interno: UID do usuário não encontrado.", Toast.LENGTH_LONG).show()
-                    }
+                    // 2. Navegar para a próxima tela, passando o objeto ContaPessoaJuridica (PJ)
+                    val action = CadastroInstituicaoFragmentDirections.actionCadastroInstituicaoFragmentToCadastroEnderecoFragment(null, contaPessoaJuridica)
+                    findNavController().navigate(action)
 
                 } else {
                     val errorMessage = task.exception?.message
