@@ -67,87 +67,151 @@
 
     <RadioGroup
         android:id="@+id/radioGroupCores"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="375dp"
+        android:layout_height="40dp"
         android:layout_marginTop="230dp"
         android:orientation="horizontal"
-        android:padding="4dp"
+        android:background="@drawable/bg_segmented_border"
+        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/radioCinza"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:id="@+id/radioBranco"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt1"
             android:button="@null"
-            android:background="@drawable/circle_gray" />
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Bran"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
         <RadioButton
             android:id="@+id/radioPreto"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
             android:button="@null"
-            android:background="@drawable/circle_black" />
-
-        <RadioButton
-            android:id="@+id/radioAzul"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
-            android:button="@null"
-            android:background="@drawable/circle_blue" />
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Preto"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
         <RadioButton
             android:id="@+id/radioVermelho"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
             android:button="@null"
-            android:background="@drawable/circle_red" />
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Verm"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
         <RadioButton
-            android:id="@+id/radioVerde"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:id="@+id/radioAzul"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
             android:button="@null"
-            android:background="@drawable/circle_green" />
-
-        <RadioButton
-            android:id="@+id/radioAmarelo"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
-            android:button="@null"
-            android:background="@drawable/circle_yellow" />
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Azul"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
         <RadioButton
             android:id="@+id/radioRoxo"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
             android:button="@null"
-            android:background="@drawable/circle_purple" />
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Roxo"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
         <RadioButton
-            android:id="@+id/radioArcoIris"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="4dp"
+            android:id="@+id/radioAmarelo"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
             android:button="@null"
-            android:background="@drawable/rainbow" />
-    </RadioGroup>
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Amarelo"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
 
+        <RadioButton
+            android:id="@+id/radioVerde"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt3"
+            android:button="@null"
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Verde"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
+
+        <RadioButton
+            android:id="@+id/radioMulti"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_weight="1"
+            android:background="@drawable/radiobtt2"
+            android:button="@null"
+            android:checked="true"
+            android:fontFamily="@font/raleway_extrabold"
+            android:gravity="center"
+            android:text="Multi"
+            android:textColor="@color/VerdeEscuro"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="489dp" />
+    </RadioGroup>
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="320dp"
         android:fontFamily="@font/playfair_display_semibold"
         android:text="@string/app_categoria"
         android:textColor="#134313"

@@ -288,6 +288,9 @@ class InfoPerfilFragment : Fragment() {
         binding.perfil.setOnClickListener {
             findNavController().navigate(R.id.perfil)
         }
+        binding.buttontester.setOnClickListener {
+            findNavController().navigate(R.id.action_infoPerfilFragment_to_cadRoupaFragment)
+        }
     }
 
 

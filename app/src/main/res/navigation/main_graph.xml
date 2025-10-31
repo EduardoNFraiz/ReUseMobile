@@ -235,6 +235,9 @@
             android:id="@+id/action_infoPerfilFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/main_graph" />
+        <action
+            android:id="@+id/action_infoPerfilFragment_to_cadRoupaFragment"
+            app:destination="@id/cadRoupaFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEnderecoFragment"

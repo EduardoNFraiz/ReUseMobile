@@ -30,6 +30,14 @@ class CadRoupaFragment : Fragment() {
         val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
         if (hideButtons) {
             binding.buttonEditar.visibility = View.INVISIBLE
+            binding.radioAzul.isEnabled = true
+            binding.radioRoxo.isEnabled = true
+            binding.radioMulti.isEnabled = true
+            binding.radioPreto.isEnabled = true
+            binding.radioVerde.isEnabled = true
+            binding.radioAmarelo.isEnabled = true
+            binding.radioBranco.isEnabled = true
+            binding.radioVermelho.isEnabled = true
             binding.roupa.isEnabled = true
             binding.acess.isEnabled = true
             binding.calcado.isEnabled = true
@@ -55,6 +63,14 @@ class CadRoupaFragment : Fragment() {
         }
         val info = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
         if (info) {
+            binding.radioAzul.isEnabled = false
+            binding.radioRoxo.isEnabled = false
+            binding.radioMulti.isEnabled = false
+            binding.radioPreto.isEnabled = false
+            binding.radioVerde.isEnabled = false
+            binding.radioAmarelo.isEnabled = false
+            binding.radioBranco.isEnabled = false
+            binding.radioVermelho.isEnabled = false
             binding.roupa.isEnabled = false
             binding.acess.isEnabled = false
             binding.calcado.isEnabled = false
@@ -82,7 +98,14 @@ class CadRoupaFragment : Fragment() {
         binding.buttonEditar.setOnClickListener {
             editando = !editando
             val isEnabled = editando
-
+            binding.radioAzul.isEnabled = isEnabled
+            binding.radioRoxo.isEnabled = isEnabled
+            binding.radioMulti.isEnabled = isEnabled
+            binding.radioPreto.isEnabled = isEnabled
+            binding.radioVerde.isEnabled = isEnabled
+            binding.radioAmarelo.isEnabled = isEnabled
+            binding.radioBranco.isEnabled = isEnabled
+            binding.radioVermelho.isEnabled = isEnabled
             binding.roupa.isEnabled = isEnabled
             binding.acess.isEnabled = isEnabled
             binding.calcado.isEnabled = isEnabled
