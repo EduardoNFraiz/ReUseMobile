@@ -38,6 +38,8 @@ class CadRoupaFragment : Fragment() {
             binding.radioAmarelo.isEnabled = true
             binding.radioBranco.isEnabled = true
             binding.radioVermelho.isEnabled = true
+            binding.radioRosa.isEnabled = true
+            binding.radioLaranja.isEnabled = true
             binding.roupa.isEnabled = true
             binding.acess.isEnabled = true
             binding.calcado.isEnabled = true
@@ -71,6 +73,8 @@ class CadRoupaFragment : Fragment() {
             binding.radioAmarelo.isEnabled = false
             binding.radioBranco.isEnabled = false
             binding.radioVermelho.isEnabled = false
+            binding.radioRosa.isEnabled = false
+            binding.radioLaranja.isEnabled = false
             binding.roupa.isEnabled = false
             binding.acess.isEnabled = false
             binding.calcado.isEnabled = false
@@ -106,6 +110,8 @@ class CadRoupaFragment : Fragment() {
             binding.radioAmarelo.isEnabled = isEnabled
             binding.radioBranco.isEnabled = isEnabled
             binding.radioVermelho.isEnabled = isEnabled
+            binding.radioLaranja.isEnabled = isEnabled
+            binding.radioRosa.isEnabled = isEnabled
             binding.roupa.isEnabled = isEnabled
             binding.acess.isEnabled = isEnabled
             binding.calcado.isEnabled = isEnabled

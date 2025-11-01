@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="184dp"
+        android:layout_marginTop="190dp"
         android:fontFamily="@font/playfair_display_semibold"
         android:text="@string/app_cor"
         android:textColor="#134313"
@@ -65,153 +65,164 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/radioGroupCores"
-        android:layout_width="375dp"
-        android:layout_height="40dp"
+    <GridLayout
+        android:id="@+id/radioCores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="230dp"
-        android:orientation="horizontal"
+        android:layout_marginHorizontal="5dp"
+        android:columnCount="5"
+        android:rowCount="2"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="6dp"
         android:background="@drawable/bg_segmented_border"
-        android:padding="5dp"
+        android:useDefaultMargins="true"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/radioBranco"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
-            android:text="Bran"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:padding="8dp"
+            android:text="Branco" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/radioPreto"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Preto"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:textSize="15sp" />
 
-        <RadioButton
-            android:id="@+id/radioVermelho"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
-            android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
-            android:gravity="center"
-            android:text="Verm"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
-
-        <RadioButton
+        <CheckBox
             android:id="@+id/radioAzul"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Azul"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:textSize="15sp" />
 
-        <RadioButton
+        <CheckBox
+            android:id="@+id/radioVermelho"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
+            android:button="@null"
+            android:fontFamily="@font/raleway_medium"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Vermelho"
+            android:textSize="11sp" />
+
+        <CheckBox
             android:id="@+id/radioRoxo"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
-            android:text="Roxo"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:padding="8dp"
+            android:text="Roxo" />
 
-        <RadioButton
+        <!-- Segunda fileira -->
+
+        <CheckBox
             android:id="@+id/radioAmarelo"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Amarelo"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:textSize="13sp" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/radioVerde"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
+            android:padding="8dp"
             android:text="Verde"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
+            android:textSize="15sp" />
 
-        <RadioButton
-            android:id="@+id/radioMulti"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_weight="1"
-            android:background="@drawable/radiobtt2"
+        <CheckBox
+            android:id="@+id/radioRosa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
             android:button="@null"
-            android:checked="true"
-            android:fontFamily="@font/raleway_extrabold"
+            android:fontFamily="@font/raleway_medium"
             android:gravity="center"
-            android:text="Multi"
-            android:textColor="@color/VerdeEscuro"
-            android:textSize="16sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="489dp" />
-    </RadioGroup>
+            android:padding="8dp"
+            android:text="Rosa" />
+
+        <CheckBox
+            android:id="@+id/radioLaranja"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
+            android:button="@null"
+            android:fontFamily="@font/raleway_medium"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="15sp"
+            android:text="Laranja" />
+
+        <CheckBox
+            android:id="@+id/radioMulti"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:background="@drawable/selector_categoria"
+            android:button="@null"
+            android:fontFamily="@font/raleway_medium"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="13sp"
+            android:text="Colorido" />
+
+    </GridLayout>
+
+
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginTop="360dp"
         android:fontFamily="@font/playfair_display_semibold"
         android:text="@string/app_categoria"
         android:textColor="#134313"
@@ -223,11 +234,13 @@
         android:id="@+id/categoria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="356dp"
-        android:alignmentMode="alignMargins"
+        android:layout_marginTop="400dp"
+        android:layout_marginHorizontal="5dp"
         android:columnCount="5"
-        android:padding="8dp"
         android:rowCount="2"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="6dp"
+        android:background="@drawable/bg_segmented_border"
         android:useDefaultMargins="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -412,11 +425,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="@font/playfair_display_semibold"
         android:text="@string/app_tamanho"
         android:textColor="#134313"
         android:textSize="25dp"
-        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/Tamanho"
         app:layout_constraintStart_toStartOf="parent" />
 
