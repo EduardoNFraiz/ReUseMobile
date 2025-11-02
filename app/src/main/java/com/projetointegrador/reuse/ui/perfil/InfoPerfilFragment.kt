@@ -1,9 +1,9 @@
 package com.projetointegrador.reuse.ui.perfil
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64 // Import necessário para Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +21,9 @@ import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentInfoPerfilBinding
 import com.projetointegrador.reuse.util.showBottomSheet
 import com.bumptech.glide.Glide
-// Novo import necessário para o Activity Result API
 import androidx.activity.result.contract.ActivityResultContracts
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 
 class InfoPerfilFragment : Fragment() {
@@ -34,14 +35,22 @@ class InfoPerfilFragment : Fragment() {
 
     private var isEditing: Boolean = false
     private var userPath: String? = null // Caminho do usuário no Firebase (ex: usuarios/pessoaFisica/{uid})
+    private var newProfileImageBase64: String? = null // NOVO: Armazena a string Base64 da nova foto
 
     // NOVO: Registro do Activity Result Launcher (Substitui startActivityForResult e onActivityResult)
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
+            // 1. Carrega a imagem na tela
             binding.profileImage.setImageURI(it)
-            // TODO: Aqui você deve adicionar a lógica para fazer o upload da nova imagem para o Firebase Storage
-            // e atualizar a 'fotoUrl' no Realtime Database.
-            showBottomSheet(message = "Nova foto selecionada! Lembre-se de salvar as alterações.")
+
+            // 2. Converte a Uri para Base64 e armazena
+            newProfileImageBase64 = uriToBase64(requireContext(), it)
+
+            if (newProfileImageBase64 != null) {
+                showBottomSheet(message = "Nova foto selecionada e convertida! Lembre-se de salvar as alterações.")
+            } else {
+                showBottomSheet(message = "Erro ao converter a imagem. Tente novamente.")
+            }
         }
     }
 
@@ -98,6 +107,7 @@ class InfoPerfilFragment : Fragment() {
                 // Se estiver editando e clicar em "Cancelar Edição"
                 toggleEditMode(false)
                 loadUserData() // Recarrega os dados originais do Firebase
+                newProfileImageBase64 = null // Cancela a nova imagem
             } else {
                 // Se não estiver editando e clicar em "Editar"
                 toggleEditMode(true)
@@ -116,14 +126,54 @@ class InfoPerfilFragment : Fragment() {
         }
     }
 
+    // Função auxiliar para converter URI para Base64
+    private fun uriToBase64(context: Context, uri: Uri): String? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bytes = inputStream?.readBytes()
+            inputStream?.close()
+
+            if (bytes != null) {
+                // Codifica para Base64
+                Base64.encodeToString(bytes, Base64.DEFAULT)
+            } else {
+                null
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    // Função auxiliar para carregar Base64 no Glide
+    private fun loadBase64Image(base64String: String) {
+        if (base64String.isNotEmpty() && context != null) {
+            try {
+                // Decodifica a string Base64 para um array de bytes
+                val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
+
+                // Usa Glide para carregar os bytes diretamente no ImageView
+                Glide.with(requireContext())
+                    .load(imageBytes)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(binding.profileImage)
+            } catch (e: IllegalArgumentException) {
+                // Lidar com strings Base64 inválidas
+                e.printStackTrace()
+                binding.profileImage.setImageResource(R.drawable.ic_launcher_background) // Fallback
+            }
+        } else {
+            binding.profileImage.setImageResource(R.drawable.ic_launcher_background) // Fallback
+        }
+    }
+
+
     // NOVO: Função para abrir o seletor de imagens
     private fun openImageChooser() {
         // Lança o contrato de resultado de atividade
         galleryLauncher.launch("image/*")
     }
-
-    // O método onActivityResult foi removido, pois o Activity Result API o substituiu.
-
 
     // --- LÓGICA DE CARREGAMENTO E EDIÇÃO ---
 
@@ -210,16 +260,17 @@ class InfoPerfilFragment : Fragment() {
             ?: snapshot.child("cpf").getValue(String::class.java)
             ?: ""
 
-        // LÓGICA DE CARREGAMENTO DA FOTO DE PERFIL COM GLIDE
-        val fotoUrl = snapshot.child("fotoUrl").getValue(String::class.java)
+        // LÓGICA DE CARREGAMENTO DA FOTO DE PERFIL COM BASE64
+        // Assumindo que o campo no banco seja 'fotoBase64' ou 'fotoUrl'
+        val fotoBase64 = snapshot.child("fotoUrl").getValue(String::class.java)
+            ?: snapshot.child("fotoBase64").getValue(String::class.java) // Verifica a chave correta
 
-        if (!fotoUrl.isNullOrEmpty() && context != null) {
-            // Usa Glide para carregar a imagem da URL no ImageView
-            Glide.with(requireContext())
-                .load(fotoUrl)
-                .placeholder(R.drawable.ic_launcher_background) // Use um placeholder seu
-                .error(R.drawable.ic_launcher_background)       // Use um ícone de erro seu
-                .into(binding.profileImage)
+
+        if (!fotoBase64.isNullOrEmpty()) {
+            // Usa a nova função para carregar a imagem em Base64
+            loadBase64Image(fotoBase64)
+        } else {
+            binding.profileImage.setImageResource(R.drawable.ic_launcher_background) // Fallback
         }
 
 
@@ -240,7 +291,7 @@ class InfoPerfilFragment : Fragment() {
         val nome = binding.etNome.text.toString()
         val username = binding.etUsuario.text.toString()
         val telefone = binding.etTelefone.text.toString()
-        // Documento não é editado, mas checamos para validação
+        // Documento não é editado
         val documento = binding.etCpfCnpj.text.toString()
 
         // Crie o mapa de atualização para o Realtime Database
@@ -248,7 +299,16 @@ class InfoPerfilFragment : Fragment() {
         updateMap["nomeCompleto"] = nome
         updateMap["nomeDeUsuario"] = username
         updateMap["telefone"] = telefone
-        // O documento (cpf/cnpj) e a fotoUrl devem ser atualizados em outras chamadas
+
+        // NOVO: Adiciona a string Base64 da nova foto, se existir
+        if (newProfileImageBase64 != null) {
+            // **IMPORTANTE**: Use a chave que você realmente usa no Firebase, que parece ser "fotoUrl" ou "fotoBase64".
+            // Vou usar "fotoUrl" como no seu código original, mas saiba que é Base64.
+            updateMap["fotoUrl"] = newProfileImageBase64!!
+            // Limpa a variável local após adicionar ao mapa
+            newProfileImageBase64 = null
+        }
+
 
         // Validação básica
         if (nome.isBlank() || username.isBlank() || telefone.isBlank() || documento.isBlank()) {
@@ -262,6 +322,7 @@ class InfoPerfilFragment : Fragment() {
                 if (task.isSuccessful) {
                     showBottomSheet(message = "Dados atualizados com sucesso!")
                     toggleEditMode(false)
+                    // O loadUserData() chamado em toggleEditMode(false) irá agora carregar a nova foto Base64.
                 } else {
                     showBottomSheet(message = "Erro ao salvar dados: ${task.exception?.message}")
                 }
