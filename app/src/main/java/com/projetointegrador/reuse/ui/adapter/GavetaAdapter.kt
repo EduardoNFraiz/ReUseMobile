@@ -10,10 +10,13 @@ import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Gaveta
 import com.projetointegrador.reuse.databinding.CardviewGavetaBinding
 import androidx.navigation.findNavController
-import android.widget.ImageView // Necessário para o parâmetro da função displayBase64Image
+import android.widget.ImageView
 
 class GavetaAdapter(
-    private val gavetaList: List<Gaveta>
+    // A lista agora é de pares (Gaveta, UID)
+    private val gavetaList: List<Pair<Gaveta, String>>,
+    // O listener de clique passa o UID da gaveta (String)
+    private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<GavetaAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -24,9 +27,12 @@ class GavetaAdapter(
     override fun getItemCount() = gavetaList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val gaveta = gavetaList[position]
+        // Desempacota o par: Gaveta e UID
+        val (gaveta, uid) = gavetaList[position]
 
         val base64String = gaveta.fotoBase64
+
+        // --- Bind dos Dados ---
 
         if (!base64String.isNullOrEmpty()) {
             displayBase64Image(base64String, holder.binding.drawerImage)
@@ -37,17 +43,23 @@ class GavetaAdapter(
         holder.binding.drawerName.text = gaveta.name
         holder.binding.itemCount.text = gaveta.number
 
+        // --- Tratamento de Cliques ---
+
+        // Clique no botão de três pontos
         holder.binding.bttThreePoint.setOnClickListener { view ->
             val navController = view.findNavController()
             val bundle = Bundle().apply {
                 putBoolean("VISUALIZAR_INFO", true)
+                // Se precisar passar o UID para o formulário de edição/visualização:
+                // putString("GAVETA_ID", uid)
             }
             navController.navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }
 
-        holder.binding.gaveta.setOnClickListener { view ->
-            val navController = view.findNavController()
-            navController.navigate(R.id.action_closetFragment_to_gavetaFragment)
+        // Clique na Gaveta (Responsável pela navegação para GavetaFragment)
+        holder.binding.gaveta.setOnClickListener {
+            // Chama o listener de clique, passando APENAS o UID (a String)
+            onClick(uid)
         }
     }
 

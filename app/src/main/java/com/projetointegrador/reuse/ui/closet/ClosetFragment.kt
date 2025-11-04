@@ -19,7 +19,8 @@ import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Gaveta
 import com.projetointegrador.reuse.databinding.FragmentClosetBinding
 import com.projetointegrador.reuse.ui.adapter.GavetaAdapter
-import com.projetointegrador.reuse.util.showBottomSheet // Assumindo que você tem esta função
+import com.projetointegrador.reuse.util.initToolbar
+import com.projetointegrador.reuse.util.showBottomSheet
 
 
 class ClosetFragment : Fragment() {
@@ -27,7 +28,6 @@ class ClosetFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var GavetaAdapter: GavetaAdapter
 
-    // Adicione as referências do Firebase
     private lateinit var reference: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
@@ -53,15 +53,35 @@ class ClosetFragment : Fragment() {
 
         // Inicia o carregamento das gavetas
         loadUserGavetas()
-
-        // Inicializa o RecyclerView com uma lista vazia, será preenchida depois
-        initRecyclerViewTask(emptyList())
     }
 
-    private fun initRecyclerViewTask(gavetaList: List<Gaveta>){
-        GavetaAdapter = GavetaAdapter(gavetaList)
+    /**
+     * Inicializa o RecyclerView. A lista agora é de Pair<Gaveta, String> (Objeto Gaveta e seu UID).
+     */
+    private fun initRecyclerViewTask(gavetaList: List<Pair<Gaveta, String>>){
+        // Configura o Adapter, passando a lista de pares e a lambda de clique que recebe o UID
+        GavetaAdapter = GavetaAdapter(gavetaList) { clickedGavetaUID ->
+            // Ação a ser executada quando um item é clicado
+            navigateToGavetaFragment(clickedGavetaUID)
+        }
         binding.recyclerViewGaveta.setHasFixedSize(true)
         binding.recyclerViewGaveta.adapter = GavetaAdapter
+    }
+
+    /**
+     * Realiza a navegação para o GavetaFragment, passando o UID da gaveta via Bundle.
+     */
+    private fun navigateToGavetaFragment(gavetaUID: String) {
+        if (gavetaUID.isEmpty()) {
+            showBottomSheet(message = "ID da gaveta não encontrado. Não é possível navegar.")
+            return
+        }
+
+        val bundle = Bundle().apply {
+            // Passa o UID da gaveta via Bundle
+            putString("GAVETA_ID", gavetaUID)
+        }
+        findNavController().navigate(R.id.action_closetFragment_to_gavetaFragment, bundle)
     }
 
 
@@ -95,7 +115,7 @@ class ClosetFragment : Fragment() {
 
     // Função auxiliar para buscar subtipos de Pessoa Jurídica
     private fun searchPessoaJuridicaForGavetaUids(userId: String) {
-        val subtipos = listOf("brechos", "instituicoes") // Use os seus subtipos
+        val subtipos = listOf("brechos", "instituicoes")
         var found = false
 
         for (subtipo in subtipos) {
@@ -111,11 +131,13 @@ class ClosetFragment : Fragment() {
                         if (subtipo == subtipos.last() && !found) {
                             // Se terminou de buscar em todos e não achou, a lista fica vazia.
                             showBottomSheet(message = "Nenhuma gaveta encontrada ou tipo de conta não identificado.")
+                            initRecyclerViewTask(emptyList())
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
                         showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
+                        initRecyclerViewTask(emptyList())
                     }
                 })
         }
@@ -150,13 +172,15 @@ class ClosetFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao listar UIDs das gavetas: ${error.message}")
+                    initRecyclerViewTask(emptyList())
                 }
             })
     }
 
     // 4. Busca os dados completos de cada gaveta
     private fun fetchGavetaDetails(gavetaUids: List<String>) {
-        val loadedGavetas = mutableListOf<Gaveta>()
+        // A lista agora é de pares (Gaveta sem modificação, e o UID)
+        val loadedGavetasWithUids = mutableListOf<Pair<Gaveta, String>>()
         val totalGavetas = gavetaUids.size
         var gavetasCarregadas = 0
 
@@ -164,20 +188,19 @@ class ClosetFragment : Fragment() {
             reference.child("gavetas").child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        // Converte o DataSnapshot para o objeto Gaveta
+                        // Converte o DataSnapshot para o objeto Gaveta (sem modificar o UID)
                         val gaveta = snapshot.getValue(Gaveta::class.java)
                         if (gaveta != null) {
-                            // O GavetaAdapter provavelmente precisará do ID para futuras interações,
-                            // então é uma boa prática adicioná-lo ao objeto Gaveta.
-                            // Se sua data class Gaveta não tem um ID, considere adicioná-lo.
-                            loadedGavetas.add(gaveta)
+                            // Adiciona o PAR (Gaveta, UID) à lista, mantendo Gaveta intocada.
+                            loadedGavetasWithUids.add(Pair(gaveta, uid))
                         }
 
                         gavetasCarregadas++
 
                         // Quando todas as gavetas forem carregadas, atualiza o RecyclerView
                         if (gavetasCarregadas == totalGavetas) {
-                            initRecyclerViewTask(loadedGavetas)
+                            // Passa a lista de pares para o Adapter
+                            initRecyclerViewTask(loadedGavetasWithUids)
                         }
                     }
 
@@ -185,7 +208,7 @@ class ClosetFragment : Fragment() {
                         showBottomSheet(message = "Erro ao buscar detalhes da gaveta $uid: ${error.message}")
                         gavetasCarregadas++
                         if (gavetasCarregadas == totalGavetas) {
-                            initRecyclerViewTask(loadedGavetas)
+                            initRecyclerViewTask(loadedGavetasWithUids)
                         }
                     }
                 })
