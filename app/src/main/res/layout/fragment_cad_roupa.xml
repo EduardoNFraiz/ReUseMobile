@@ -50,7 +50,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/casaco" />
+        app:srcCompat="@drawable/baseline_image_24" />
 
     <TextView
         android:id="@+id/textView2"

@@ -162,7 +162,11 @@ class GavetaFragment : Fragment() {
 
     private fun navigateToRoupaDetails(roupaUID: String) {
         val bundle = Bundle().apply {
+            // Ao clicar em uma peça, queremos VISUALIZAR (e potencialmente EDITAR).
+            // Passamos a flag como false ou não a incluímos, garantindo o fluxo de visualização/edição
+            // dependendo de como CadRoupaFragment lida com o ID da roupa.
             putString("ROUPA_ID", roupaUID)
+            putBoolean("VISUALIZAR_INFO", true) // Assume que queremos visualizar
         }
         findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
     }
@@ -302,6 +306,7 @@ class GavetaFragment : Fragment() {
         binding.buttonCadastrarRoupa.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("GAVETA_ID", gavetaUID)
+                putBoolean("CRIANDO_ROUPA", true) // <--- CORREÇÃO AQUI
             }
             findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
         }

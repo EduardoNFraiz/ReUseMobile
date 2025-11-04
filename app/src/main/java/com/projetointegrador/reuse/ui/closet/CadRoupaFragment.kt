@@ -16,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
-// Importe a sua data class PecaCadastro
 import com.projetointegrador.reuse.data.model.PecaCadastro
 import com.projetointegrador.reuse.databinding.FragmentCadRoupaBinding
 import com.projetointegrador.reuse.util.initToolbar
@@ -83,12 +82,14 @@ class CadRoupaFragment : Fragment() {
         }
 
         // --- Lógica de Modos (Criando vs. Visualizando/Editando) ---
+        // A flag 'CRIANDO_ROUPA' agora é passada corretamente pelo GavetaFragment.
+        // Usamos 'false' como fallback, mas o GavetaFragment garante 'true' na criação.
         val isCreating = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
         val isVisualizing = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
 
         if (isCreating) {
             // MODO DE CRIAÇÃO
-            binding.buttonEditar.visibility = View.GONE
+            binding.buttonEditar.visibility = View.GONE // <--- CORREÇÃO: Ocultar no modo de criação
             setFieldsEnabled(true)
             isImageSelected = false // Começa falso, deve selecionar uma imagem
             pecaEmAndamento = PecaCadastro() // Garante um objeto limpo
@@ -107,21 +108,23 @@ class CadRoupaFragment : Fragment() {
                         detalhe = ""
                     }
 
-                    // Navega usando Safe Args
-                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                    // Navega usando Safe Args, passando a peça e as flags de modo
+                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
+                        pecaEmAndamento,
+                        isCreating = true, // <--- Passa a flag de criação para o CadRoupa2
+                        isEditing = false
+                    )
                     findNavController().navigate(action)
                 }
             }
 
         } else if (isVisualizing) {
             // MODO DE VISUALIZAÇÃO/EDIÇÃO
+            binding.buttonEditar.visibility = View.VISIBLE
             setFieldsEnabled(false)
 
-            // TODO: Se esta tela recebe uma peça para visualizar/editar,
-            // você deve recebê-la via Safe Args aqui e atribuir a 'pecaEmAndamento'.
-            // Ex: val args: CadRoupaFragmentArgs by navArgs()
-            //     pecaEmAndamento = args.pecaParaEditar
-            // TODO: Preencher os campos (CheckBoxes, Radios) com os dados de 'pecaEmAndamento'
+            // TODO: Receber a peça do banco de dados (usando o ROUPA_ID do arguments)
+            // e atribuir a 'pecaEmAndamento' e preencher os campos.
 
             isImageSelected = true // Assume que a imagem existe ao visualizar
 
@@ -129,6 +132,7 @@ class CadRoupaFragment : Fragment() {
             binding.buttonEditar.setOnClickListener {
                 editando = !editando
                 setFieldsEnabled(editando)
+                binding.buttonEditar.text = if (editando) "Cancelar Edição" else "Editar"
 
                 // Se o usuário cancelar a edição, a imagem original é considerada selecionada
                 if (!editando) {
@@ -147,19 +151,24 @@ class CadRoupaFragment : Fragment() {
                             cores = getSelecionarCores()
                             categoria = getSelecionarCategorias()
                             tamanho = getSelecionarTamanho()
-                            finalidade = ""
-                            preco = ""
-                            titulo = ""
-                            detalhe = ""
+                            // finalidade, preco, titulo, detalhe serão definidos na CadRoupa2Fragment
                         }
 
-                        // Navega usando Safe Args
-                        val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                        // Navega no MODO EDIÇÃO
+                        val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
+                            pecaEmAndamento,
+                            isCreating = false,
+                            isEditing = true // <--- Passa a flag de edição
+                        )
                         findNavController().navigate(action)
                     }
                 } else {
                     // Se está apenas visualizando, avança com os dados existentes
-                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
+                        pecaEmAndamento,
+                        isCreating = false,
+                        isEditing = false // Não está editando, apenas visualizando
+                    )
                     findNavController().navigate(action)
                 }
             }

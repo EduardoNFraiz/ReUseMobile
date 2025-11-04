@@ -22,6 +22,7 @@ import com.projetointegrador.reuse.util.initToolbar
 import com.projetointegrador.reuse.data.model.ContaPessoaFisica
 import com.projetointegrador.reuse.data.model.ContaPessoaJuridica
 import com.projetointegrador.reuse.data.model.Endereco
+import com.projetointegrador.reuse.data.model.Gaveta // Import necessário
 
 // IMPORTS NECESSÁRIOS PARA BASE64 E COROUTINES
 import android.util.Base64
@@ -147,10 +148,12 @@ class AddFotoperfilFragment : Fragment() {
 
         // --- 🎯 AJUSTE DO NÓ RAIZ COM BASE NO TIPO DE CONTA E TIPO DE USUÁRIO (Brechós/Instituições) ---
         val dbRootNode: String
+        var isPessoaFisica = false // Adiciona a flag para simplificar a criação de gavetas
 
         if (contaFisica != null) {
             // Caminho para Pessoa Física: usuarios/pessoaFisica/{UID}
             dbRootNode = "usuarios/pessoaFisica"
+            isPessoaFisica = true
         } else if (contaJuridica != null) {
             // Caminho para Pessoa Jurídica: usuarios/pessoaJuridica/{tipoUsuario_plural}/{UID}
             val tipoUsuario = contaJuridica.tipoUsuario // Deve ser "brecho" ou "instituicao"
@@ -165,6 +168,7 @@ class AddFotoperfilFragment : Fragment() {
                 }
             }
             dbRootNode = "usuarios/pessoaJuridica/$tipoUsuarioPlural"
+            isPessoaFisica = false
         } else {
             Toast.makeText(requireContext(), "Erro interno: Tipo de conta desconhecido.", Toast.LENGTH_LONG).show()
             return
@@ -195,7 +199,7 @@ class AddFotoperfilFragment : Fragment() {
 
                 // ✅ CHAMA O PRÓXIMO PASSO: Lógica Base64 em uma Coroutine
                 viewLifecycleOwner.lifecycleScope.launch {
-                    handlePhotoBase64AndSaveAccount(user.uid, contaASerSalva, dbRootNode, shouldUploadPhoto)
+                    handlePhotoBase64AndSaveAccount(user.uid, contaASerSalva, dbRootNode, shouldUploadPhoto, isPessoaFisica)
                 }
 
             }
@@ -213,7 +217,8 @@ class AddFotoperfilFragment : Fragment() {
         uid: String,
         contaASerSalva: Any,
         dbRootNode: String,
-        shouldUploadPhoto: Boolean
+        shouldUploadPhoto: Boolean,
+        isPessoaFisica: Boolean // Passa a flag para a próxima função
     ) {
         var base64String: String? = null
 
@@ -231,31 +236,71 @@ class AddFotoperfilFragment : Fragment() {
         }
 
         // 3. CHAMA O ÚLTIMO PASSO: SALVAR A CONTA FINALIZADA
-        saveFinalAccountData(uid, contaASerSalva, dbRootNode)
+        saveFinalAccountData(uid, contaASerSalva, dbRootNode, isPessoaFisica)
     }
 
 
     /**
      * PASSO 3: Salva o objeto final da conta no Realtime Database e navega.
+     * Corrigido: Agora chama createDefaultGavetas para PF e PJ, usando o caminho correto.
      */
-    private fun saveFinalAccountData(uid: String, contaASerSalva: Any, dbRootNode: String) {
+    private fun saveFinalAccountData(uid: String, contaASerSalva: Any, dbRootNode: String, isPessoaFisica: Boolean) {
         // userRef aponta para o caminho correto:
-        // PF: /usuarios/pessoaFisica/{UID}
-        // PJ: /usuarios/pessoaJuridica/brechos/{UID} ou /usuarios/pessoaJuridica/instituicoes/{UID}
         val userRef = database.getReference(dbRootNode).child(uid)
 
         // Salva o objeto completo, incluindo o novo campo 'fotoBase64' e o ID do endereço
         userRef.setValue(contaASerSalva)
             .addOnCompleteListener { result ->
                 if (result.isSuccessful) {
+                    // 1. Lógica de Criação de Gavetas (para PF e PJ)
+                    // Chamada universal com o nó raiz.
+                    createDefaultGavetas(uid, dbRootNode)
+
+                    // 2. Navegação
                     Toast.makeText(requireContext(), "✅ Cadastro concluído!", Toast.LENGTH_LONG).show()
-                    // SUCESSO FINAL: Navega para a tela principal (closet)
                     findNavController().navigate(R.id.action_global_closetFragment)
                 } else {
                     Toast.makeText(requireContext(), "❌ Falha ao salvar dados finais da conta.", Toast.LENGTH_LONG).show()
                     result.exception?.printStackTrace()
                 }
             }
+    }
+
+    /**
+     * Função para criar as gavetas padrão (Vendas, Doação, Carrinho) e vincular ao usuário (PF ou PJ).
+     */
+    private fun createDefaultGavetas(userId: String, userRootPath: String) { // <-- Recebe o path correto
+        val defaultGavetas = listOf("Vendas", "Doação", "Carrinho")
+        val gavetasRef = database.getReference("gavetas")
+
+        // Caminho da referência do usuário: {userRootPath}/{userId}/gavetas
+        val userGavetasRef = database.getReference(userRootPath).child(userId).child("gavetas")
+
+        for (gavetaName in defaultGavetas) {
+            val gavetaUid = gavetasRef.push().key // Gera um UID único para a gaveta
+
+            if (gavetaUid != null) {
+                // Cria o objeto Gaveta
+                val novaGaveta = Gaveta(
+                    id = gavetaUid,
+                    name = gavetaName,
+                    number = "0",
+                    fotoBase64 = "",
+                    public = false,
+                )
+
+                // 1. Salva a gaveta no nó principal: /gavetas/{gavetaUid}
+                gavetasRef.child(gavetaUid).setValue(novaGaveta)
+                    .addOnSuccessListener {
+                        // 2. Salva a referência da gaveta no nó do usuário: {userRootPath}/{userId}/gavetas/{gavetaUid} = true
+                        userGavetasRef.child(gavetaUid).setValue(true)
+                    }
+                    .addOnFailureListener { e ->
+                        // Log em caso de falha, mas o fluxo principal de cadastro continua
+                        Toast.makeText(requireContext(), "Aviso: Falha ao criar gaveta '$gavetaName'.", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
     }
 
 

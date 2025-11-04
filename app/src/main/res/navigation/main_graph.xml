@@ -276,6 +276,12 @@
         <argument
             android:name="PecaCadastro"
             app:argType="com.projetointegrador.reuse.data.model.PecaCadastro" />
+        <argument
+            android:name="isCreating"
+            app:argType="boolean" />
+        <argument
+            android:name="isEditing"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/visualizarPUsuarioFragment"
