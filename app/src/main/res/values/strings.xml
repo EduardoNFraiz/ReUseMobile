@@ -71,5 +71,6 @@
     <string name="deseja_excluir_gaveta">Deseja excluir esta gaveta?</string>
     <string name="click_para_excluir_gaveta">Clique em EXCLUIR para remover a gaveta: %s. As roupas permanecerão no seu guarda-roupa virtual.</string>
     <string name="error_generic">ERROR!\n</string>
-
+    <string name="atencao">Atenção</string>
+    <string name="entendi">Entendi</string>
 </resources>

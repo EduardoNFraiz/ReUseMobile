@@ -9,6 +9,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -72,8 +73,6 @@ class CriarGavetaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
-        initListeners()
-        modoEditor()
         reference = Firebase.database.reference
         auth = Firebase.auth
 
@@ -92,10 +91,12 @@ class CriarGavetaFragment : Fragment() {
             binding.rbPrivado.isEnabled = true
             binding.rbPublico.isEnabled = true
         }
+
+        initListeners() // Inicializa os listeners após configurar o modo de visualização
+        modoEditor()
     }
 
     private fun initListeners() {
-        // CORREÇÃO: Removida a linha duplicada de setOnClickListener.
         binding.bttCriarGaveta.setOnClickListener {
             valideData()
         }
@@ -123,7 +124,8 @@ class CriarGavetaFragment : Fragment() {
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (e: IOException) {
             e.printStackTrace()
-            showBottomSheet(message = "Erro ao processar imagem: ${e.message}")
+            // Usando Toast para erros de processamento interno
+            Toast.makeText(requireContext(), "Erro ao processar imagem: ${e.message}", Toast.LENGTH_LONG).show()
         }
         return null
     }
@@ -133,9 +135,14 @@ class CriarGavetaFragment : Fragment() {
         val isPublic = binding.rbPublico.isChecked
         val isPrivate = binding.rbPrivado.isChecked
 
-        // Verificação adicional do Base64 da imagem
+        // Validação da imagem
         if (imageBase64.isNullOrBlank() && newGaveta) {
-            showBottomSheet(message = "Selecione uma imagem para a gaveta!")
+            // Usando showBottomSheet para erro de validação de campo
+            showBottomSheet(
+                titleDialog = R.string.atencao, // Use o seu recurso string correto para "Atenção"
+                message = "Selecione uma imagem para a gaveta!",
+                titleButton = R.string.entendi // Use o seu recurso string correto para "Entendi"
+            )
             return
         }
 
@@ -148,21 +155,32 @@ class CriarGavetaFragment : Fragment() {
             )
             saveGaveta()
         }else{
-            showBottomSheet(message = "Preencha o nome e escolha a visibilidade da gaveta!")
+            // Usando showBottomSheet para erro de validação de campo
+            showBottomSheet(
+                titleDialog = R.string.atencao, // Use o seu recurso string correto para "Atenção"
+                message = "Preencha o nome e escolha a visibilidade da gaveta!",
+                titleButton = R.string.entendi // Use o seu recurso string correto para "Entendi"
+            )
         }
     }
 
+    /**
+     * CORRIGIDO: Substituído showBottomSheet por Toast para mensagens de erro do Firebase.
+     * Garantia de mensagens claras.
+     */
     private fun saveGaveta(){
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showBottomSheet(message = "Usuário não autenticado.")
+            // MENSAGEM CLARA
+            Toast.makeText(requireContext(), "Erro: Usuário não autenticado. Faça login novamente.", Toast.LENGTH_LONG).show()
             return
         }
 
         // 2. Gerar um novo UID para a gaveta (Este UID será a chave no DB)
         val gavetaId = reference.child("gavetas").push().key
         if (gavetaId == null) {
-            showBottomSheet(message = "Erro ao gerar ID da gaveta.")
+            // CORREÇÃO CRÍTICA: Erro de ID interno tratado com Toast
+            Toast.makeText(requireContext(), "Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -177,12 +195,13 @@ class CriarGavetaFragment : Fragment() {
                     getUserAccountType(userId, gavetaId)
 
                 } else {
-                    showBottomSheet(message = "Erro ao salvar a gaveta no nó principal: ${taskGaveta.exception?.message}")
+                    // MENSAGEM CLARA
+                    Toast.makeText(requireContext(), "Erro ao salvar os detalhes da gaveta: ${taskGaveta.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
     }
 
-    // Função CORRIGIDA para buscar o tipo de conta, verificando os nós existentes (pessoaFisica, pessoaJuridica/subtipo)
+    // Função CORRIGIDA para buscar o tipo de conta, garantindo que falhas usem Toast
     private fun getUserAccountType(userId: String, gavetaId: String) {
         // 1. Tentar encontrar o usuário em 'pessoaFisica'
         reference.child("usuarios").child("pessoaFisica").child(userId)
@@ -198,20 +217,23 @@ class CriarGavetaFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                    // Usa Toast
+                    Toast.makeText(requireContext(), "Erro ao buscar tipo de conta: ${error.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
 
-    // Função auxiliar para buscar subtipos de Pessoa Jurídica
+    // Função auxiliar para buscar subtipos de Pessoa Jurídica, garantindo que falhas usem Toast
     private fun searchPessoaJuridica(userId: String, gavetaId: String) {
         val subtipos = listOf("brechos", "instituicoes") // Adicione todos os seus subtipos aqui
         var found = false
+        var checkedCount = 0
 
         for (subtipo in subtipos) {
             reference.child("usuarios").child("pessoaJuridica").child(subtipo).child(userId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        checkedCount++
                         // Verifica se o usuário foi encontrado e se ainda não processamos outro subtipo
                         if (snapshot.exists() && !found) {
                             found = true // Garante que só um será processado
@@ -219,21 +241,26 @@ class CriarGavetaFragment : Fragment() {
                             updateUserGavetaReference(userId, gavetaId, "pessoaJuridica", subtipo)
                         }
 
-                        // Se for a última iteração e não encontrou em nenhum lugar, mostra a mensagem de erro
-                        if (subtipo == subtipos.last() && !found) {
-                            showBottomSheet(message = "Não foi possível determinar o tipo de conta do usuário.")
+                        // Se terminou de buscar em todos e não encontrou, mostra a mensagem de erro
+                        if (checkedCount == subtipos.size && !found) {
+                            // Usa Toast
+                            Toast.makeText(requireContext(), "Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.", Toast.LENGTH_LONG).show()
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                        checkedCount++
+                        // Usa Toast
+                        Toast.makeText(requireContext(), "Erro ao buscar subtipo: ${error.message}", Toast.LENGTH_LONG).show()
                     }
                 })
         }
     }
 
 
-    // Função para atualizar o nó do usuário com a referência da nova gaveta
+    /**
+     * CORRIGIDO: Substituído showBottomSheet por Toast para mensagens de erro do Firebase.
+     */
     private fun updateUserGavetaReference(userId: String, gavetaId: String, tipoConta: String, subtipoJuridico: String?) {
         var userPath = ""
 
@@ -252,14 +279,17 @@ class CriarGavetaFragment : Fragment() {
                 .updateChildren(userUpdateMap)
                 .addOnCompleteListener { taskUser ->
                     if (taskUser.isSuccessful) {
-                        showBottomSheet(message = "Gaveta criada com sucesso!")
+                        // SUCESSO COMPLETO
+                        Toast.makeText(requireContext(), "Gaveta criada com sucesso!", Toast.LENGTH_SHORT).show()
                         findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment)
                     } else {
-                        showBottomSheet(message = "Erro ao adicionar gaveta ao usuário: ${taskUser.exception?.message}")
+                        // MENSAGEM CLARA
+                        Toast.makeText(requireContext(), "Erro ao vincular gaveta ao usuário: ${taskUser.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
         } else {
-            showBottomSheet(message = "Tipo de conta do usuário inválido ou incompleto.")
+            // MENSAGEM CLARA
+            Toast.makeText(requireContext(), "Erro: Tipo de conta do usuário inválido ou não encontrado.", Toast.LENGTH_LONG).show()
         }
     }
 

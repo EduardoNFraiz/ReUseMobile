@@ -47,7 +47,7 @@ class CadRoupa2Fragment : Fragment() {
     // Gavetas a serem EXCLUÍDAS da lista "Organizar"
     private val gavetasDeTransacao = listOf("Vendas", "Doação", "Carrinho")
 
-    // Esta variável AGORA armazena o UID da gaveta (ou o NOME para gavetas padrão)
+    // Esta variável AGORA armazena o UID da gaveta
     private var gavetaSelecionada: String? = null
 
     // Mapa para traduzir o NOME da gaveta para o UID (usado apenas no modo Organizar/Dinâmico)
@@ -173,7 +173,8 @@ class CadRoupa2Fragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                    // Usando Toast para evitar o showBottomSheet confuso
+                    Toast.makeText(requireContext(), "Erro ao buscar tipo de conta: ${error.message}", Toast.LENGTH_LONG).show()
                     updateSpinner(emptyList()) // <-- Listagem vazia em caso de erro
                 }
             })
@@ -208,7 +209,8 @@ class CadRoupa2Fragment : Fragment() {
 
                     override fun onCancelled(error: DatabaseError) {
                         subtiposChecados++
-                        showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
+                        // Usando Toast
+                        Toast.makeText(requireContext(), "Erro ao buscar subtipo: ${error.message}", Toast.LENGTH_LONG).show()
                         if (subtiposChecados == totalSubtipos && !found) {
                             updateSpinner(emptyList()) // <-- Listagem vazia em caso de erro
                         }
@@ -247,7 +249,8 @@ class CadRoupa2Fragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao listar UIDs das gavetas: ${error.message}")
+                    // Usando Toast
+                    Toast.makeText(requireContext(), "Erro ao listar UIDs das gavetas: ${error.message}", Toast.LENGTH_LONG).show()
                     updateSpinner(emptyList()) // <-- Listagem vazia em caso de erro
                 }
             })
@@ -342,7 +345,7 @@ class CadRoupa2Fragment : Fragment() {
     }
 
     /**
-     * NOVO: Busca o UID de uma gaveta pelo seu nome (Usado para 'Vendas' e 'Doação').
+     * CORREÇÃO: Busca o UID de uma gaveta pelo seu nome (Usado para 'Vendas' e 'Doação').
      * Isso garante que gavetaSelecionada tenha o UID real, conforme o banco exige.
      */
     private fun fetchGavetaUidByName(gavetaName: String, onComplete: (String?) -> Unit) {
@@ -358,7 +361,8 @@ class CadRoupa2Fragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar UID da gaveta '$gavetaName': ${error.message}")
+                    // Usando Toast
+                    Toast.makeText(requireContext(), "Erro ao buscar UID da gaveta '$gavetaName': ${error.message}", Toast.LENGTH_LONG).show()
                     onComplete(null)
                 }
             })
@@ -415,7 +419,6 @@ class CadRoupa2Fragment : Fragment() {
         binding.btnCadastrarPeca.setOnClickListener {
             if (validarDados()) {
                 collectFinalData()
-                // 'gavetaSelecionada' AGORA CONTÉM O UID REAL (ou o UID de 'Doação'/'Vendas')
                 savePecaNoBanco(pecaEmAndamento, gavetaSelecionada)
             }
         }
@@ -438,10 +441,12 @@ class CadRoupa2Fragment : Fragment() {
     }
 
     // --- 3. Lógica de Salvamento (Firebase) ---
-    // (Permanecem as mesmas, usando gavetaUid que agora está garantido ser um UID real)
 
     private fun savePecaNoBanco(peca: PecaCadastro, gavetaUid: String?) {
-        if (gavetaUid.isNullOrBlank()) return
+        if (gavetaUid.isNullOrBlank()) {
+            Toast.makeText(requireContext(), "Erro: ID da gaveta de destino é inválido ou nulo.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val pecaRef = database.child("pecas").push()
         val pecaUid = pecaRef.key
@@ -451,7 +456,7 @@ class CadRoupa2Fragment : Fragment() {
             pecaRef.setValue(peca)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // 2. Salva a referência da peça na gaveta em "gavetas/{UID da gaveta}/peças/{UID da peça}"
+                        // 2. Salva a referência da peça na gaveta usando o UID real
                         database.child("gavetas")
                             .child(gavetaUid) // Usa o UID real buscado
                             .child("peças")
@@ -462,10 +467,12 @@ class CadRoupa2Fragment : Fragment() {
                                     Toast.makeText(requireContext(), "Peça cadastrada com sucesso!", Toast.LENGTH_SHORT).show()
                                     findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment)
                                 } else {
+                                    // FALHA NA VINCULAÇÃO
                                     Toast.makeText(requireContext(), "Erro ao vincular à gaveta.", Toast.LENGTH_SHORT).show()
                                 }
                             }
                     } else {
+                        // FALHA AO SALVAR PEÇA PRINCIPAL
                         Toast.makeText(requireContext(), "Erro ao salvar os detalhes da peça.", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -515,9 +522,10 @@ class CadRoupa2Fragment : Fragment() {
             return false
         }
 
-        // Verifica se gavetaSelecionada é nula (Seja por falta de opções ou porque a busca assíncrona falhou/não terminou)
+        // Verifica se gavetaSelecionada é nula. (PONTO CRÍTICO)
         if (gavetaSelecionada.isNullOrBlank()) {
-            Toast.makeText(requireContext(), "Por favor, selecione a Gaveta de destino e aguarde o carregamento, se necessário.", Toast.LENGTH_SHORT).show()
+            // SUBSTITUI A CHAMADA DE ERRO CONFUZA PELO TOAST:
+            Toast.makeText(requireContext(), "Erro de seleção: ID da gaveta não foi encontrado. Por favor, selecione novamente e aguarde o carregamento do UID.", Toast.LENGTH_LONG).show()
             return false
         }
 
