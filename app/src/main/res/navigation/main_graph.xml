@@ -273,6 +273,9 @@
         <action
             android:id="@+id/action_cadRoupa2Fragment_to_gavetaFragment"
             app:destination="@id/gavetaFragment" />
+        <argument
+            android:name="PecaCadastro"
+            app:argType="com.projetointegrador.reuse.data.model.PecaCadastro" />
     </fragment>
     <fragment
         android:id="@+id/visualizarPUsuarioFragment"

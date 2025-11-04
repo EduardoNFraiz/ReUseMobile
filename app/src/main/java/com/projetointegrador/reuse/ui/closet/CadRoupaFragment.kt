@@ -1,19 +1,64 @@
 package com.projetointegrador.reuse.ui.closet
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import android.widget.CheckBox
+import android.widget.RadioButton
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.projetointegrador.reuse.R
+// Importe a sua data class PecaCadastro
+import com.projetointegrador.reuse.data.model.PecaCadastro
 import com.projetointegrador.reuse.databinding.FragmentCadRoupaBinding
 import com.projetointegrador.reuse.util.initToolbar
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class CadRoupaFragment : Fragment() {
     private var _binding: FragmentCadRoupaBinding? = null
     private val binding get() = _binding!!
+
+    // Variáveis para Imagem
+    private var imageUri: Uri? = null
+    private var imageBase64: String? = null
+    private var isImageSelected = false
+
+    // Flag para modo de edição
+    private var editando = false
+
+    // Objeto para armazenar os dados da peça
+    private var pecaEmAndamento: PecaCadastro = PecaCadastro()
+
+    // ActivityResultLauncher para seleção de imagem
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                imageUri = uri
+                binding.imageView2.setImageURI(uri) // Exibe a imagem selecionada
+
+                // Tenta converter para Base64
+                imageBase64 = convertImageUriToBase64(uri)
+
+                if (imageBase64 != null) {
+                    isImageSelected = true // Flag de validação
+                } else {
+                    isImageSelected = false
+                    Toast.makeText(requireContext(), "Erro ao converter imagem.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,141 +71,241 @@ class CadRoupaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val hideButtons = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
-        if (hideButtons) {
-            binding.buttonEditar.visibility = View.INVISIBLE
-            binding.radioAzul.isEnabled = true
-            binding.radioRoxo.isEnabled = true
-            binding.radioMulti.isEnabled = true
-            binding.radioPreto.isEnabled = true
-            binding.radioVerde.isEnabled = true
-            binding.radioAmarelo.isEnabled = true
-            binding.radioBranco.isEnabled = true
-            binding.radioVermelho.isEnabled = true
-            binding.radioRosa.isEnabled = true
-            binding.radioLaranja.isEnabled = true
-            binding.roupa.isEnabled = true
-            binding.acess.isEnabled = true
-            binding.calcado.isEnabled = true
-            binding.traje.isEnabled = true
-            binding.esporte.isEnabled = true
-            binding.masc.isEnabled = true
-            binding.fem.isEnabled = true
-            binding.infantil.isEnabled = true
-            binding.intimo.isEnabled = true
-            binding.uni.isEnabled = true
-            binding.rbPP.isEnabled = true
-            binding.rbP.isEnabled = true
-            binding.rbM.isEnabled = true
-            binding.rbG.isEnabled = true
-            binding.rbGG.isEnabled = true
-            binding.rbXGG.isEnabled = true
-            binding.Proximo.setOnClickListener {
-                val bundle = Bundle().apply {
-                    putBoolean("CRIANDO_ROUPA", true)
-                }
-                findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment,bundle)
-            }
-        }
-        val info = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
-        if (info) {
-            binding.radioAzul.isEnabled = false
-            binding.radioRoxo.isEnabled = false
-            binding.radioMulti.isEnabled = false
-            binding.radioPreto.isEnabled = false
-            binding.radioVerde.isEnabled = false
-            binding.radioAmarelo.isEnabled = false
-            binding.radioBranco.isEnabled = false
-            binding.radioVermelho.isEnabled = false
-            binding.radioRosa.isEnabled = false
-            binding.radioLaranja.isEnabled = false
-            binding.roupa.isEnabled = false
-            binding.acess.isEnabled = false
-            binding.calcado.isEnabled = false
-            binding.traje.isEnabled = false
-            binding.esporte.isEnabled = false
-            binding.masc.isEnabled = false
-            binding.fem.isEnabled = false
-            binding.infantil.isEnabled = false
-            binding.intimo.isEnabled = false
-            binding.uni.isEnabled = false
-            binding.rbPP.isEnabled = false
-            binding.rbP.isEnabled = false
-            binding.rbM.isEnabled = false
-            binding.rbG.isEnabled = false
-            binding.rbGG.isEnabled = false
-            binding.rbXGG.isEnabled = false
-            modoEditor()
-        }
-        barraDeNavegacao()
         initToolbar(binding.toolbar)
-    }
+        barraDeNavegacao()
 
-    private fun modoEditor() {
-        var editando = false
-        binding.buttonEditar.setOnClickListener {
-            editando = !editando
-            val isEnabled = editando
-            binding.radioAzul.isEnabled = isEnabled
-            binding.radioRoxo.isEnabled = isEnabled
-            binding.radioMulti.isEnabled = isEnabled
-            binding.radioPreto.isEnabled = isEnabled
-            binding.radioVerde.isEnabled = isEnabled
-            binding.radioAmarelo.isEnabled = isEnabled
-            binding.radioBranco.isEnabled = isEnabled
-            binding.radioVermelho.isEnabled = isEnabled
-            binding.radioLaranja.isEnabled = isEnabled
-            binding.radioRosa.isEnabled = isEnabled
-            binding.roupa.isEnabled = isEnabled
-            binding.acess.isEnabled = isEnabled
-            binding.calcado.isEnabled = isEnabled
-            binding.traje.isEnabled = isEnabled
-            binding.esporte.isEnabled = isEnabled
-            binding.masc.isEnabled = isEnabled
-            binding.fem.isEnabled = isEnabled
-            binding.infantil.isEnabled = isEnabled
-            binding.intimo.isEnabled = isEnabled
-            binding.uni.isEnabled = isEnabled
-            binding.rbPP.isEnabled = isEnabled
-            binding.rbP.isEnabled = isEnabled
-            binding.rbM.isEnabled = isEnabled
-            binding.rbG.isEnabled = isEnabled
-            binding.rbGG.isEnabled = isEnabled
-            binding.rbXGG.isEnabled = isEnabled
+        // --- Configuração da Seleção de Imagem ---
+        binding.imageView2.setOnClickListener {
+            // Só permite abrir a galeria se o campo estiver habilitado
+            if (it.isEnabled) {
+                openImageChooser()
+            }
+        }
+
+        // --- Lógica de Modos (Criando vs. Visualizando/Editando) ---
+        val isCreating = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
+        val isVisualizing = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
+
+        if (isCreating) {
+            // MODO DE CRIAÇÃO
+            binding.buttonEditar.visibility = View.GONE
+            setFieldsEnabled(true)
+            isImageSelected = false // Começa falso, deve selecionar uma imagem
+            pecaEmAndamento = PecaCadastro() // Garante um objeto limpo
 
             binding.Proximo.setOnClickListener {
-                val bundle = Bundle().apply {
-                    putBoolean("EDITANDO", editando)
+                if (validarDados()) { // <-- VALIDAÇÃO OBRIGATÓRIA DA IMAGEM
+                    // Coleta os dados e preenche o objeto
+                    pecaEmAndamento.apply {
+                        fotoBase64 = imageBase64
+                        cores = getSelecionarCores()
+                        categoria = getSelecionarCategorias()
+                        tamanho = getSelecionarTamanho()
+                        finalidade = ""
+                        preco = ""
+                        titulo = ""
+                        detalhe = ""
+                    }
+
+                    // Navega usando Safe Args
+                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                    findNavController().navigate(action)
                 }
-                if (binding.buttonEditar.isVisible) {
-                    findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment, bundle)
+            }
+
+        } else if (isVisualizing) {
+            // MODO DE VISUALIZAÇÃO/EDIÇÃO
+            setFieldsEnabled(false)
+
+            // TODO: Se esta tela recebe uma peça para visualizar/editar,
+            // você deve recebê-la via Safe Args aqui e atribuir a 'pecaEmAndamento'.
+            // Ex: val args: CadRoupaFragmentArgs by navArgs()
+            //     pecaEmAndamento = args.pecaParaEditar
+            // TODO: Preencher os campos (CheckBoxes, Radios) com os dados de 'pecaEmAndamento'
+
+            isImageSelected = true // Assume que a imagem existe ao visualizar
+
+            // Configura o botão Editar
+            binding.buttonEditar.setOnClickListener {
+                editando = !editando
+                setFieldsEnabled(editando)
+
+                // Se o usuário cancelar a edição, a imagem original é considerada selecionada
+                if (!editando) {
+                    isImageSelected = true
                 }
-                else{
-                    findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
+            }
+
+            // Botão Próximo
+            binding.Proximo.setOnClickListener {
+                if (editando) {
+                    // Se está editando, valida os dados (incluindo imagem)
+                    if (validarDados()) {
+                        // Atualiza o objeto com os dados editados
+                        pecaEmAndamento.apply {
+                            fotoBase64 = imageBase64
+                            cores = getSelecionarCores()
+                            categoria = getSelecionarCategorias()
+                            tamanho = getSelecionarTamanho()
+                            finalidade = ""
+                            preco = ""
+                            titulo = ""
+                            detalhe = ""
+                        }
+
+                        // Navega usando Safe Args
+                        val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                        findNavController().navigate(action)
+                    }
+                } else {
+                    // Se está apenas visualizando, avança com os dados existentes
+                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(pecaEmAndamento)
+                    findNavController().navigate(action)
                 }
             }
         }
-        binding.Proximo.setOnClickListener {
-            findNavController().navigate(R.id.action_cadRoupaFragment_to_cadRoupa2Fragment)
-        }
     }
+
+    // --- Funções de Seleção de Imagem ---
+
+    private fun openImageChooser() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        resultLauncher.launch(intent)
+    }
+
+    private fun convertImageUriToBase64(uri: Uri): String? {
+        try {
+            val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            // Comprime a imagem em JPEG. 80 é a qualidade.
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Erro ao processar imagem: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+        return null
+    }
+
+    // --- Funções de Validação e Coleta de Dados ---
+
+    /**
+     * Habilita ou desabilita todos os campos de seleção do formulário.
+     */
+    private fun setFieldsEnabled(isEnabled: Boolean) {
+        // Cores
+        binding.radioCores.children.forEach { if (it is CheckBox) it.isEnabled = isEnabled }
+        // Categoria
+        binding.categoria.children.forEach { if (it is CheckBox) it.isEnabled = isEnabled }
+        // Tamanho
+        binding.Tamanho.children.forEach { if (it is RadioButton) it.isEnabled = isEnabled }
+        // Habilita a seleção de imagem
+        binding.imageView2.isEnabled = isEnabled
+    }
+
+    /**
+     * Verifica se algum CheckBox dentro de um ViewGroup (como GridLayout) está marcado.
+     */
+    private fun isAnyCheckBoxChecked(viewGroup: ViewGroup): Boolean {
+        for (i in 0 until viewGroup.childCount) {
+            val view = viewGroup.getChildAt(i)
+            if (view is CheckBox && view.isChecked) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Valida os dados obrigatórios do formulário, incluindo a imagem.
+     */
+    private fun validarDados(): Boolean {
+        // 1. VALIDAÇÃO OBRIGATÓRIA DA IMAGEM
+        if (!isImageSelected) {
+            Toast.makeText(requireContext(), "Por favor, clique no ícone para selecionar uma foto.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        // 2. Validação das Cores
+        if (!isAnyCheckBoxChecked(binding.radioCores)) {
+            Toast.makeText(requireContext(), "Por favor, selecione ao menos uma cor.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        // 3. Validação da Categoria
+        if (!isAnyCheckBoxChecked(binding.categoria)) {
+            Toast.makeText(requireContext(), "Por favor, selecione ao menos uma categoria.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        // 4. Validação do Tamanho
+        if (binding.Tamanho.checkedRadioButtonId == -1) {
+            Toast.makeText(requireContext(), "Por favor, selecione um tamanho.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true // Todos os campos são válidos
+    }
+
+    // --- Funções Auxiliares de Coleta de Dados ---
+
+    private fun getSelecionarCores(): String {
+        val cores = mutableListOf<String>()
+        for (i in 0 until binding.radioCores.childCount) {
+            val view = binding.radioCores.getChildAt(i)
+            if (view is CheckBox && view.isChecked) {
+                cores.add(view.text.toString())
+            }
+        }
+        // Retorna uma string separada por vírgula, ex: "Branco, Azul, Preto"
+        return cores.joinToString(", ")
+    }
+
+    private fun getSelecionarCategorias(): String {
+        val categorias = mutableListOf<String>()
+        for (i in 0 until binding.categoria.childCount) {
+            val view = binding.categoria.getChildAt(i)
+            if (view is CheckBox && view.isChecked) {
+                categorias.add(view.text.toString())
+            }
+        }
+        return categorias.joinToString(", ")
+    }
+
+    private fun getSelecionarTamanho(): String {
+        val checkedId = binding.Tamanho.checkedRadioButtonId
+        if (checkedId != -1) {
+            return when (checkedId) {
+                binding.rbPP.id -> binding.rbPP.text.toString()
+                binding.rbP.id -> binding.rbP.text.toString()
+                binding.rbM.id -> binding.rbM.text.toString()
+                binding.rbG.id -> binding.rbG.text.toString()
+                binding.rbGG.id -> binding.rbGG.text.toString()
+                binding.rbXGG.id -> binding.rbXGG.text.toString()
+                else -> ""
+            }
+        }
+        return ""
+    }
+
+    // --- Navegação e Ciclo de Vida ---
 
     private fun barraDeNavegacao() {
-        binding.closet.setOnClickListener {
-            findNavController().navigate(R.id.closet)
-        }
-        binding.pesquisar.setOnClickListener {
-            findNavController().navigate(R.id.pesquisar)
-        }
-        binding.cadastrarRoupa.setOnClickListener {
-            findNavController().navigate(R.id.closet)
-        }
-        binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.closet)
-        }
-        binding.perfil.setOnClickListener {
-            findNavController().navigate(R.id.perfil)
-        }
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
+        binding.cadastrarRoupa.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    // Extensão para simplificar o loop nos 'children' de um ViewGroup
+    private val ViewGroup.children: List<View>
+        get() = (0 until childCount).map { getChildAt(it) }
 }
