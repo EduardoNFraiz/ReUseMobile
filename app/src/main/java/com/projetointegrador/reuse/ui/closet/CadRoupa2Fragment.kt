@@ -132,14 +132,14 @@ class CadRoupa2Fragment : Fragment() {
         fetchGavetaUidByName(gavetaDoar.first()) { uid ->
             uidGavetaDoacao = uid
             if (uid == null) {
-                // Toast.makeText(requireContext(), "Aviso: Gaveta 'Doação' não encontrada no banco.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Aviso: Gaveta 'Doação' não encontrada no banco.", Toast.LENGTH_LONG).show()
             }
         }
 
         fetchGavetaUidByName(gavetaVender.first()) { uid ->
             uidGavetaVenda = uid
             if (uid == null) {
-                // Toast.makeText(requireContext(), "Aviso: Gaveta 'Vendas' não encontrada no banco.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Aviso: Gaveta 'Vendas' não encontrada no banco.", Toast.LENGTH_LONG).show()
             }
         }
     }
