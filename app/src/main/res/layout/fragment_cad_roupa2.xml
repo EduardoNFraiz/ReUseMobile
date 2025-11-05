@@ -103,21 +103,22 @@
 
     </RadioGroup>
 
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCadastrarPeca"
         android:layout_width="350dp"
         android:layout_height="40dp"
+        android:layout_marginBottom="92dp"
         android:background="@drawable/estilobtt1"
         android:fontFamily="@font/nunito_sans_semibold"
         android:text="@string/app_cadpeca"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="20sp"
-        android:layout_marginBottom="90dp"
         app:layout_constraintBottom_toTopOf="@+id/rodape"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bttSalvar"

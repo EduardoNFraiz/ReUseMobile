@@ -29,7 +29,6 @@ import com.projetointegrador.reuse.util.showBottomSheet
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-
 class CriarGavetaFragment : Fragment() {
     private var _binding: FragmentCriarGavetaBinding? = null
     private val binding get() = _binding!!
@@ -42,24 +41,22 @@ class CriarGavetaFragment : Fragment() {
     private var imageUri: Uri? = null
     private var imageBase64: String? = null
 
+    // FLAG para controlar se o feedback já foi mostrado
+    private var feedbackShown = false
+
     private val resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 imageUri = uri
-
-                // 1. Exibir a imagem e ocultar o placeholder
                 binding.imageViewGaveta.setImageURI(uri)
                 binding.imageViewGaveta.visibility = View.VISIBLE
                 binding.iconPlaceholder.visibility = View.GONE
-
-                // 2. Converte para Base64
                 imageBase64 = convertImageUriToBase64(uri)
             }
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,8 +80,7 @@ class CriarGavetaFragment : Fragment() {
             binding.editTextGaveta.isEnabled = false
             binding.rbPrivado.isEnabled = false
             binding.rbPublico.isEnabled = false
-        }
-        else {
+        } else {
             binding.bttEditar.visibility = View.GONE
             binding.bttCriarGaveta.visibility = View.VISIBLE
             binding.editTextGaveta.isEnabled = true
@@ -92,7 +88,7 @@ class CriarGavetaFragment : Fragment() {
             binding.rbPublico.isEnabled = true
         }
 
-        initListeners() // Inicializa os listeners após configurar o modo de visualização
+        initListeners()
         modoEditor()
     }
 
@@ -100,14 +96,11 @@ class CriarGavetaFragment : Fragment() {
         binding.bttCriarGaveta.setOnClickListener {
             valideData()
         }
-
-        // Listener para abrir a seleção de imagem
         binding.imagePlaceholderCard.setOnClickListener {
             openImageChooser()
         }
     }
 
-    // Função para abrir a seleção de imagem
     private fun openImageChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -115,117 +108,92 @@ class CriarGavetaFragment : Fragment() {
     }
 
     private fun convertImageUriToBase64(uri: Uri): String? {
-        try {
+        return try {
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
-            // Comprime a imagem em JPEG. 80 é a qualidade.
             bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
-            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+            Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (e: IOException) {
-            e.printStackTrace()
-            // Usando Toast para erros de processamento interno
-            Toast.makeText(requireContext(), "Erro ao processar imagem: ${e.message}", Toast.LENGTH_LONG).show()
+            showError("Erro ao processar imagem: ${e.message}")
+            null
         }
-        return null
     }
 
-    private fun valideData(){
+    private fun valideData() {
         val nome = binding.editTextGaveta.text.toString().trim()
         val isPublic = binding.rbPublico.isChecked
         val isPrivate = binding.rbPrivado.isChecked
 
-        // Validação da imagem
+        if (feedbackShown) return
+
         if (imageBase64.isNullOrBlank() && newGaveta) {
-            // Usando showBottomSheet para erro de validação de campo
-            showBottomSheet(
-                titleDialog = R.string.atencao, // Use o seu recurso string correto para "Atenção"
-                message = "Selecione uma imagem para a gaveta!",
-                titleButton = R.string.entendi // Use o seu recurso string correto para "Entendi"
-            )
+            showError("Selecione uma imagem para a gaveta!")
             return
         }
 
-        if(nome.isNotBlank() && (isPublic || isPrivate)){
-            if(newGaveta) gaveta = Gaveta(
-                name = nome,
-                number = "0",
-                fotoBase64 = imageBase64, // Usa a string Base64
-                public = isPublic
-            )
+        if (nome.isNotBlank() && (isPublic || isPrivate)) {
+            if (newGaveta) {
+                gaveta = Gaveta(
+                    name = nome,
+                    number = "0",
+                    fotoBase64 = imageBase64,
+                    public = isPublic
+                )
+            }
             saveGaveta()
-        }else{
-            // Usando showBottomSheet para erro de validação de campo
-            showBottomSheet(
-                titleDialog = R.string.atencao, // Use o seu recurso string correto para "Atenção"
-                message = "Preencha o nome e escolha a visibilidade da gaveta!",
-                titleButton = R.string.entendi // Use o seu recurso string correto para "Entendi"
-            )
+        } else {
+            showError("Preencha o nome e escolha a visibilidade da gaveta!")
         }
     }
 
-    /**
-     * CORRIGIDO: Substituído showBottomSheet por Toast para mensagens de erro do Firebase.
-     * Garantia de mensagens claras.
-     */
-    private fun saveGaveta(){
+    private fun saveGaveta() {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            // MENSAGEM CLARA
-            Toast.makeText(requireContext(), "Erro: Usuário não autenticado. Faça login novamente.", Toast.LENGTH_LONG).show()
+            showError("Erro: Usuário não autenticado. Faça login novamente.")
             return
         }
 
-        // 2. Gerar um novo UID para a gaveta (Este UID será a chave no DB)
         val gavetaId = reference.child("gavetas").push().key
-        if (gavetaId == null) {
-            // CORREÇÃO CRÍTICA: Erro de ID interno tratado com Toast
-            Toast.makeText(requireContext(), "Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.", Toast.LENGTH_LONG).show()
+        if (gavetaId.isNullOrBlank()) {
+            showError("Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.")
             return
         }
 
-        // 3. Salvar o objeto Gaveta na tabela 'gavetas'
+        binding.bttCriarGaveta.isEnabled = false
         reference.child("gavetas")
             .child(gavetaId)
             .setValue(gaveta)
             .addOnCompleteListener { taskGaveta ->
                 if (taskGaveta.isSuccessful) {
-
-                    // 4. Buscar o tipo de conta do usuário antes de salvar a referência
                     getUserAccountType(userId, gavetaId)
-
                 } else {
-                    // MENSAGEM CLARA
-                    Toast.makeText(requireContext(), "Erro ao salvar os detalhes da gaveta: ${taskGaveta.exception?.message}", Toast.LENGTH_LONG).show()
+                    binding.bttCriarGaveta.isEnabled = true
+                    showError("Erro ao salvar os detalhes da gaveta: ${taskGaveta.exception?.message}")
                 }
             }
     }
 
-    // Função CORRIGIDA para buscar o tipo de conta, garantindo que falhas usem Toast
     private fun getUserAccountType(userId: String, gavetaId: String) {
-        // 1. Tentar encontrar o usuário em 'pessoaFisica'
         reference.child("usuarios").child("pessoaFisica").child(userId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        // Usuário é Pessoa Física
                         updateUserGavetaReference(userId, gavetaId, "pessoaFisica", null)
                     } else {
-                        // 2. Se não for Pessoa Física, tentar encontrar em 'pessoaJuridica'
                         searchPessoaJuridica(userId, gavetaId)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Usa Toast
-                    Toast.makeText(requireContext(), "Erro ao buscar tipo de conta: ${error.message}", Toast.LENGTH_LONG).show()
+                    binding.bttCriarGaveta.isEnabled = true
+                    showError("Erro ao buscar tipo de conta: ${error.message}")
                 }
             })
     }
 
-    // Função auxiliar para buscar subtipos de Pessoa Jurídica, garantindo que falhas usem Toast
     private fun searchPessoaJuridica(userId: String, gavetaId: String) {
-        val subtipos = listOf("brechos", "instituicoes") // Adicione todos os seus subtipos aqui
+        val subtipos = listOf("brechos", "instituicoes")
         var found = false
         var checkedCount = 0
 
@@ -234,37 +202,32 @@ class CriarGavetaFragment : Fragment() {
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         checkedCount++
-                        // Verifica se o usuário foi encontrado e se ainda não processamos outro subtipo
                         if (snapshot.exists() && !found) {
-                            found = true // Garante que só um será processado
-                            // Usuário é Pessoa Jurídica com o subtipo encontrado
+                            found = true
                             updateUserGavetaReference(userId, gavetaId, "pessoaJuridica", subtipo)
                         }
-
-                        // Se terminou de buscar em todos e não encontrou, mostra a mensagem de erro
                         if (checkedCount == subtipos.size && !found) {
-                            // Usa Toast
-                            Toast.makeText(requireContext(), "Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.", Toast.LENGTH_LONG).show()
+                            binding.bttCriarGaveta.isEnabled = true
+                            showError("Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.")
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
                         checkedCount++
-                        // Usa Toast
-                        Toast.makeText(requireContext(), "Erro ao buscar subtipo: ${error.message}", Toast.LENGTH_LONG).show()
+                        if (checkedCount == subtipos.size && !found) {
+                            binding.bttCriarGaveta.isEnabled = true
+                            showError("Erro ao buscar subtipo: ${error.message}")
+                        }
                     }
                 })
         }
     }
 
-
-    /**
-     * CORRIGIDO: Substituído showBottomSheet por Toast para mensagens de erro do Firebase.
-     */
-    private fun updateUserGavetaReference(userId: String, gavetaId: String, tipoConta: String, subtipoJuridico: String?) {
+    private fun updateUserGavetaReference(
+        userId: String, gavetaId: String,
+        tipoConta: String, subtipoJuridico: String?
+    ) {
         var userPath = ""
-
-        // Constrói o caminho baseado no tipo de conta
         if (tipoConta == "pessoaFisica") {
             userPath = "usuarios/pessoaFisica/$userId"
         } else if (tipoConta == "pessoaJuridica" && subtipoJuridico != null) {
@@ -272,47 +235,63 @@ class CriarGavetaFragment : Fragment() {
         }
 
         if (userPath.isNotEmpty()) {
-            val userUpdateMap = mapOf<String, Any>(
-                "gavetas/$gavetaId" to true // Salva apenas a referência do UID
+            val userUpdateMap = mapOf(
+                "gavetas/$gavetaId" to true
             )
             reference.child(userPath)
                 .updateChildren(userUpdateMap)
                 .addOnCompleteListener { taskUser ->
+                    binding.bttCriarGaveta.isEnabled = true
                     if (taskUser.isSuccessful) {
-                        // SUCESSO COMPLETO
-                        Toast.makeText(requireContext(), "Gaveta criada com sucesso!", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment)
+                        showSuccessAndNavigate(gavetaId)
                     } else {
-                        // MENSAGEM CLARA
-                        Toast.makeText(requireContext(), "Erro ao vincular gaveta ao usuário: ${taskUser.exception?.message}", Toast.LENGTH_LONG).show()
+                        showError("Erro ao vincular gaveta ao usuário: ${taskUser.exception?.message}")
                     }
                 }
         } else {
-            // MENSAGEM CLARA
-            Toast.makeText(requireContext(), "Erro: Tipo de conta do usuário inválido ou não encontrado.", Toast.LENGTH_LONG).show()
+            binding.bttCriarGaveta.isEnabled = true
+            showError("Erro: Tipo de conta do usuário inválido ou não encontrado.")
         }
     }
 
-    private fun modoEditor(){
+    private fun showSuccessAndNavigate(gavetaId: String) {
+        if (!feedbackShown) {
+            feedbackShown = true
+            Toast.makeText(requireContext(), "Gaveta criada com sucesso!", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putString("GAVETA_ID", gavetaId)
+            }
+            findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment, bundle)
+        }
+    }
+
+    private fun showError(message: String) {
+        if (!feedbackShown) {
+            feedbackShown = true
+            showBottomSheet(
+                titleDialog = R.string.atencao,
+                message = message,
+                titleButton = R.string.entendi
+            )
+        }
+    }
+
+    private fun modoEditor() {
         var editando = false
         binding.bttEditar.setOnClickListener {
             editando = !editando
             val isEnabled = editando
-
             binding.editTextGaveta.isEnabled = isEnabled
             binding.rbPrivado.isEnabled = isEnabled
             binding.rbPublico.isEnabled = isEnabled
 
-            if(isEnabled) {
+            if (isEnabled) {
                 binding.bttSalvar.visibility = View.VISIBLE
-            }
-            else{
+            } else {
                 binding.bttSalvar.visibility = View.INVISIBLE
             }
         }
         binding.bttSalvar.setOnClickListener {
-            // Lógica para salvar a edição deve ser implementada aqui
-            // Por enquanto, apenas navega
             findNavController().navigate(R.id.closet)
         }
     }

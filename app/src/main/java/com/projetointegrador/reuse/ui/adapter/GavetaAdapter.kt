@@ -50,8 +50,7 @@ class GavetaAdapter(
             val navController = view.findNavController()
             val bundle = Bundle().apply {
                 putBoolean("VISUALIZAR_INFO", true)
-                // Se precisar passar o UID para o formulário de edição/visualização:
-                // putString("GAVETA_ID", uid)
+                putString("GAVETA_ID", uid)
             }
             navController.navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }
