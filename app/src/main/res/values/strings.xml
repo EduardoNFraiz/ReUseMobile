@@ -53,6 +53,8 @@
 
     <string name="text_tile_warning">Atenção</string>
     <string name="text_button_warning">Entendi</string>
+    <string name="atencao">Atenção</string>
+    <string name="entendi">Entendi</string>
 
     <string name="text_title_dialog_confirm_logout">Deseja sair da sua conta?</string>
     <string name="text_button_dialog_confirm_logout">Confirmar</string>
@@ -61,6 +63,7 @@
     <string name="email_empty">Preencha seu email!</string>
 
     <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
+
     <string name="excluir">Excluir</string>
     <string name="click_para_excluir">Clique no botão se você realmente deseja excluir</string>
     <string name="deseja_excluir">Deseja excluir esta gaveta?</string>
@@ -71,6 +74,25 @@
     <string name="deseja_excluir_gaveta">Deseja excluir esta gaveta?</string>
     <string name="click_para_excluir_gaveta">Clique em EXCLUIR para remover a gaveta: %s. As roupas permanecerão no seu guarda-roupa virtual.</string>
     <string name="error_generic">ERROR!\n</string>
-    <string name="atencao">Atenção</string>
-    <string name="entendi">Entendi</string>
+
+
+    <string name="msg_erro_nome_vazio_gaveta">O nome da gaveta não pode estar vazio.</string>
+    <string name="msg_erro_visibilidade_vazia_gaveta">Preencha o nome e escolha a visibilidade da gaveta!</string>
+    <string name="msg_erro_imagem_vazia_gaveta">Selecione uma imagem para a gaveta!</string>
+
+    <string name="erro_usuario_nao_autenticado">Erro: Usuário não autenticado. Faça login novamente.</string>
+    <string name="erro_falha_gerar_id_gaveta">Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.</string>
+    <string name="erro_salvar_detalhes_gaveta">Erro ao salvar detalhes da gaveta: %1$s</string>
+    <string name="erro_vincular_gaveta_usuario">Erro ao vincular gaveta ao usuário: %1$s</string>
+    <string name="erro_tipo_conta_invalido">Erro: Tipo de conta do usuário inválido ou não encontrado.</string>
+    <string name="erro_processar_imagem">Erro ao processar imagem: %1$s</string>
+    <string name="erro_tipo_conta_nao_encontrado">Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.</string>
+
+    <string name="aviso_gaveta_nao_encontrada">ID da gaveta não encontrado. Não é possível navegar.</string>
+    <string name="aviso_nenhuma_gaveta_encontrada">Nenhuma gaveta encontrada ou tipo de conta não identificado.</string>
+    <string name="aviso_gavetas_nao_cadastradas">Você ainda não possui gavetas cadastradas.</string>
+
+    <string name="sucesso_gaveta_criada">Gaveta criada com sucesso!</string>
+    <string name="sucesso_gaveta_atualizada">Gaveta atualizada com sucesso!</string>
+
 </resources>

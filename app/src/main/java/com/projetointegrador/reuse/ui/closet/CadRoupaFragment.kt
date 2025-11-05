@@ -2,6 +2,7 @@ package com.projetointegrador.reuse.ui.closet
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,12 +16,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.PecaCadastro
 import com.projetointegrador.reuse.databinding.FragmentCadRoupaBinding
 import com.projetointegrador.reuse.util.initToolbar
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import kotlin.getValue
 
 class CadRoupaFragment : Fragment() {
     private var _binding: FragmentCadRoupaBinding? = null
@@ -34,7 +37,9 @@ class CadRoupaFragment : Fragment() {
     // Flag para modo de edição
     private var editando = false
 
-    // Objeto para armazenar os dados da peça
+    private val args: CadRoupaFragmentArgs by navArgs()
+
+    // Objeto para armazenar os dados da peça, que será passado via Safe Args
     private var pecaEmAndamento: PecaCadastro = PecaCadastro()
 
     // ActivityResultLauncher para seleção de imagem
@@ -46,11 +51,11 @@ class CadRoupaFragment : Fragment() {
                 imageUri = uri
                 binding.imageView2.setImageURI(uri) // Exibe a imagem selecionada
 
-                // Tenta converter para Base64
+                // Tenta converter para Base64 (USANDO A FUNÇÃO CORRIGIDA)
                 imageBase64 = convertImageUriToBase64(uri)
 
                 if (imageBase64 != null) {
-                    isImageSelected = true // Flag de validação
+                    isImageSelected = true
                 } else {
                     isImageSelected = false
                     Toast.makeText(requireContext(), "Erro ao converter imagem.", Toast.LENGTH_SHORT).show()
@@ -58,6 +63,7 @@ class CadRoupaFragment : Fragment() {
             }
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +79,8 @@ class CadRoupaFragment : Fragment() {
         initToolbar(binding.toolbar)
         barraDeNavegacao()
 
-        // --- Configuração da Seleção de Imagem ---
+        val gavetauid = args.gavetaUID
+
         binding.imageView2.setOnClickListener {
             // Só permite abrir a galeria se o campo estiver habilitado
             if (it.isEnabled) {
@@ -81,96 +88,79 @@ class CadRoupaFragment : Fragment() {
             }
         }
 
-        // --- Lógica de Modos (Criando vs. Visualizando/Editando) ---
-        // A flag 'CRIANDO_ROUPA' agora é passada corretamente pelo GavetaFragment.
-        // Usamos 'false' como fallback, mas o GavetaFragment garante 'true' na criação.
+        // Obtém flags e ID da peça
         val isCreating = arguments?.getBoolean("CRIANDO_ROUPA") ?: false
-        val isVisualizing = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
+        val pecaId = arguments?.getString("ROUPA_ID") // UID da peça se for edição/visualização
 
         if (isCreating) {
-            // MODO DE CRIAÇÃO
-            binding.buttonEditar.visibility = View.GONE // <--- CORREÇÃO: Ocultar no modo de criação
+            // MODO DE CRIAÇÃO (Novo Cadastro)
+            binding.buttonEditar.visibility = View.GONE
             setFieldsEnabled(true)
-            isImageSelected = false // Começa falso, deve selecionar uma imagem
-            pecaEmAndamento = PecaCadastro() // Garante um objeto limpo
+            isImageSelected = false // Imagem deve ser selecionada
+            pecaEmAndamento = PecaCadastro()
 
             binding.Proximo.setOnClickListener {
-                if (validarDados()) { // <-- VALIDAÇÃO OBRIGATÓRIA DA IMAGEM
-                    // Coleta os dados e preenche o objeto
+                if (validarDados()) {
+                    // Coleta dados da primeira etapa
                     pecaEmAndamento.apply {
                         fotoBase64 = imageBase64
                         cores = getSelecionarCores()
                         categoria = getSelecionarCategorias()
                         tamanho = getSelecionarTamanho()
-                        finalidade = ""
-                        preco = ""
-                        titulo = ""
-                        detalhe = ""
                     }
 
-                    // Navega usando Safe Args, passando a peça e as flags de modo
+                    // Navega para CadRoupa2Fragment
                     val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
                         pecaEmAndamento,
-                        isCreating = true, // <--- Passa a flag de criação para o CadRoupa2
-                        isEditing = false
+                        isCreating = true,
+                        isEditing = false,
+                        pecaUID = null,
+                        gavetaUID = gavetauid,
                     )
                     findNavController().navigate(action)
                 }
             }
-
-        } else if (isVisualizing) {
-            // MODO DE VISUALIZAÇÃO/EDIÇÃO
+        } else {
+            // MODO DE VISUALIZAÇÃO/EDIÇÃO (A partir da Gaveta)
             binding.buttonEditar.visibility = View.VISIBLE
             setFieldsEnabled(false)
 
-            // TODO: Receber a peça do banco de dados (usando o ROUPA_ID do arguments)
-            // e atribuir a 'pecaEmAndamento' e preencher os campos.
-
-            isImageSelected = true // Assume que a imagem existe ao visualizar
+            // TODO: Aqui deveria vir a lógica para carregar a peça do Firebase usando pecaId
+            // Por enquanto, assumimos que pecaEmAndamento e campos serão preenchidos.
+            isImageSelected = true // Assume que a imagem já existe
 
             // Configura o botão Editar
             binding.buttonEditar.setOnClickListener {
                 editando = !editando
                 setFieldsEnabled(editando)
                 binding.buttonEditar.text = if (editando) "Cancelar Edição" else "Editar"
-
-                // Se o usuário cancelar a edição, a imagem original é considerada selecionada
-                if (!editando) {
-                    isImageSelected = true
-                }
+                if (!editando) isImageSelected = true
             }
 
-            // Botão Próximo
             binding.Proximo.setOnClickListener {
-                if (editando) {
-                    // Se está editando, valida os dados (incluindo imagem)
-                    if (validarDados()) {
-                        // Atualiza o objeto com os dados editados
-                        pecaEmAndamento.apply {
-                            fotoBase64 = imageBase64
-                            cores = getSelecionarCores()
-                            categoria = getSelecionarCategorias()
-                            tamanho = getSelecionarTamanho()
-                            // finalidade, preco, titulo, detalhe serão definidos na CadRoupa2Fragment
-                        }
+                val isEditingNow = editando
 
-                        // Navega no MODO EDIÇÃO
-                        val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
-                            pecaEmAndamento,
-                            isCreating = false,
-                            isEditing = true // <--- Passa a flag de edição
-                        )
-                        findNavController().navigate(action)
+                if (isEditingNow) {
+                    if (!validarDados()) return@setOnClickListener
+
+                    // Atualiza o objeto com os dados editados
+                    pecaEmAndamento.apply {
+                        fotoBase64 = imageBase64 ?: pecaEmAndamento.fotoBase64 // Mantém o original se não alterado
+                        cores = getSelecionarCores()
+                        categoria = getSelecionarCategorias()
+                        tamanho = getSelecionarTamanho()
                     }
-                } else {
-                    // Se está apenas visualizando, avança com os dados existentes
-                    val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
-                        pecaEmAndamento,
-                        isCreating = false,
-                        isEditing = false // Não está editando, apenas visualizando
-                    )
-                    findNavController().navigate(action)
                 }
+
+                // Navega para CadRoupa2Fragment, passando o UID
+                val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
+                    pecaEmAndamento,
+                    isCreating = false,
+                    isEditing = isEditingNow,
+                    pecaUID = pecaId,
+                    gavetaUID = gavetauid
+                )
+                findNavController().navigate(action)
             }
         }
     }
@@ -183,17 +173,29 @@ class CadRoupaFragment : Fragment() {
         resultLauncher.launch(intent)
     }
 
+    /**
+     * CORREÇÃO CRÍTICA PARA O QUADRADO PRETO:
+     * Converte a URI da imagem para Base64, aplicando compressão e garantindo Base64.NO_WRAP.
+     */
     private fun convertImageUriToBase64(uri: Uri): String? {
         try {
+            // 1. Obtém o Bitmap
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
-            // Comprime a imagem em JPEG. 80 é a qualidade.
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+
+            // 2. Comprime a imagem em JPEG com qualidade 80 (Otimização de tamanho/memória)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
-            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+            // 3. Codifica para Base64 usando a flag NO_WRAP (Essencial para strings limpas no Firebase)
+            return Base64.encodeToString(byteArray, Base64.NO_WRAP)
+
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "Erro ao processar imagem: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Erro ao processar imagem (IO): ${e.message}", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Erro ao processar imagem (Geral): ${e.message}", Toast.LENGTH_SHORT).show()
         }
         return null
     }
@@ -204,13 +206,9 @@ class CadRoupaFragment : Fragment() {
      * Habilita ou desabilita todos os campos de seleção do formulário.
      */
     private fun setFieldsEnabled(isEnabled: Boolean) {
-        // Cores
         binding.radioCores.children.forEach { if (it is CheckBox) it.isEnabled = isEnabled }
-        // Categoria
         binding.categoria.children.forEach { if (it is CheckBox) it.isEnabled = isEnabled }
-        // Tamanho
         binding.Tamanho.children.forEach { if (it is RadioButton) it.isEnabled = isEnabled }
-        // Habilita a seleção de imagem
         binding.imageView2.isEnabled = isEnabled
     }
 
@@ -231,31 +229,23 @@ class CadRoupaFragment : Fragment() {
      * Valida os dados obrigatórios do formulário, incluindo a imagem.
      */
     private fun validarDados(): Boolean {
-        // 1. VALIDAÇÃO OBRIGATÓRIA DA IMAGEM
         if (!isImageSelected) {
             Toast.makeText(requireContext(), "Por favor, clique no ícone para selecionar uma foto.", Toast.LENGTH_SHORT).show()
             return false
         }
-
-        // 2. Validação das Cores
         if (!isAnyCheckBoxChecked(binding.radioCores)) {
             Toast.makeText(requireContext(), "Por favor, selecione ao menos uma cor.", Toast.LENGTH_SHORT).show()
             return false
         }
-
-        // 3. Validação da Categoria
         if (!isAnyCheckBoxChecked(binding.categoria)) {
             Toast.makeText(requireContext(), "Por favor, selecione ao menos uma categoria.", Toast.LENGTH_SHORT).show()
             return false
         }
-
-        // 4. Validação do Tamanho
         if (binding.Tamanho.checkedRadioButtonId == -1) {
             Toast.makeText(requireContext(), "Por favor, selecione um tamanho.", Toast.LENGTH_SHORT).show()
             return false
         }
-
-        return true // Todos os campos são válidos
+        return true
     }
 
     // --- Funções Auxiliares de Coleta de Dados ---
@@ -268,7 +258,6 @@ class CadRoupaFragment : Fragment() {
                 cores.add(view.text.toString())
             }
         }
-        // Retorna uma string separada por vírgula, ex: "Branco, Azul, Preto"
         return cores.joinToString(", ")
     }
 
@@ -305,7 +294,7 @@ class CadRoupaFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener { findNavController().navigate(R.id.closet) }
-        binding.doacao.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }
 

@@ -13,8 +13,8 @@ import androidx.navigation.findNavController
 import android.widget.ImageView
 
 class GavetaAdapter(
-    // A lista agora é de pares (Gaveta, UID)
-    private val gavetaList: List<Pair<Gaveta, String>>,
+    // A lista de pares (Gaveta e UID)
+    private var gavetaList: List<Pair<Gaveta, String>>,
     // O listener de clique passa o UID da gaveta (String)
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<GavetaAdapter.MyViewHolder>() {
@@ -41,21 +41,21 @@ class GavetaAdapter(
         }
 
         holder.binding.drawerName.text = gaveta.name
-        holder.binding.itemCount.text = gaveta.number
 
-        // --- Tratamento de Cliques ---
+        val pecaCount = gaveta.number ?: "0"
+        holder.binding.itemCount.text = pecaCount
 
-        // Clique no botão de três pontos
         holder.binding.bttThreePoint.setOnClickListener { view ->
             val navController = view.findNavController()
             val bundle = Bundle().apply {
                 putBoolean("VISUALIZAR_INFO", true)
+                // É CRUCIAL PASSAR O UID DA GAVETA AQUI para o modo de EDIÇÃO/VISUALIZAÇÃO
                 putString("GAVETA_ID", uid)
             }
             navController.navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }
 
-        // Clique na Gaveta (Responsável pela navegação para GavetaFragment)
+        // Clique na Gaveta (Responsável pela navegação para GavetaFragment - listagem de peças)
         holder.binding.gaveta.setOnClickListener {
             // Chama o listener de clique, passando APENAS o UID (a String)
             onClick(uid)
@@ -64,6 +64,14 @@ class GavetaAdapter(
 
     inner class MyViewHolder(val binding: CardviewGavetaBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    /**
+     * Atualiza a lista de dados e notifica o RecyclerView para se redesenhar.
+     */
+    fun updateList(newList: List<Pair<Gaveta, String>>) {
+        this.gavetaList = newList
+        notifyDataSetChanged()
+    }
 
 
     private fun displayBase64Image(base64String: String, imageView: ImageView) {

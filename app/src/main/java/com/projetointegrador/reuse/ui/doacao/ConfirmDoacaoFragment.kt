@@ -31,14 +31,14 @@ class ConfirmDoacaoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
         initListeners()
-        initRecyclerViewTask(getPeca())
+        //initRecyclerViewTask(getPeca())
     }
 
-    private fun initRecyclerViewTask(pecaList: List<Peca>){
-        pecaAdapter = PecaAdapter(pecaList)
-        binding.recyclerViewTask.setHasFixedSize(true)
-        binding. recyclerViewTask.adapter = pecaAdapter
-    }
+    //private fun initRecyclerViewTask(pecaList: List<Peca>){
+        //pecaAdapter = PecaAdapter(pecaList)
+        //binding.recyclerViewTask.setHasFixedSize(true)
+        //binding. recyclerViewTask.adapter = pecaAdapter
+    //}
 
     private fun initListeners(){
         binding.btnDoacao.setOnClickListener {
@@ -46,20 +46,6 @@ class ConfirmDoacaoFragment : Fragment() {
         }
     }
 
-    private fun getPeca() = listOf(
-        Peca(R.drawable.person),
-        Peca(R.drawable.baseline_arrow_circle_right_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.person),
-        Peca(R.drawable.baseline_arrow_circle_right_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-        Peca(R.drawable.baseline_image_24),
-    )
 
     override fun onDestroyView() {
         super.onDestroyView()

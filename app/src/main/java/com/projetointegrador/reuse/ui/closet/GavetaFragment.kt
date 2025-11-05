@@ -1,6 +1,7 @@
 package com.projetointegrador.reuse.ui.closet
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,14 +37,12 @@ class GavetaFragment : Fragment() {
 
     private val loadedPecasWithUids = mutableListOf<Pair<PecaCloset, String>>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             gavetaUID = it.getString("GAVETA_ID")
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,16 +58,21 @@ class GavetaFragment : Fragment() {
         reference = Firebase.database.reference
         auth = Firebase.auth
 
-        if (gavetaUID.isNullOrEmpty()) {
-            showBottomSheet(message = "Erro: ID da gaveta não foi encontrado.")
-            findNavController().popBackStack()
-        } else {
-            loadGavetaAndRoupas(gavetaUID!!)
-        }
-
+        // Inicializa Toolbar com a ação de voltar
         initToolbar(binding.toolbar)
 
         initListeners()
+        // Removido: loadGavetaAndRoupas(gavetaUID!!) — carregamento vai para onResume
+        if (gavetaUID.isNullOrEmpty()) {
+            showBottomSheet(message = "Erro: ID da gaveta não foi encontrado.")
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("GavetaFragment", "onResume called")
+        gavetaUID?.let { loadGavetaAndRoupas(it) }
     }
 
     // --- LÓGICA DE CARREGAMENTO DE DADOS ---
@@ -96,12 +100,16 @@ class GavetaFragment : Fragment() {
     }
 
     private fun loadRoupaUidsFromGaveta(gavetaUid: String) {
+        // Busca os UIDs no nó 'peças' (com ç) da gaveta
         reference.child("gavetas").child(gavetaUid).child("peças")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val roupaUids = mutableListOf<String>()
                     for (childSnapshot in snapshot.children) {
-                        roupaUids.add(childSnapshot.key!!)
+                        val isReferenced = childSnapshot.getValue(Boolean::class.java)
+                        if (isReferenced == true) {
+                            roupaUids.add(childSnapshot.key!!)
+                        }
                     }
                     if (roupaUids.isNotEmpty()) {
                         fetchRoupaDetails(roupaUids)
@@ -113,6 +121,7 @@ class GavetaFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao listar UIDs das roupas: ${error.message}")
+                    initRecyclerView(emptyList())
                 }
             })
     }
@@ -124,7 +133,8 @@ class GavetaFragment : Fragment() {
         loadedPecasWithUids.clear()
 
         for (uid in roupaUids) {
-            reference.child("peças").child(uid)
+            // CORREÇÃO: Busca os detalhes no nó 'pecas' (sem ç)
+            reference.child("pecas").child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val peca = snapshot.getValue(PecaCloset::class.java)
@@ -134,6 +144,7 @@ class GavetaFragment : Fragment() {
 
                         roupasCarregadas++
 
+                        // Atualiza o RecyclerView somente após carregar tudo
                         if (roupasCarregadas == totalRoupas) {
                             initRecyclerView(loadedPecasWithUids)
                         }
@@ -150,40 +161,55 @@ class GavetaFragment : Fragment() {
         }
     }
 
-    private fun initRecyclerView(pecaClosetList: List<Pair<PecaCloset, String>>){
-        pecaClosetAdapter = PecaClosetAdapter(pecaClosetList) { clickedRoupaUID ->
-            navigateToRoupaDetails(clickedRoupaUID)
+    // --- SETUP DO RECYCLERVIEW E NAVEGAÇÃO DE DETALHES ---
+
+    private fun initRecyclerView(pecaClosetList: List<Pair<PecaCloset, String>>) {
+        if (!::pecaClosetAdapter.isInitialized) {
+            pecaClosetAdapter = PecaClosetAdapter(pecaClosetList) { clickedRoupaUID ->
+                navigateToRoupaDetails(clickedRoupaUID)
+            }
+            binding.recyclerViewPecaCloset.setHasFixedSize(true)
+            binding.recyclerViewPecaCloset.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.recyclerViewPecaCloset.adapter = pecaClosetAdapter
+        } else {
+            pecaClosetAdapter.updateList(pecaClosetList)
         }
-        binding.recyclerViewPecaCloset.setHasFixedSize(true)
-        binding.recyclerViewPecaCloset.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerViewPecaCloset.adapter = pecaClosetAdapter
     }
 
 
     private fun navigateToRoupaDetails(roupaUID: String) {
-        val bundle = Bundle().apply {
-            // Ao clicar em uma peça, queremos VISUALIZAR (e potencialmente EDITAR).
-            // Passamos a flag como false ou não a incluímos, garantindo o fluxo de visualização/edição
-            // dependendo de como CadRoupaFragment lida com o ID da roupa.
-            putString("ROUPA_ID", roupaUID)
-            putBoolean("VISUALIZAR_INFO", true) // Assume que queremos visualizar
+        // 1. Garante que o UID da gaveta esteja disponível
+        val currentGavetaUID = gavetaUID ?: run {
+            showBottomSheet(message = "Erro de contexto: ID da gaveta atual não encontrado.")
+            return
         }
+
+        val bundle = Bundle().apply {
+            // ID da peça que será editada/visualizada
+            putString("pecaUID", roupaUID)
+
+            // 🌟 NOVO: UID da gaveta original (necessário para o CadRoupa2) 🌟
+            putString("gavetaUid", currentGavetaUID)
+
+            // O seu nav graph pode usar um argumento diferente como "ROUPA_ID",
+            // mas estou padronizando para 'pecaUID' e 'gavetaUid' para consistência com o CadRoupa2
+
+            // Se a ação leva ao CadRoupa1 (seu 'cadRoupaFragment'), o CadRoupa1 deve estar esperando esses argumentos.
+        }
+
+        // ATENÇÃO: Verifique se R.id.action_gavetaFragment_to_cadRoupaFragment é o CadRoupa1
         findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
     }
 
-    // --- FUNÇÕES DE DELEÇÃO DE GAVETA (CORRIGIDAS PARA EXCLUIR PEÇAS) ---
+    // --- FUNÇÕES DE DELEÇÃO DE GAVETA ---
 
     private fun confirmAndDeleteGaveta() {
         val gavetaNome = binding.textViewGaveta.text.toString()
 
         showBottomSheet(
-            titleDialog = R.string.text_tile_warning,
-            titleButton = R.string.text_button_warning,
-
-            // Mensagem de confirmação forte
+            titleDialog = R.string.atencao,
+            titleButton = R.string.entendi,
             message = "ATENÇÃO: Tem certeza que deseja excluir a gaveta '$gavetaNome'? Esta ação é irreversível e todas as peças de roupa contidas nela serão PERMANENTEMENTE EXCLUÍDAS!",
-
-            // Ação de clique: Inicia a exclusão
             onClick = { deleteGaveta() }
         )
     }
@@ -197,7 +223,6 @@ class GavetaFragment : Fragment() {
 
         showBottomSheet(message = "Iniciando a exclusão da gaveta e suas peças...")
 
-        // ETAPA 1: Buscar todas as UIDs das peças contidas na gaveta
         reference.child("gavetas").child(gavetaUid).child("peças")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -205,8 +230,6 @@ class GavetaFragment : Fragment() {
                     for (childSnapshot in snapshot.children) {
                         pecaUidsToDelete.add(childSnapshot.key!!)
                     }
-
-                    // ETAPA 2: Excluir os detalhes de TODAS as peças do nó principal /peças/
                     deletePecasDetails(gavetaUid, userId, pecaUidsToDelete)
                 }
 
@@ -216,56 +239,32 @@ class GavetaFragment : Fragment() {
             })
     }
 
-    // NOVO: Função para deletar em lote os detalhes das peças no nó /peças/
     private fun deletePecasDetails(gavetaUid: String, userId: String, pecaUids: List<String>) {
-        if (pecaUids.isEmpty()) {
-            // Não há peças, pule direto para excluir a gaveta
-            deleteGavetaNodeAndReferences(gavetaUid, userId)
-            return
-        }
-
         val updates = mutableMapOf<String, Any?>()
 
+        // Usa 'pecas' (sem ç) para exclusão em cascata
         for (uid in pecaUids) {
-            // Configura o caminho para deletar o detalhe da peça no nó principal /peças/{uid}
-            updates["peças/$uid"] = null
+            updates["pecas/$uid"] = null
         }
+        updates["gavetas/$gavetaUid"] = null
 
-        // Executa a exclusão em lote dos detalhes das peças
         reference.updateChildren(updates).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                // ETAPA 3: Se os detalhes das peças foram excluídos, prossiga para excluir a gaveta e suas referências.
-                deleteGavetaNodeAndReferences(gavetaUid, userId)
-            } else {
-                showBottomSheet(message = "ERRO: Falha ao excluir detalhes das peças no nó principal. ${task.exception?.message}")
-            }
-        }
-    }
-
-    // NOVO: Função para deletar o nó da gaveta e as referências do usuário
-    private fun deleteGavetaNodeAndReferences(gavetaUid: String, userId: String) {
-        // Remove o nó da gaveta (o que remove as referências aninhadas como /gavetas/{uid}/peças)
-        reference.child("gavetas").child(gavetaUid).removeValue().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Remove a referência da gaveta no nó do usuário
                 removeGavetaReferenceFromUser(gavetaUid, userId)
             } else {
-                showBottomSheet(message = "ERRO: Falha ao excluir o nó da gaveta. ${task.exception?.message}")
+                showBottomSheet(message = "ERRO: Falha ao excluir peças ou nó da gaveta. ${task.exception?.message}")
             }
         }
     }
 
 
     private fun removeGavetaReferenceFromUser(gavetaUid: String, userId: String) {
-        // Tenta remover em 'pessoaFisica'
         reference.child("usuarios").child("pessoaFisica").child(userId).child("gavetas").child(gavetaUid).removeValue()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onGavetaDeletionSuccess()
                     return@addOnCompleteListener
                 }
-
-                // Se falhar, tenta buscar nos subtipos de Pessoa Jurídica
                 searchAndRemoveJuridicaReference(gavetaUid, userId)
             }
     }
@@ -305,8 +304,9 @@ class GavetaFragment : Fragment() {
 
         binding.buttonCadastrarRoupa.setOnClickListener {
             val bundle = Bundle().apply {
+                // Passa o ID da gaveta para que a peça já seja associada a ela
                 putString("GAVETA_ID", gavetaUID)
-                putBoolean("CRIANDO_ROUPA", true) // <--- CORREÇÃO AQUI
+                putBoolean("CRIANDO_ROUPA", true)
             }
             findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
         }
@@ -315,8 +315,16 @@ class GavetaFragment : Fragment() {
             confirmAndDeleteGaveta()
         }
 
-    }
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closetFragment) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
+        binding.cadastrarRoupa.setOnClickListener {
+            val bundle = Bundle().apply { putBoolean("CRIANDO_ROUPA", true) }
+            findNavController().navigate(R.id.cadastrarRoupa, bundle)
+        }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacaoFragment) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
 
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

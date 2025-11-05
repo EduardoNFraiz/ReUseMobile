@@ -28,27 +28,19 @@ class AVendaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
-        initRecyclerViewTask(getTask())
+        //initRecyclerViewTask(getTask())
     }
 
     private fun initListeners() {
 
     }
 
-    private fun initRecyclerViewTask(pecaList: List<Peca>){
-        pecaAdapter = PecaAdapter(pecaList)
-        binding.recyclerViewTask.setHasFixedSize(true)
-        binding. recyclerViewTask.adapter = pecaAdapter
-    }
+    //private fun initRecyclerViewTask(pecaList: List<Peca>){
+        //pecaAdapter = PecaAdapter(pecaList)
+        //binding.recyclerViewTask.setHasFixedSize(true)
+        //binding. recyclerViewTask.adapter = pecaAdapter
+    //}
 
-    private fun getTask() = listOf(
-        Peca(R.drawable.person, "Eduardo Neumam", "R$60,00"),
-        Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "R$60,00"),
-    )
 
 
     override fun onDestroyView() {

@@ -27,7 +27,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/closeticon"
-            app:tint="@color/black"/>
+            />
     </androidx.cardview.widget.CardView>
 
     <TextView

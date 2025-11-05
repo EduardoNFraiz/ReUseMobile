@@ -2,6 +2,7 @@ package com.projetointegrador.reuse.ui.closet
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -33,17 +34,20 @@ class CriarGavetaFragment : Fragment() {
     private var _binding: FragmentCriarGavetaBinding? = null
     private val binding get() = _binding!!
 
+    // Variáveis da Gaveta
     private lateinit var gaveta: Gaveta
     private var newGaveta: Boolean = true
+    private var gavetaId: String? = null
+
     private lateinit var reference: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
     private var imageUri: Uri? = null
     private var imageBase64: String? = null
 
-    // FLAG para controlar se o feedback já foi mostrado
     private var feedbackShown = false
 
+    // O ActivityResultLauncher DEVE estar aqui
     private val resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -74,39 +78,64 @@ class CriarGavetaFragment : Fragment() {
         auth = Firebase.auth
 
         val vizualizarInfo = arguments?.getBoolean("VISUALIZAR_INFO") ?: false
+        gavetaId = arguments?.getString("GAVETA_ID")
+
+        newGaveta = gavetaId.isNullOrBlank()
+
+        setupViewMode(vizualizarInfo)
+        initListeners()
+
+        if (!newGaveta) {
+            loadGavetaData(gavetaId!!)
+        }
+    }
+
+    // --- SETUP DO MODO VISUALIZAÇÃO/EDIÇÃO/CRIAÇÃO ---
+    private fun setupViewMode(vizualizarInfo: Boolean) {
         if (vizualizarInfo) {
             binding.bttEditar.visibility = View.VISIBLE
             binding.bttCriarGaveta.visibility = View.GONE
-            binding.editTextGaveta.isEnabled = false
-            binding.rbPrivado.isEnabled = false
-            binding.rbPublico.isEnabled = false
+            binding.bttSalvar.visibility = View.GONE
+            setFieldsEnabled(false)
         } else {
             binding.bttEditar.visibility = View.GONE
             binding.bttCriarGaveta.visibility = View.VISIBLE
-            binding.editTextGaveta.isEnabled = true
-            binding.rbPrivado.isEnabled = true
-            binding.rbPublico.isEnabled = true
+            binding.bttSalvar.visibility = View.GONE
+            setFieldsEnabled(true)
         }
+    }
 
-        initListeners()
-        modoEditor()
+    // Função unificada para habilitar/desabilitar campos
+    private fun setFieldsEnabled(isEnabled: Boolean) {
+        binding.editTextGaveta.isEnabled = isEnabled
+        binding.rbPrivado.isEnabled = isEnabled
+        binding.rbPublico.isEnabled = isEnabled
+        binding.imagePlaceholderCard.isEnabled = isEnabled
     }
 
     private fun initListeners() {
         binding.bttCriarGaveta.setOnClickListener {
-            valideData()
+            valideData(isCreation = true)
         }
         binding.imagePlaceholderCard.setOnClickListener {
             openImageChooser()
         }
+        binding.bttEditar.setOnClickListener {
+            modoEditor(true)
+        }
+        binding.bttSalvar.setOnClickListener {
+            valideData(isCreation = false)
+        }
     }
 
+    // CORREÇÃO: Função de escolher a imagem
     private fun openImageChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         resultLauncher.launch(intent)
     }
 
+    // --- MANIPULAÇÃO DE IMAGEM E BASE64 ---
     private fun convertImageUriToBase64(uri: Uri): String? {
         return try {
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
@@ -115,64 +144,203 @@ class CriarGavetaFragment : Fragment() {
             val byteArray = byteArrayOutputStream.toByteArray()
             Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (e: IOException) {
-            showError("Erro ao processar imagem: ${e.message}")
+            showError(getString(R.string.erro_processar_imagem, e.message))
             null
         }
     }
 
-    private fun valideData() {
+    private fun displayBase64Image(base64String: String) {
+        try {
+            val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
+            val decodedBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            binding.imageViewGaveta.setImageBitmap(decodedBitmap)
+            binding.imageViewGaveta.visibility = View.VISIBLE
+            binding.iconPlaceholder.visibility = View.GONE
+
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            binding.imageViewGaveta.setImageDrawable(null)
+            binding.imageViewGaveta.visibility = View.GONE
+            binding.iconPlaceholder.visibility = View.VISIBLE
+        }
+    }
+
+    // --- LÓGICA DE CARREGAMENTO DE DADOS ---
+    private fun loadGavetaData(uid: String) {
+        reference.child("gavetas").child(uid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val loadedGaveta = snapshot.getValue(Gaveta::class.java)
+                    if (loadedGaveta != null) {
+                        gaveta = loadedGaveta
+
+                        binding.editTextGaveta.setText(gaveta.name)
+                        if (gaveta.public) {
+                            binding.rbPublico.isChecked = true
+                        } else {
+                            binding.rbPrivado.isChecked = true
+                        }
+
+                        if (!gaveta.fotoBase64.isNullOrEmpty()) {
+                            displayBase64Image(gaveta.fotoBase64!!)
+                            imageBase64 = gaveta.fotoBase64
+                        }
+                    } else {
+                        showError("Gaveta não encontrada ou dados inválidos.")
+                        findNavController().navigateUp()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    showError("Erro ao carregar dados da gaveta: ${error.message}")
+                    findNavController().navigateUp()
+                }
+            })
+    }
+
+    // --- VALIDAÇÃO E SALVAMENTO/EDIÇÃO ---
+
+    private fun valideData(isCreation: Boolean) {
+        if (feedbackShown) return
+
         val nome = binding.editTextGaveta.text.toString().trim()
         val isPublic = binding.rbPublico.isChecked
         val isPrivate = binding.rbPrivado.isChecked
 
-        if (feedbackShown) return
-
-        if (imageBase64.isNullOrBlank() && newGaveta) {
-            showError("Selecione uma imagem para a gaveta!")
+        if (isCreation && imageBase64.isNullOrBlank()) {
+            showError(getString(R.string.msg_erro_imagem_vazia_gaveta))
             return
         }
 
-        if (nome.isNotBlank() && (isPublic || isPrivate)) {
-            if (newGaveta) {
-                gaveta = Gaveta(
-                    name = nome,
-                    number = "0",
-                    fotoBase64 = imageBase64,
-                    public = isPublic
-                )
-            }
+        if (nome.isBlank() || (!isPublic && !isPrivate)) {
+            showError(getString(R.string.msg_erro_visibilidade_vazia_gaveta))
+            return
+        }
+
+        if (isCreation) {
+            // Cria novo objeto Gaveta e salva
+            gaveta = Gaveta(
+                name = nome,
+                number = "0",
+                fotoBase64 = imageBase64,
+                public = isPublic
+            )
             saveGaveta()
         } else {
-            showError("Preencha o nome e escolha a visibilidade da gaveta!")
+            // Atualiza objeto Gaveta existente e salva
+            gaveta.name = nome
+            gaveta.public = isPublic
+            gaveta.fotoBase64 = imageBase64
+            updateGaveta()
+        }
+    }
+
+    // ✅ CORRIGIDO: Usa updateChildren() para APENAS atualizar os campos editáveis.
+    // Isso garante que o nó "peças" não seja apagado.
+    private fun updateGaveta() {
+        if (gavetaId.isNullOrBlank()) {
+            showError("Erro: ID da gaveta para edição não encontrado.")
+            return
+        }
+
+        binding.bttSalvar.isEnabled = false
+
+        // CRIA o mapa com APENAS os campos que devem ser atualizados.
+        val updateMap = mapOf<String, Any?>(
+            "name" to gaveta.name,
+            "public" to gaveta.public,
+            "fotoBase64" to gaveta.fotoBase64,
+            "number" to gaveta.number
+        )
+
+        reference.child("gavetas").child(gavetaId!!)
+            .updateChildren(updateMap) // Usa updateChildren em vez de setValue
+            .addOnCompleteListener { task ->
+                binding.bttSalvar.isEnabled = true
+                if (task.isSuccessful) {
+                    showSuccessAndReturnToView()
+                } else {
+                    showError(getString(R.string.erro_salvar_detalhes_gaveta, task.exception?.message))
+                }
+            }
+    }
+
+    private fun showSuccessAndReturnToView() {
+        if (!feedbackShown) {
+            feedbackShown = true
+            Toast.makeText(requireContext(), getString(R.string.sucesso_gaveta_atualizada), Toast.LENGTH_SHORT).show()
+            modoEditor(false)
+            feedbackShown = false
         }
     }
 
     private fun saveGaveta() {
+        // Lógica de CRIAÇÃO
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showError("Erro: Usuário não autenticado. Faça login novamente.")
+            showError(getString(R.string.erro_usuario_nao_autenticado))
             return
         }
 
-        val gavetaId = reference.child("gavetas").push().key
-        if (gavetaId.isNullOrBlank()) {
-            showError("Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.")
+        val tempGavetaId = reference.child("gavetas").push().key
+        if (tempGavetaId.isNullOrBlank()) {
+            showError(getString(R.string.erro_falha_gerar_id_gaveta))
             return
         }
 
         binding.bttCriarGaveta.isEnabled = false
         reference.child("gavetas")
-            .child(gavetaId)
+            .child(tempGavetaId)
             .setValue(gaveta)
             .addOnCompleteListener { taskGaveta ->
                 if (taskGaveta.isSuccessful) {
-                    getUserAccountType(userId, gavetaId)
+                    getUserAccountType(userId, tempGavetaId)
                 } else {
                     binding.bttCriarGaveta.isEnabled = true
-                    showError("Erro ao salvar os detalhes da gaveta: ${taskGaveta.exception?.message}")
+                    showError(getString(R.string.erro_salvar_detalhes_gaveta, taskGaveta.exception?.message))
                 }
             }
     }
+
+    // --- CONTROLE DE FEEDBACK E NAVEGAÇÃO ---
+
+    private fun showSuccessAndNavigate(id: String) {
+        if (!feedbackShown) {
+            feedbackShown = true
+            Toast.makeText(requireContext(), getString(R.string.sucesso_gaveta_criada), Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putString("GAVETA_ID", id)
+            }
+            findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment, bundle)
+        }
+    }
+
+    private fun showError(message: String) {
+        if (!feedbackShown) {
+            feedbackShown = true
+            showBottomSheet(
+                titleDialog = R.string.atencao,
+                message = message,
+                titleButton = R.string.entendi
+            )
+            feedbackShown = false
+        }
+    }
+
+    // --- MODO EDITOR (Habilitar/Desabilitar campos e botões) ---
+    private fun modoEditor(startEditing: Boolean) {
+        if (startEditing) {
+            setFieldsEnabled(true)
+            binding.bttSalvar.visibility = View.VISIBLE
+            binding.bttEditar.visibility = View.INVISIBLE
+        } else {
+            setFieldsEnabled(false)
+            binding.bttSalvar.visibility = View.INVISIBLE
+            binding.bttEditar.visibility = View.VISIBLE
+        }
+    }
+
+    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas) ---
 
     private fun getUserAccountType(userId: String, gavetaId: String) {
         reference.child("usuarios").child("pessoaFisica").child(userId)
@@ -208,7 +376,7 @@ class CriarGavetaFragment : Fragment() {
                         }
                         if (checkedCount == subtipos.size && !found) {
                             binding.bttCriarGaveta.isEnabled = true
-                            showError("Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.")
+                            showError(getString(R.string.erro_tipo_conta_nao_encontrado))
                         }
                     }
 
@@ -245,54 +413,12 @@ class CriarGavetaFragment : Fragment() {
                     if (taskUser.isSuccessful) {
                         showSuccessAndNavigate(gavetaId)
                     } else {
-                        showError("Erro ao vincular gaveta ao usuário: ${taskUser.exception?.message}")
+                        showError(getString(R.string.erro_vincular_gaveta_usuario, taskUser.exception?.message))
                     }
                 }
         } else {
             binding.bttCriarGaveta.isEnabled = true
-            showError("Erro: Tipo de conta do usuário inválido ou não encontrado.")
-        }
-    }
-
-    private fun showSuccessAndNavigate(gavetaId: String) {
-        if (!feedbackShown) {
-            feedbackShown = true
-            Toast.makeText(requireContext(), "Gaveta criada com sucesso!", Toast.LENGTH_SHORT).show()
-            val bundle = Bundle().apply {
-                putString("GAVETA_ID", gavetaId)
-            }
-            findNavController().navigate(R.id.action_criarGavetaFragment_to_gavetaFragment, bundle)
-        }
-    }
-
-    private fun showError(message: String) {
-        if (!feedbackShown) {
-            feedbackShown = true
-            showBottomSheet(
-                titleDialog = R.string.atencao,
-                message = message,
-                titleButton = R.string.entendi
-            )
-        }
-    }
-
-    private fun modoEditor() {
-        var editando = false
-        binding.bttEditar.setOnClickListener {
-            editando = !editando
-            val isEnabled = editando
-            binding.editTextGaveta.isEnabled = isEnabled
-            binding.rbPrivado.isEnabled = isEnabled
-            binding.rbPublico.isEnabled = isEnabled
-
-            if (isEnabled) {
-                binding.bttSalvar.visibility = View.VISIBLE
-            } else {
-                binding.bttSalvar.visibility = View.INVISIBLE
-            }
-        }
-        binding.bttSalvar.setOnClickListener {
-            findNavController().navigate(R.id.closet)
+            showError(getString(R.string.erro_tipo_conta_invalido))
         }
     }
 

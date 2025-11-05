@@ -43,33 +43,19 @@ class PesquisaVendasFragment : Fragment(){
         }
 
         initListeners()
-        initRecyclerViewTask(getPeca())
+        //initRecyclerViewTask(getPeca())
     }
 
     private fun initListeners() {
 
     }
 
-    private fun initRecyclerViewTask(pecaList: List<Peca>){
-        pecaAdapter = PecaAdapter(pecaList)
-        binding.recyclerViewTask.setHasFixedSize(true)
-        binding. recyclerViewTask.adapter = pecaAdapter
-    }
+    //private fun initRecyclerViewTask(pecaList: List<Peca>){
+        //pecaAdapter = PecaAdapter(pecaList)
+        //binding.recyclerViewTask.setHasFixedSize(true)
+        //binding. recyclerViewTask.adapter = pecaAdapter
+    //}
 
-    private fun getPeca() = listOf(
-        Peca(R.drawable.person, "Eduardo Neumam"),
-        Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "@neumam"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "@_neumam"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "@edu"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "@eduardoneumam"),
-        Peca(R.drawable.person, "Eduardo Neumam"),
-        Peca(R.drawable.baseline_arrow_circle_right_24, "Eduardo", "R$60,00"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "@neumam"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "@_neumam"),
-        Peca(R.drawable.baseline_image_24, "Neumam", "@edu"),
-        Peca(R.drawable.baseline_image_24, "Eduardo", "@eduardoneumam"),
-    )
 
     override fun onDestroyView() {
         super.onDestroyView()

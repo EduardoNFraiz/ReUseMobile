@@ -1,58 +1,66 @@
 package com.projetointegrador.reuse.ui.adapter
 
-import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.PecaCloset
-import com.projetointegrador.reuse.databinding.CardviewPecaclosetBinding
-import androidx.navigation.findNavController
+import com.projetointegrador.reuse.databinding.CardviewPecaclosetBinding // Assumindo que este é o layout do item
+import com.projetointegrador.reuse.util.displayBase64Image // Importa a função utilitária com Glide
 
-class PecaClosetAdapter(
-    // 1. Recebe a lista de pares (PecaCloset, UID)
-    private val pecaclosetList: List<Pair<PecaCloset, String>>,
-    // 2. Adiciona o listener de clique que retorna APENAS o UID (String)
+class PecaClosetAdapter (
+    // Lista mutável que carrega pares: (Objeto PecaCloset, UID da Peça)
+    private var pecas: List<Pair<PecaCloset, String>>,
+    // Lambda para lidar com o clique (passa o UID da peça)
     private val onClick: (String) -> Unit
-) : RecyclerView.Adapter<PecaClosetAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<PecaClosetAdapter.PecaClosetViewHolder> () {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PecaClosetViewHolder {
         val view = CardviewPecaclosetBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyViewHolder(view)
+        return PecaClosetViewHolder(view)
     }
 
-    override fun getItemCount() = pecaclosetList.size
+    override fun getItemCount() = pecas.size
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        // 3. Desempacota o par: O objeto PecaCloset e o UID
-        val (pecacloset, uid) = pecaclosetList[position]
+    override fun onBindViewHolder(holder: PecaClosetViewHolder, position: Int) {
+        Log.d("PecaClosetAdapter", "Bind item: ${pecas[position].second}")
+        holder.bind(pecas[position])
+    }
 
-        // --- Bind dos Dados ---
+    inner class PecaClosetViewHolder(val binding : CardviewPecaclosetBinding): RecyclerView.ViewHolder(binding.root){
 
-        // Assumindo que o campo 'image' é um ID de recurso drawable (Int)
-        // Se a imagem vier de um Base64, a lógica de 'displayBase64Image' deve ser adicionada aqui.
-        holder.binding.imagePeca.setImageResource(pecacloset.image)
-        holder.binding.itemTitle.text = pecacloset.descricao
-        holder.binding.itemPrice.text = pecacloset.preco
+        fun bind(pecaPair: Pair<PecaCloset, String>) {
+            val (pecacloset, uid) = pecaPair
 
-        // --- Tratamento de Cliques ---
+            // --- 1. Lógica de Imagem (Usando o Utilitário Otimizado com Glide) ---
 
-        holder.binding.cardViewItem.setOnClickListener { view ->
-            // 4. Em vez de navegar diretamente, chama a função de clique,
-            //    passando o UID para o GavetaFragment gerenciar a navegação.
-            onClick(uid)
-
-            // Removido a navegação direta, pois ela é gerenciada pelo GavetaFragment
-            /*
-            val navController = view.findNavController()
-            val bundle = Bundle().apply {
-                putBoolean("VISUALIZAR_INFO", true)
+            // Verifica se a string Base64 existe e a exibe
+            if (!pecacloset.fotoBase64.isNullOrEmpty()) {
+                // Chama a função utilitária. Ela agora usa o Glide,
+                // resolvendo o problema de memória/quadrado preto.
+                displayBase64Image(pecacloset.fotoBase64!!, binding.imagePeca)
+            } else {
+                // Placeholder padrão
+                binding.imagePeca.setImageResource(R.drawable.baseline_image_24)
             }
-            navController.navigate(R.id.action_gavetaFragment_to_cadRoupaFragment,bundle)
-            */
+
+            // --- 2. Binding dos Textos (Usando 'titulo' e 'preco') ---
+
+            binding.itemTitle.text = pecacloset.titulo ?: "Sem Título"
+            binding.itemPrice.text = pecacloset.preco ?: "R$ 0,00"
+
+            // --- 3. Listener de Clique ---
+
+            binding.root.setOnClickListener {
+                onClick(uid) // Retorna o UID da peça clicada
+            }
         }
     }
 
-    inner class MyViewHolder(val binding: CardviewPecaclosetBinding) :
-        RecyclerView.ViewHolder(binding.root)
+
+    fun updateList(newList: List<Pair<PecaCloset, String>>) {
+        this.pecas = newList // Substitui a lista de dados
+        notifyDataSetChanged() // Força o redesenho
+    }
 }

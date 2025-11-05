@@ -264,6 +264,11 @@
         <action
             android:id="@+id/action_cadRoupaFragment_to_cadRoupa2Fragment2"
             app:destination="@id/cadRoupa2Fragment" />
+        <argument
+            android:name="gavetaUID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/cadRoupa2Fragment"
@@ -282,6 +287,15 @@
         <argument
             android:name="isEditing"
             app:argType="boolean" />
+        <argument
+            android:name="pecaUID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="gavetaUID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/visualizarPUsuarioFragment"

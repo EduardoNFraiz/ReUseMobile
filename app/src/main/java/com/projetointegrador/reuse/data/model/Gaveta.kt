@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Gaveta(
     var id: String? = null,
-    val name: String? = null,
-    val number: String? = null,
-    val fotoBase64: String? = null,
-    val public: Boolean = false,
+    var name: String? = null,
+    var number: String? = null,
+    var fotoBase64: String? = null,
+    var public: Boolean = false,
 ):Parcelable
