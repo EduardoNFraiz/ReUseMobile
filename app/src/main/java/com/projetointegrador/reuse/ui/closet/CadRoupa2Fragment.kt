@@ -43,20 +43,28 @@ class CadRoupa2Fragment : Fragment() {
 
     private val gavetaDoar = listOf("Doação")
     private val gavetaVender = listOf("Vendas")
-    // Manter a lista de transação para filtragem na função fetchAllGavetaDetails
     private val gavetasDeTransacao = listOf("Vendas", "Doação", "Carrinho")
 
-    // Adicionado para manter a referência à gaveta original na edição
     private var gavetaOriginalUid: String? = null
 
     private var nameToUidMap: Map<String, String> = emptyMap()
-    private var gavetaSelecionada: String? = null // UID da gaveta de destino
+    private var gavetaSelecionada: String? = null
 
-    // Armazenamento pré-carregado dos UIDs de transação
     private var uidGavetaDoacao: String? = null
     private var uidGavetaVenda: String? = null
 
     private var isSavingPeca = false
+
+    private var gavetaOptionsList: List<String> = emptyList()
+
+    // O NavOptions que garante que Cad1 e Cad2 sejam removidos da stack.
+    private val navOptionsPopToCad1 by lazy {
+        androidx.navigation.navOptions {
+            popUpTo(R.id.closetFragment) {
+                inclusive = false
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,13 +93,11 @@ class CadRoupa2Fragment : Fragment() {
 
     private fun incrementaContadorGaveta(gavetaId: String) {
         val gavetaNumberRef = database.child("gavetas").child(gavetaId).child("number")
-
         gavetaNumberRef.runTransaction(object : Transaction.Handler {
             override fun doTransaction(mutableData: MutableData): Transaction.Result {
                 val currentNumberStr = mutableData.getValue(String::class.java)
                 val currentNumberInt = currentNumberStr?.toIntOrNull() ?: 0
                 val newNumberInt = currentNumberInt + 1
-
                 mutableData.value = newNumberInt.toString()
                 return Transaction.success(mutableData)
             }
@@ -106,14 +112,11 @@ class CadRoupa2Fragment : Fragment() {
 
     private fun decrementaContadorGaveta(gavetaId: String) {
         val gavetaNumberRef = database.child("gavetas").child(gavetaId).child("number")
-
         gavetaNumberRef.runTransaction(object : Transaction.Handler {
             override fun doTransaction(mutableData: MutableData): Transaction.Result {
                 val currentNumberStr = mutableData.getValue(String::class.java)
                 val currentNumberInt = currentNumberStr?.toIntOrNull() ?: 0
-
                 val newNumberInt = if (currentNumberInt > 0) currentNumberInt - 1 else 0
-
                 mutableData.value = newNumberInt.toString()
                 return Transaction.success(mutableData)
             }
@@ -151,22 +154,25 @@ class CadRoupa2Fragment : Fragment() {
         val isEditing = args.isEditing
         val pecaUid = args.pecaUID
 
-        // Armazena o UID da gaveta original ANTES da edição (necessário para decrementar se a gaveta mudar)
+        // O GavetaFragment passa o UID da gaveta ORIGINAL (onde a peça está)
         gavetaOriginalUid = args.gavetaUID
 
         binding.btnCadastrarPeca.visibility = if (isCreating) View.VISIBLE else View.GONE
         binding.bttSalvar.visibility = if (isEditing) View.VISIBLE else View.GONE
-        // A lixeira só aparece se não estiver criando ou editando, mas a peça deve existir
-        binding.trash2.visibility = if (!isCreating && !isEditing && pecaUid != null) View.VISIBLE else View.GONE
+        // A lixeira só aparece se for Edição/Visualização e a peça existir
+        binding.trash2.visibility = if (!isCreating && pecaUid != null) View.VISIBLE else View.GONE
 
+        // Define o estado de ativação baseado no modo
         val shouldEnableFields = isCreating || isEditing
         setFieldsEnabled(shouldEnableFields)
 
+        // ✅ LÓGICA CORRIGIDA: Se for Edição/Visualização, carrega os dados
         if (!isCreating && pecaUid != null) {
-            // Se for edição/visualização, carregar os dados completos
-            findUserAccountType()
-            loadPecaDetails(pecaUid, gavetaOriginalUid) // ADICIONADO
+            binding.toolbar.title = if (isEditing) "Editar Peça (2/2)" else "Visualizar Peça (2/2)"
+            loadPecaDetails(pecaUid)
         } else if (isCreating) {
+            binding.toolbar.title = "Cadastrar Peça (2/2)"
+            // Definições padrão para criação
             binding.radioButton5.isChecked = true
             findUserAccountType()
             updatePrecoFieldsVisibility(getString(R.string.app_organizar))
@@ -174,11 +180,12 @@ class CadRoupa2Fragment : Fragment() {
     }
 
     // NOVO: Carregar detalhes da peça para edição/visualização
-    private fun loadPecaDetails(pecaUid: String, gavetaUid: String?) {
+    private fun loadPecaDetails(pecaUid: String) {
         database.child("pecas").child(pecaUid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val peca = snapshot.getValue(PecaCadastro::class.java)
                 if (peca != null) {
+                    // Atualiza o objeto pecaEmAndamento com todos os dados da peça
                     pecaEmAndamento = peca
 
                     // Preenche campos da UI
@@ -186,16 +193,18 @@ class CadRoupa2Fragment : Fragment() {
                     binding.editTextTitulo.setText(peca.titulo)
                     binding.editTextDetalhes.setText(peca.detalhe)
 
-                    // Seta a finalidade correta
-                    when (peca.finalidade) {
+                    // Seta a finalidade correta e a visibilidade dos campos de preço
+                    val finalidade = peca.finalidade ?: getString(R.string.app_organizar)
+                    when (finalidade) {
                         getString(R.string.app_organizar) -> binding.radioButton5.isChecked = true
                         getString(R.string.app_doar) -> binding.radioButton6.isChecked = true
                         getString(R.string.app_vender) -> binding.radioButton7.isChecked = true
                         else -> binding.radioButton5.isChecked = true
                     }
+                    updatePrecoFieldsVisibility(finalidade)
 
-                    // Define a gaveta correta no spinner (após o findUserAccountType carregar as opções)
-                    gavetaSelecionada = gavetaUid
+                    // ✅ Chama o carregamento das gavetas após preencher a Finalidade
+                    findUserAccountType()
 
                 } else {
                     showBottomSheet(message = "Detalhes da peça não encontrados.")
@@ -331,22 +340,36 @@ class CadRoupa2Fragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val gavetaNames = mutableListOf<String>()
                     val mutableMap = mutableMapOf<String, String>()
+                    var selectedPosition = -1
 
-                    for (uid in gavetaUids) {
+                    for (i in gavetaUids.indices) {
+                        val uid = gavetaUids[i]
                         val gavetaSnapshot = snapshot.child(uid)
                         val name = gavetaSnapshot.child("name").getValue(String::class.java)
 
-                        // Filtra gavetas de transação (Vendas, Doação, Carrinho)
+                        // Filtra gavetas de transação
                         if (name != null && !gavetasDeTransacao.contains(name)) {
                             gavetaNames.add(name)
                             mutableMap[name] = uid
+
+                            // ✅ PRÉ-SELEÇÃO: Verifica se este é o UID da gaveta original
+                            if (uid == gavetaOriginalUid) {
+                                selectedPosition = gavetaNames.size - 1
+                            }
                         }
                     }
 
                     if (gavetaNames.isNotEmpty()) {
                         nameToUidMap = mutableMap.toMap()
+                        gavetaOptionsList = gavetaNames // Armazena a lista de nomes
                         updateSpinner(gavetaNames)
                         setupSpinnerListener()
+
+                        // ✅ Aplica a pré-seleção
+                        if (selectedPosition != -1) {
+                            binding.spinner.setSelection(selectedPosition)
+                            gavetaSelecionada = gavetaOriginalUid // Confirma o UID selecionado
+                        }
                     } else {
                         Toast.makeText(requireContext(), "Nenhuma gaveta de organização válida encontrada.", Toast.LENGTH_LONG).show()
                         updateSpinner(emptyList())
@@ -444,9 +467,22 @@ class CadRoupa2Fragment : Fragment() {
             if (!isSavingPeca && validarDados()) {
                 isSavingPeca = true
                 binding.bttSalvar.isEnabled = false
+
+                // 1. Coletar os dados da tela (Stage 2) e atualizar pecaEmAndamento
                 collectFinalData()
+
+                // 2. Coletar a FINALIDADE (Se o usuário mudou a finalidade, mas não ativou o listener do CheckBox)
+                pecaEmAndamento.finalidade = when (binding.Finalidade.checkedRadioButtonId) {
+                    R.id.radioButton5 -> getString(R.string.app_organizar)
+                    R.id.radioButton6 -> getString(R.string.app_doar)
+                    R.id.radioButton7 -> getString(R.string.app_vender)
+                    else -> pecaEmAndamento.finalidade // Mantém a última conhecida
+                }
+
+                // 3. Chamar a atualização
                 val pecaUidExistente = args.pecaUID
-                updatePecaNoBanco(pecaEmAndamento, pecaUidExistente, gavetaSelecionada, gavetaOriginalUid) // ADICIONADO gavetaOriginalUid
+                // O gavetaSelecionada é a nova gaveta de destino (selecionada no Spinner)
+                updatePecaNoBanco(pecaEmAndamento, pecaUidExistente, gavetaSelecionada, gavetaOriginalUid)
             }
         }
 
@@ -494,13 +530,22 @@ class CadRoupa2Fragment : Fragment() {
                                 isSavingPeca = false
                                 binding.btnCadastrarPeca.isEnabled = true
                                 if (gavetaTask.isSuccessful) {
-                                    incrementaContadorGaveta(gavetaUid) // ADICIONADO CHAMADA
+                                    incrementaContadorGaveta(gavetaUid)
 
                                     Toast.makeText(requireContext(), "Peça cadastrada com sucesso!", Toast.LENGTH_SHORT).show()
+
+                                    // ====================================================================
+                                    // ✅ AJUSTE: Limpa a back stack (Cad1 e Cad2) no sucesso do Cadastro
+                                    // ====================================================================
                                     val bundle = Bundle().apply {
                                         putString("GAVETA_ID", gavetaUid)
                                     }
-                                    findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment, bundle)
+                                    findNavController().navigate(
+                                        R.id.action_cadRoupa2Fragment_to_gavetaFragment,
+                                        bundle,
+                                        navOptionsPopToCad1 // Garante que a pilha seja limpa
+                                    )
+                                    // ====================================================================
                                 } else {
                                     Toast.makeText(requireContext(), "Erro ao vincular à gaveta: ${gavetaTask.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
@@ -518,7 +563,6 @@ class CadRoupa2Fragment : Fragment() {
         }
     }
 
-    // CORRIGIDO: Adiciona gavetaAntigaUid para tratar a troca de gavetas e contadores
     private fun updatePecaNoBanco(peca: PecaCadastro, pecaUid: String?, novaGavetaUid: String?, gavetaAntigaUid: String?) {
         if (pecaUid.isNullOrBlank() || novaGavetaUid.isNullOrBlank()) {
             isSavingPeca = false
@@ -545,37 +589,58 @@ class CadRoupa2Fragment : Fragment() {
                     }
 
                     Toast.makeText(requireContext(), "Peça atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+
+                    // ====================================================================
+                    // ✅ AJUSTE: Limpa a back stack (Cad1 e Cad2) no sucesso da Atualização
+                    // ====================================================================
                     val bundle = Bundle().apply {
                         putString("GAVETA_ID", novaGavetaUid)
                     }
-                    findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment, bundle)
+                    findNavController().navigate(
+                        R.id.action_cadRoupa2Fragment_to_gavetaFragment,
+                        bundle,
+                        navOptionsPopToCad1 // Garante que a pilha seja limpa
+                    )
+                    // ====================================================================
                 } else {
                     Toast.makeText(requireContext(), "Erro ao atualizar a peça: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    // NOVO: Função para excluir a peça
     private fun deletePeca(pecaUid: String, gavetaUid: String) {
         database.child("pecas").child(pecaUid).removeValue()
             .addOnSuccessListener {
                 database.child("gavetas").child(gavetaUid).child("peças").child(pecaUid).removeValue()
                     .addOnSuccessListener {
-                        decrementaContadorGaveta(gavetaUid) // ADICIONADO CHAMADA
+                        decrementaContadorGaveta(gavetaUid)
 
                         Toast.makeText(requireContext(), "Peça excluída com sucesso!", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(R.id.action_cadRoupa2Fragment_to_gavetaFragment, Bundle().apply { putString("GAVETA_ID", gavetaUid) })
+
+                        // ====================================================================
+                        // ✅ AJUSTE: Limpa a back stack (Cad1 e Cad2) no sucesso da Exclusão
+                        // ====================================================================
+                        val bundle = Bundle().apply {
+                            putString("GAVETA_ID", gavetaUid)
+                        }
+
+                        findNavController().navigate(
+                            R.id.action_cadRoupa2Fragment_to_gavetaFragment,
+                            bundle,
+                            navOptionsPopToCad1 // Garante que a pilha seja limpa
+                        )
+                        // ====================================================================
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Erro ao desvincular peça da gaveta: ${it.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Erro ao desvincular peça da gaveta: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Erro ao excluir peça: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Erro ao excluir peça: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    // --- Validação e Navegação (OK) ---
+    // --- Validação e Navegação (Mantidas) ---
 
     private fun collectFinalData() {
         pecaEmAndamento.apply {
@@ -591,7 +656,7 @@ class CadRoupa2Fragment : Fragment() {
         }
     }
 
-    private fun validarDados(): Boolean {
+    private fun validarDados(): Boolean { /* ... Lógica mantida ... */
         if (binding.Finalidade.checkedRadioButtonId == -1) {
             Toast.makeText(requireContext(), "Por favor, selecione a Finalidade da peça.", Toast.LENGTH_SHORT).show()
             return false
@@ -626,3 +691,6 @@ class CadRoupa2Fragment : Fragment() {
         _binding = null
     }
 }
+
+
+

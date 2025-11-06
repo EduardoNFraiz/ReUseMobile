@@ -40,6 +40,7 @@ class GavetaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            // A chave 'GAVETA_ID' é usada na navegação do ClosetFragment
             gavetaUID = it.getString("GAVETA_ID")
         }
     }
@@ -58,11 +59,12 @@ class GavetaFragment : Fragment() {
         reference = Firebase.database.reference
         auth = Firebase.auth
 
-        // Inicializa Toolbar com a ação de voltar
         initToolbar(binding.toolbar)
 
+        initRecyclerView(emptyList())
+
         initListeners()
-        // Removido: loadGavetaAndRoupas(gavetaUID!!) — carregamento vai para onResume
+
         if (gavetaUID.isNullOrEmpty()) {
             showBottomSheet(message = "Erro: ID da gaveta não foi encontrado.")
             findNavController().popBackStack()
@@ -71,13 +73,19 @@ class GavetaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("GavetaFragment", "onResume called")
+        Log.d("GavetaFragment", "onResume called - Forçando Recarregamento da Gaveta")
+        // ✅ CHAMA O CARREGAMENTO SEMPRE QUE O USUÁRIO RETORNA À TELA
         gavetaUID?.let { loadGavetaAndRoupas(it) }
     }
 
-    // --- LÓGICA DE CARREGAMENTO DE DADOS ---
+    // --- LÓGICA DE CARREGAMENTO DE DADOS (Mantida) ---
 
     private fun loadGavetaAndRoupas(uid: String) {
+        // Limpa a lista de UIDs para evitar duplicação em caso de onResume
+        loadedPecasWithUids.clear()
+        // Atualiza a lista exibida para vazia enquanto carrega
+        pecaClosetAdapter.updateList(emptyList())
+
         loadGavetaDetails(uid)
         loadRoupaUidsFromGaveta(uid)
     }
@@ -115,13 +123,12 @@ class GavetaFragment : Fragment() {
                         fetchRoupaDetails(roupaUids)
                     } else {
                         showBottomSheet(message = "Esta gaveta não possui itens cadastrados.")
-                        initRecyclerView(emptyList())
+                        pecaClosetAdapter.updateList(emptyList()) // Atualiza com vazio
                     }
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao listar UIDs das roupas: ${error.message}")
-                    initRecyclerView(emptyList())
+                    pecaClosetAdapter.updateList(emptyList())
                 }
             })
     }
@@ -133,7 +140,7 @@ class GavetaFragment : Fragment() {
         loadedPecasWithUids.clear()
 
         for (uid in roupaUids) {
-            // CORREÇÃO: Busca os detalhes no nó 'pecas' (sem ç)
+            // ... (lógica mantida)
             reference.child("pecas").child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -144,9 +151,9 @@ class GavetaFragment : Fragment() {
 
                         roupasCarregadas++
 
-                        // Atualiza o RecyclerView somente após carregar tudo
                         if (roupasCarregadas == totalRoupas) {
-                            initRecyclerView(loadedPecasWithUids)
+                            // ✅ Atualiza a lista após carregar todas as peças
+                            pecaClosetAdapter.updateList(loadedPecasWithUids)
                         }
                     }
 
@@ -154,7 +161,7 @@ class GavetaFragment : Fragment() {
                         showBottomSheet(message = "Erro ao buscar detalhes da peça $uid: ${error.message}")
                         roupasCarregadas++
                         if (roupasCarregadas == totalRoupas) {
-                            initRecyclerView(loadedPecasWithUids)
+                            pecaClosetAdapter.updateList(loadedPecasWithUids)
                         }
                     }
                 })
@@ -172,36 +179,31 @@ class GavetaFragment : Fragment() {
             binding.recyclerViewPecaCloset.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.recyclerViewPecaCloset.adapter = pecaClosetAdapter
         } else {
+            // ✅ Se já estiver inicializado, apenas atualiza a lista
             pecaClosetAdapter.updateList(pecaClosetList)
         }
     }
 
 
     private fun navigateToRoupaDetails(roupaUID: String) {
-        // 1. Garante que o UID da gaveta esteja disponível
         val currentGavetaUID = gavetaUID ?: run {
             showBottomSheet(message = "Erro de contexto: ID da gaveta atual não encontrado.")
             return
         }
 
         val bundle = Bundle().apply {
-            // ID da peça que será editada/visualizada
+            // 1. Passa o UID da peça (ativa o modo de Visualização/Edição no Cad1)
             putString("pecaUID", roupaUID)
-
-            // 🌟 NOVO: UID da gaveta original (necessário para o CadRoupa2) 🌟
-            putString("gavetaUid", currentGavetaUID)
-
-            // O seu nav graph pode usar um argumento diferente como "ROUPA_ID",
-            // mas estou padronizando para 'pecaUID' e 'gavetaUid' para consistência com o CadRoupa2
-
-            // Se a ação leva ao CadRoupa1 (seu 'cadRoupaFragment'), o CadRoupa1 deve estar esperando esses argumentos.
+            // 2. Passa o UID da gaveta original (necessário para a edição no Cad2)
+            putString("gavetaUID", currentGavetaUID)
+            // 3. NÃO PASSAMOS "CRIANDO_ROUPA = true". A ausência da flag 'CRIANDO_ROUPA'
+            // ou a presença do 'pecaUID' será interpretada pelo CadRoupaFragment como Edição.
         }
 
-        // ATENÇÃO: Verifique se R.id.action_gavetaFragment_to_cadRoupaFragment é o CadRoupa1
         findNavController().navigate(R.id.action_gavetaFragment_to_cadRoupaFragment, bundle)
     }
 
-    // --- FUNÇÕES DE DELEÇÃO DE GAVETA ---
+    // --- FUNÇÕES DE DELEÇÃO DE GAVETA (INALTERADAS) ---
 
     private fun confirmAndDeleteGaveta() {
         val gavetaNome = binding.textViewGaveta.text.toString()
@@ -242,7 +244,6 @@ class GavetaFragment : Fragment() {
     private fun deletePecasDetails(gavetaUid: String, userId: String, pecaUids: List<String>) {
         val updates = mutableMapOf<String, Any?>()
 
-        // Usa 'pecas' (sem ç) para exclusão em cascata
         for (uid in pecaUids) {
             updates["pecas/$uid"] = null
         }

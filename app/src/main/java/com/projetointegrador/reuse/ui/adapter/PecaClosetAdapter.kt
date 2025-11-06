@@ -3,16 +3,15 @@ package com.projetointegrador.reuse.ui.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil // Import necessário
 import androidx.recyclerview.widget.RecyclerView
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.PecaCloset
-import com.projetointegrador.reuse.databinding.CardviewPecaclosetBinding // Assumindo que este é o layout do item
-import com.projetointegrador.reuse.util.displayBase64Image // Importa a função utilitária com Glide
+import com.projetointegrador.reuse.databinding.CardviewPecaclosetBinding
+import com.projetointegrador.reuse.util.displayBase64Image
 
 class PecaClosetAdapter (
-    // Lista mutável que carrega pares: (Objeto PecaCloset, UID da Peça)
     private var pecas: List<Pair<PecaCloset, String>>,
-    // Lambda para lidar com o clique (passa o UID da peça)
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<PecaClosetAdapter.PecaClosetViewHolder> () {
 
@@ -33,34 +32,54 @@ class PecaClosetAdapter (
         fun bind(pecaPair: Pair<PecaCloset, String>) {
             val (pecacloset, uid) = pecaPair
 
-            // --- 1. Lógica de Imagem (Usando o Utilitário Otimizado com Glide) ---
-
-            // Verifica se a string Base64 existe e a exibe
+            // --- 1. Lógica de Imagem ---
             if (!pecacloset.fotoBase64.isNullOrEmpty()) {
-                // Chama a função utilitária. Ela agora usa o Glide,
-                // resolvendo o problema de memória/quadrado preto.
                 displayBase64Image(pecacloset.fotoBase64!!, binding.imagePeca)
             } else {
-                // Placeholder padrão
                 binding.imagePeca.setImageResource(R.drawable.baseline_image_24)
             }
 
-            // --- 2. Binding dos Textos (Usando 'titulo' e 'preco') ---
-
+            // --- 2. Binding dos Textos ---
             binding.itemTitle.text = pecacloset.titulo ?: "Sem Título"
             binding.itemPrice.text = pecacloset.preco ?: "R$ 0,00"
 
             // --- 3. Listener de Clique ---
-
             binding.root.setOnClickListener {
-                onClick(uid) // Retorna o UID da peça clicada
+                onClick(uid)
             }
         }
     }
 
 
+    // ✅ Implementação do DiffUtil para substituir notifyDataSetChanged()
     fun updateList(newList: List<Pair<PecaCloset, String>>) {
-        this.pecas = newList // Substitui a lista de dados
-        notifyDataSetChanged() // Força o redesenho
+        val diffCallback = PecaClosetDiffCallback(this.pecas, newList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.pecas = newList // Atualiza a lista interna
+        diffResult.dispatchUpdatesTo(this) // Aplica as atualizações de forma eficiente
+    }
+
+    // ✅ CLASSE INTERNA PARA CÁLCULO DE DIFERENÇAS (DEVE ESTAR DENTRO DO ARQUIVO)
+    class PecaClosetDiffCallback(
+        private val oldList: List<Pair<PecaCloset, String>>,
+        private val newList: List<Pair<PecaCloset, String>>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun getNewListSize(): Int = newList.size
+
+        // Verifica se são o mesmo item (usando o UID da peça)
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            // Compara o UID (segundo elemento do Pair)
+            return oldList[oldItemPosition].second == newList[newItemPosition].second
+        }
+
+        // Verifica se o conteúdo do item é o mesmo (se a peça foi modificada)
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            // Compara o objeto PecaCloset (primeiro elemento do Pair)
+            return oldList[oldItemPosition].first == newList[newItemPosition].first
+        }
     }
 }
