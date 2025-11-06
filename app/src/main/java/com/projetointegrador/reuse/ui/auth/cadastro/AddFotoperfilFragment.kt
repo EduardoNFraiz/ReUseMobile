@@ -268,6 +268,7 @@ class AddFotoperfilFragment : Fragment() {
 
     /**
      * Função para criar as gavetas padrão (Vendas, Doação, Carrinho) e vincular ao usuário (PF ou PJ).
+     * CORRIGIDO: Adiciona o 'ownerUid' à gaveta para o modelo desnormalizado.
      */
     private fun createDefaultGavetas(userId: String, userRootPath: String) { // <-- Recebe o path correto
         val defaultGavetas = listOf("Vendas", "Doação", "Carrinho")
@@ -280,10 +281,11 @@ class AddFotoperfilFragment : Fragment() {
             val gavetaUid = gavetasRef.push().key // Gera um UID único para a gaveta
 
             if (gavetaUid != null) {
-                // Cria o objeto Gaveta
+                // ✅ CORREÇÃO APLICADA: Inclui o 'ownerUid' no objeto Gaveta para a estrutura desnormalizada
                 val novaGaveta = Gaveta(
                     id = gavetaUid,
                     name = gavetaName,
+                    ownerUid = userId, // <-- CRUCIAL: Vincula a gaveta ao usuário no nó /gavetas
                     number = "0",
                     fotoBase64 = "",
                     public = false,

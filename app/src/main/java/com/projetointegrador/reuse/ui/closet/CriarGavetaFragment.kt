@@ -167,6 +167,7 @@ class CriarGavetaFragment : Fragment() {
 
     // --- LÓGICA DE CARREGAMENTO DE DADOS ---
     private fun loadGavetaData(uid: String) {
+        // Busca direta no nó /gavetas/{uid}
         reference.child("gavetas").child(uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -207,6 +208,12 @@ class CriarGavetaFragment : Fragment() {
         val isPublic = binding.rbPublico.isChecked
         val isPrivate = binding.rbPrivado.isChecked
 
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            showError(getString(R.string.erro_usuario_nao_autenticado))
+            return
+        }
+
         if (isCreation && imageBase64.isNullOrBlank()) {
             showError(getString(R.string.msg_erro_imagem_vazia_gaveta))
             return
@@ -218,19 +225,21 @@ class CriarGavetaFragment : Fragment() {
         }
 
         if (isCreation) {
-            // Cria novo objeto Gaveta e salva
+            // ✅ AJUSTE AQUI: Cria novo objeto Gaveta, incluindo o 'ownerUid'
             gaveta = Gaveta(
                 name = nome,
+                ownerUid = userId, // <-- CRUCIAL: Adiciona o UID do proprietário
                 number = "0",
                 fotoBase64 = imageBase64,
                 public = isPublic
             )
-            saveGaveta()
+            saveGaveta(userId)
         } else {
             // Atualiza objeto Gaveta existente e salva
             gaveta.name = nome
             gaveta.public = isPublic
             gaveta.fotoBase64 = imageBase64
+            // O ownerUid já deve estar na gaveta carregada, não precisa ser setado novamente.
             updateGaveta()
         }
     }
@@ -251,6 +260,7 @@ class CriarGavetaFragment : Fragment() {
             "public" to gaveta.public,
             "fotoBase64" to gaveta.fotoBase64,
             "number" to gaveta.number
+            // O ownerUid NUNCA deve ser atualizado.
         )
 
         reference.child("gavetas").child(gavetaId!!)
@@ -274,13 +284,8 @@ class CriarGavetaFragment : Fragment() {
         }
     }
 
-    private fun saveGaveta() {
+    private fun saveGaveta(userId: String) {
         // Lógica de CRIAÇÃO
-        val userId = auth.currentUser?.uid
-        if (userId == null) {
-            showError(getString(R.string.erro_usuario_nao_autenticado))
-            return
-        }
 
         val tempGavetaId = reference.child("gavetas").push().key
         if (tempGavetaId.isNullOrBlank()) {
@@ -288,12 +293,18 @@ class CriarGavetaFragment : Fragment() {
             return
         }
 
+        // 1. Garante que o ID da gaveta está no objeto ANTES de salvar (para o campo 'id')
+        gaveta.id = tempGavetaId
+
+
         binding.bttCriarGaveta.isEnabled = false
+        // 2. Salva a gaveta completa, incluindo 'ownerUid', no nó /gavetas
         reference.child("gavetas")
             .child(tempGavetaId)
             .setValue(gaveta)
             .addOnCompleteListener { taskGaveta ->
                 if (taskGaveta.isSuccessful) {
+                    // 3. Vincula a gaveta ao índice do usuário
                     getUserAccountType(userId, tempGavetaId)
                 } else {
                     binding.bttCriarGaveta.isEnabled = true
@@ -340,7 +351,7 @@ class CriarGavetaFragment : Fragment() {
         }
     }
 
-    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas) ---
+    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas e corretas para a estrutura) ---
 
     private fun getUserAccountType(userId: String, gavetaId: String) {
         reference.child("usuarios").child("pessoaFisica").child(userId)
@@ -403,6 +414,7 @@ class CriarGavetaFragment : Fragment() {
         }
 
         if (userPath.isNotEmpty()) {
+            // Vincula a gaveta ao nó de índice rápido do usuário
             val userUpdateMap = mapOf(
                 "gavetas/$gavetaId" to true
             )

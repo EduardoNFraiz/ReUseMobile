@@ -5,6 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PecaCadastro(
+    var ownerUid: String? = null,
+    var gavetaUid: String? = null,
     var fotoBase64: String? = null,
     var cores: String? = null,
     var categoria: String? = null,
