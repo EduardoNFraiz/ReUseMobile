@@ -260,24 +260,15 @@ class ClosetFragment : Fragment() {
     }
 
     private fun barraDeNavegacao() {
-        binding.closet.setOnClickListener {
-            findNavController().navigate(R.id.closet)
-        }
-        binding.pesquisar.setOnClickListener {
-            findNavController().navigate(R.id.pesquisar)
-        }
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
             val bundle = Bundle().apply {
                 putBoolean("CRIANDO_ROUPA", true)
             }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle)
-        }
-        binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.doacao)
-        }
-        binding.perfil.setOnClickListener {
-            findNavController().navigate(R.id.perfil)
-        }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }
 
 

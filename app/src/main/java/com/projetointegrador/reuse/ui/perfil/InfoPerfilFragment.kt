@@ -331,27 +331,15 @@ class InfoPerfilFragment : Fragment() {
 
 
     private fun barraDeNavegacao() {
-        binding.closet.setOnClickListener {
-            findNavController().navigate(R.id.closet)
-        }
-        binding.pesquisar.setOnClickListener {
-            findNavController().navigate(R.id.pesquisar)
-        }
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
             val bundle = Bundle().apply {
                 putBoolean("CRIANDO_ROUPA", true)
             }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle)
-        }
-        binding.doacao.setOnClickListener {
-            findNavController().navigate(R.id.doacao)
-        }
-        binding.perfil.setOnClickListener {
-            findNavController().navigate(R.id.perfil)
-        }
-        binding.buttontester.setOnClickListener {
-            findNavController().navigate(R.id.action_infoPerfilFragment_to_cadRoupaFragment)
-        }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }
 
 

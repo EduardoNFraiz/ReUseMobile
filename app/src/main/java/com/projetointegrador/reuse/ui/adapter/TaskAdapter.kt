@@ -1,17 +1,16 @@
 package com.projetointegrador.reuse.ui.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Task
 import com.projetointegrador.reuse.databinding.CardviewPerfilBinding
+import com.projetointegrador.reuse.util.displayBase64Image // IMPORTANTE: Assumindo que esta função existe
 
 class TaskAdapter(
-    private val taskList: List<Task>
-
-): RecyclerView.Adapter<TaskAdapter.MyViewHolder> () {
+    private val taskList: List<Task> // Agora recebe uma lista
+) : RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -22,18 +21,24 @@ class TaskAdapter(
     override fun getItemCount() = taskList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val taskImage = taskList[position]
-        val taskName = taskList[position]
-        val taskUsername = taskList[position]
-        val taskRating = taskList[position]
+        val task = taskList[position] // Obtém o objeto Task
 
-        holder.binding.imageProfile.setImageResource(taskImage.image)
-        holder.binding.textViewName.text = taskName.name
-        holder.binding.textViewUsername.text = taskUsername.username
-        holder.binding.ratingBar.rating = taskRating.rating
+        // 1. NOME COMPLETO E NOME DE USUÁRIO
+        holder.binding.textViewName.text = task.nomeCompleto
+        holder.binding.textViewUsername.text = "@${task.nomeDeUsuario}" // Adiciona o '@'
+
+        // 2. RATING
+        holder.binding.ratingBar.rating = task.rating
+
+        // 3. IMAGEM (Usando fotoBase64)
+        if (!task.fotoBase64.isNullOrEmpty()) {
+            // Usa a função utilitária para carregar a imagem
+            displayBase64Image(task.fotoBase64!!, holder.binding.imageProfile)
+        } else {
+            // Se não houver foto, usa um placeholder (assumindo R.drawable.person é seu placeholder)
+            holder.binding.imageProfile.setImageResource(R.drawable.person)
+        }
     }
 
-    inner class MyViewHolder(val binding : CardviewPerfilBinding): RecyclerView.ViewHolder(binding.root){
-
-    }
+    inner class MyViewHolder(val binding: CardviewPerfilBinding) : RecyclerView.ViewHolder(binding.root)
 }

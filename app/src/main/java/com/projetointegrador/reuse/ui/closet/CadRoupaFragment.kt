@@ -267,11 +267,25 @@ class CadRoupaFragment : Fragment() {
             if (!validarDados()) return
 
             // Coleta dados da primeira etapa (editados ou novos)
+            // 🛑 ATENÇÃO: Listar TODOS os campos não editados para PRESERVAR os valores carregados do Firebase
             pecaEmAndamento = pecaEmAndamento.copy(
+
+                // --- Campos Editáveis (Tela 1) ---
                 fotoBase64 = imageBase64 ?: pecaEmAndamento.fotoBase64,
                 cores = getSelecionarCores(),
                 categoria = getSelecionarCategorias(),
-                tamanho = getSelecionarTamanho()
+                tamanho = getSelecionarTamanho(),
+
+                // --- Campos do Cad2 (PRESERVAR O VALOR CARREGADO DO BANCO) ---
+                // Se você não especificar, o Kotlin pode resetar para null ou um valor indesejado.
+                finalidade = pecaEmAndamento.finalidade,
+                preco = pecaEmAndamento.preco,
+                titulo = pecaEmAndamento.titulo,
+                detalhe = pecaEmAndamento.detalhe,
+
+                // --- Campos de Sistema (PRESERVAR O VALOR CARREGADO DO BANCO) ---
+                ownerUid = pecaEmAndamento.ownerUid,
+                gavetaUid = pecaEmAndamento.gavetaUid
             )
         }
 
@@ -439,7 +453,11 @@ class CadRoupaFragment : Fragment() {
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
-        binding.cadastrarRoupa.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.cadastrarRoupa.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("CRIANDO_ROUPA", true)
+            }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

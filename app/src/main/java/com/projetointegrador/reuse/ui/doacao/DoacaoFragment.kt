@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Instituicao
@@ -36,6 +37,7 @@ class DoacaoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
+        barraDeNavegacao()
         initRecyclerViewTask(getTask())
         val doacaoRealizada = arguments?.getBoolean("REALIZEI_DOACAO") ?: false
         if (doacaoRealizada) { mostrardialog() }
@@ -71,6 +73,17 @@ class DoacaoFragment : Fragment() {
         Instituicao(R.drawable.baseline_arrow_circle_right_24, "Eduardo Neumam", "2,0km de distancia", TipoConta.INSTITUICAO),
         )
 
+    private fun barraDeNavegacao() {
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
+        binding.cadastrarRoupa.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("CRIANDO_ROUPA", true)
+            }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

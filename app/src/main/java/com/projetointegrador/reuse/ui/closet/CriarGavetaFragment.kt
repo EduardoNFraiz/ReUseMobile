@@ -74,6 +74,7 @@ class CriarGavetaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
+        barraDeNavegacao()
         reference = Firebase.database.reference
         auth = Firebase.auth
 
@@ -432,6 +433,18 @@ class CriarGavetaFragment : Fragment() {
             binding.bttCriarGaveta.isEnabled = true
             showError(getString(R.string.erro_tipo_conta_invalido))
         }
+    }
+
+    private fun barraDeNavegacao() {
+        binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
+        binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
+        binding.cadastrarRoupa.setOnClickListener {
+            val bundle = Bundle().apply {
+                putBoolean("CRIANDO_ROUPA", true)
+            }
+            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+        binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
+        binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }
 
     override fun onDestroyView() {
