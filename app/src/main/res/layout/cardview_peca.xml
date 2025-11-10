@@ -9,7 +9,6 @@
     android:layout_marginBottom="10dp"
     android:layout_marginStart="27dp">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewItem"
         android:layout_width="wrap_content"

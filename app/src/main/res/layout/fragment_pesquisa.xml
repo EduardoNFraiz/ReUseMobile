@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edit_text_procurar"
+        android:id="@+id/editTextProcurar"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -48,7 +48,7 @@
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_procurar">
+        app:layout_constraintTop_toBottomOf="@+id/editTextProcurar">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

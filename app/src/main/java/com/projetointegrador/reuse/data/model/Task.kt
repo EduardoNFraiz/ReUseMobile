@@ -8,5 +8,5 @@ data class Task (
     var nomeCompleto: String,
     var nomeDeUsuario: String,
     val rating: Float,
-    val conta: TipoConta = TipoConta.USUARIO
+    val conta: TipoConta,
 ):Parcelable

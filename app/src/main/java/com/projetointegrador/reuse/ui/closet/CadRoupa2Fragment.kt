@@ -26,6 +26,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.database.MutableData
 import com.google.firebase.database.Transaction
+import com.projetointegrador.reuse.util.MoneyTextWatcher
 
 // ⚠️ Se Gaveta não for uma data class, descomente/ajuste conforme necessário:
 // data class Gaveta(val id: String? = null, val name: String? = null, val ownerUid: String? = null, var number: String? = null, val fotoBase64: String? = null, val public: Boolean = false, val pecas: Map<String, Boolean>? = null)
@@ -55,6 +56,7 @@ class CadRoupa2Fragment : Fragment() {
     private var isSavingPeca = false
 
     private var gavetaOptionsList: List<String> = emptyList()
+    private lateinit var precoTextWatcher: MoneyTextWatcher
 
     fun PecaCadastro.toMap(): Map<String, Any?> {
         return mapOf(
@@ -101,6 +103,11 @@ class CadRoupa2Fragment : Fragment() {
         setupViewMode()
         setupListeners()
         barraDeNavegacao()
+        val editTextPreco = binding.editEditText
+
+        // 1. Inicializa e aplica o MoneyTextWatcher
+        precoTextWatcher = MoneyTextWatcher(editTextPreco)
+        editTextPreco.addTextChangedListener(precoTextWatcher)
     }
 
     // --- FUNÇÕES DE INCREMENTO E DECREMENTO (Transações Atômicas - ADICIONADO) ---
@@ -706,7 +713,7 @@ class CadRoupa2Fragment : Fragment() {
     private fun collectFinalData() {
         pecaEmAndamento.apply {
             if (finalidade == getString(R.string.app_vender)) {
-                preco = binding.editEditText.text?.toString() ?: ""
+                preco = precoTextWatcher.getFormattedValueForSave()
                 titulo = binding.editTextTitulo.text?.toString() ?: ""
                 detalhe = binding.editTextDetalhes.text?.toString() ?: ""
             } else {
