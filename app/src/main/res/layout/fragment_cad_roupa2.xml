@@ -153,73 +153,56 @@
 
     <EditText
         android:id="@+id/editEditText"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/edittext_preco_background"
-        android:hint="@string/digite_o_pre"
-        android:visibility="visible"
         android:fontFamily="@font/raleway_extrabold"
+        android:hint="@string/digite_o_pre"
         android:inputType="numberDecimal"
         android:padding="12dp"
         android:textColor="@color/black"
         android:textColorHint="@color/VerdeClarinho"
-        android:layout_marginEnd="40dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.633"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinner" />
 
     <EditText
         android:id="@+id/editTextTitulo"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:background="@drawable/edittext_preco_background"
-        android:hint="Digite o título/nome para a peça"
-        android:visibility="visible"
         android:fontFamily="@font/raleway_extrabold"
+        android:hint="Digite o título/nome para a peça"
         android:inputType="text"
         android:maxLength="300"
         android:padding="12dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/black"
         android:textColorHint="@color/VerdeClarinho"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/editEditText" />
 
     <EditText
         android:id="@+id/editTextDetalhes"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="170dp"
         android:background="@drawable/edittext_preco_background"
-        android:hint="Digite os detalhes da peça"
-        android:visibility="visible"
         android:fontFamily="@font/raleway_extrabold"
+        android:hint="Digite os detalhes da peça"
         android:inputType="textMultiLine"
         android:maxLength="300"
         android:padding="12dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/black"
         android:textColorHint="@color/VerdeClarinho"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner" />
-
-
-    <TextView
-        android:id="@+id/textview6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/raleway_extrabold"
-        android:padding="12dp"
-        android:text="@string/r"
-        android:textColor="@color/VerdeEscuro"
-        android:textSize="19sp"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTitulo" />
 
     <LinearLayout
         android:id="@+id/rodape"

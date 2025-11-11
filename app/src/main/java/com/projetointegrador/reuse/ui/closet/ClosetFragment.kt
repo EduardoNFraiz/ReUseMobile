@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
@@ -55,14 +56,28 @@ class ClosetFragment : Fragment() {
         initListeners()
         barraDeNavegacao()
 
-        // 1. Configura o RecyclerView ANTES de buscar os dados.
-        // Isso garante que o Adapter esteja anexado na primeira passagem de layout.
         setupRecyclerView()
 
-        // 2. Inicia o carregamento das gavetas
-        loadUserGavetas()
+        // 🛑 INICIA A BUSCA COMPLETA SEM FILTRO
+        loadUserGavetas(null)
+
+        // 🛑 CONFIGURA O FILTRO DE PESQUISA
+        setupSearchListener()
     }
 
+
+    private fun setupSearchListener() {
+        binding.editTextPesquisarGavetas.doAfterTextChanged { editable -> // <--- ID CORRIGIDO AQUI
+            val searchText = editable.toString().trim()
+            if (searchText.length >= 1) {
+                // Se houver texto, use a busca otimizada
+                loadUserGavetas(searchText)
+            } else if (searchText.isEmpty()) {
+                // Se o campo estiver vazio, recarregue a lista completa
+                loadUserGavetas(null)
+            }
+        }
+    }
     /**
      * Inicializa a RecyclerView e anexa o Adapter com uma lista vazia.
      */
@@ -104,7 +119,7 @@ class ClosetFragment : Fragment() {
 
     // --- LÓGICA DE CARREGAMENTO DO FIREBASE ---
 
-    private fun loadUserGavetas() {
+    private fun loadUserGavetas(searchText: String?) {
         val userId = auth.currentUser?.uid
         if (userId == null) {
             showBottomSheet(message = "Usuário não autenticado.")
@@ -117,25 +132,27 @@ class ClosetFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Usuário é Pessoa Física
-                        getGavetaUidsFromUser(userId, "pessoaFisica", null)
+                        // 🛑 REPASSA O searchText
+                        getGavetaUidsFromUser(userId, "pessoaFisica", null, searchText)
                     } else {
                         // Se não for Pessoa Física, tentar encontrar em 'pessoaJuridica'
-                        searchPessoaJuridicaForGavetaUids(userId)
+                        // 🛑 REPASSA O searchText
+                        searchPessoaJuridicaForGavetaUids(userId, searchText)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
-                    updateRecyclerViewData(emptyList()) // Atualiza com lista vazia em caso de erro
+                    updateRecyclerViewData(emptyList())
                 }
             })
     }
 
     // Função auxiliar para buscar subtipos de Pessoa Jurídica
-    private fun searchPessoaJuridicaForGavetaUids(userId: String) {
+    private fun searchPessoaJuridicaForGavetaUids(userId: String, searchText: String?) {
         val subtipos = listOf("brechos", "instituicoes")
         var found = false
-        var checkedCount = 0 // Contador para verificar se todas as buscas terminaram
+        var checkedCount = 0
 
         for (subtipo in subtipos) {
             reference.child("usuarios").child("pessoaJuridica").child(subtipo).child(userId)
@@ -144,13 +161,12 @@ class ClosetFragment : Fragment() {
                         checkedCount++
                         if (snapshot.exists() && !found) {
                             found = true
-                            // Usuário é Pessoa Jurídica com o subtipo encontrado
-                            getGavetaUidsFromUser(userId, "pessoaJuridica", subtipo)
-                            return // Sai após encontrar o tipo de conta
+                            // 🛑 REPASSA O searchText
+                            getGavetaUidsFromUser(userId, "pessoaJuridica", subtipo, searchText)
+                            return
                         }
 
                         if (checkedCount == subtipos.size && !found) {
-                            // Se terminou de buscar em todos e não achou, a lista fica vazia.
                             showBottomSheet(message = "Nenhuma gaveta encontrada ou tipo de conta não identificado.")
                             updateRecyclerViewData(emptyList())
                         }
@@ -168,7 +184,7 @@ class ClosetFragment : Fragment() {
     }
 
     // 2. Obtém os UIDs das gavetas a partir do nó do usuário
-    private fun getGavetaUidsFromUser(userId: String, tipoConta: String, subtipo: String?) {
+    private fun getGavetaUidsFromUser(userId: String, tipoConta: String, subtipo: String?, searchText: String?) {
         val path = if (tipoConta == "pessoaFisica") {
             "usuarios/pessoaFisica/$userId/gavetas"
         } else {
@@ -185,8 +201,8 @@ class ClosetFragment : Fragment() {
                     }
 
                     if (gavetaUids.isNotEmpty()) {
-                        // 3. Buscar os dados completos
-                        fetchGavetaDetails(gavetaUids)
+                        // 🛑 AQUI A LISTA FINAL DE UIDs É PASSADA JUNTO COM O FILTRO DE NOME
+                        fetchGavetaDetails(gavetaUids, searchText)
                     } else {
                         // Nenhuma gaveta cadastrada
                         showBottomSheet(message = "Você ainda não possui gavetas cadastradas.")
@@ -202,20 +218,25 @@ class ClosetFragment : Fragment() {
     }
 
     // 4. Busca os dados completos de cada gaveta
-    private fun fetchGavetaDetails(gavetaUids: List<String>) {
+    private fun fetchGavetaDetails(gavetaUids: List<String>, searchText: String?) {
         val loadedGavetasWithUids = mutableListOf<Pair<Gaveta, String>>()
         val totalGavetas = gavetaUids.size
         var gavetasCarregadas = 0
+
+        // Converte o termo de busca para minúsculas uma única vez
+        val searchLower = searchText?.lowercase() ?: ""
 
         for (uid in gavetaUids) {
             reference.child("gavetas").child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        // Converte o DataSnapshot para o objeto Gaveta (sem modificar o UID)
+                        // Converte o DataSnapshot para o objeto Gaveta
                         val gaveta = snapshot.getValue(Gaveta::class.java)
                         if (gaveta != null) {
-                            // Adiciona o PAR (Gaveta, UID) à lista
-                            loadedGavetasWithUids.add(Pair(gaveta, uid))
+                            val nomeGavetaLower = gaveta.name?.lowercase() ?: ""
+                            if (searchLower.isEmpty() || nomeGavetaLower.contains(searchLower)) {
+                                loadedGavetasWithUids.add(Pair(gaveta, uid))
+                            }
                         }
 
                         gavetasCarregadas++

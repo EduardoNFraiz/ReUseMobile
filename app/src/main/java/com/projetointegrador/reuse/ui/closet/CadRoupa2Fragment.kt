@@ -285,7 +285,6 @@ class CadRoupa2Fragment : Fragment() {
         binding.editEditText.visibility = if (isVenda) View.VISIBLE else View.GONE
         binding.editTextTitulo.visibility = if (isVenda) View.VISIBLE else View.GONE
         binding.editTextDetalhes.visibility = if (isVenda) View.VISIBLE else View.GONE
-        binding.textview6.visibility = if (isVenda) View.VISIBLE else View.GONE
     }
 
     private fun updateSpinner(opcoes: List<String>) {
