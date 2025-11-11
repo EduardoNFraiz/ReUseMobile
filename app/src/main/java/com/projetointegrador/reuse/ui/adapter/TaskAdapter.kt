@@ -9,15 +9,12 @@ import com.projetointegrador.reuse.databinding.CardviewPerfilBinding
 import com.projetointegrador.reuse.util.displayBase64Image
 
 class TaskAdapter(
-    // 🛑 1. CORREÇÃO: Mude de List<Task> para MutableList<Task>
-    private val taskList: MutableList<Task>
+    private val taskList: MutableList<Task>,
+    // Interface de clique: aceita uma String (o UID)
+    private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.MyViewHolder>() {
 
-    // 🛑 2. ADICIONE: Método para atualizar a lista após a pesquisa
     fun updateList(newList: List<Task>) {
-        // Para evitar bugs de animação e manter a eficiência,
-        // é melhor usar DiffUtil se a lista for muito grande,
-        // mas para pesquisa simples, essa abordagem funciona.
         taskList.clear()
         taskList.addAll(newList)
         notifyDataSetChanged()
@@ -35,19 +32,25 @@ class TaskAdapter(
 
         // 1. NOME COMPLETO E NOME DE USUÁRIO
         holder.binding.textViewName.text = task.nomeCompleto
-        // 2. MELHORIA: Garante que o '@' esteja sempre presente (se não for passado no nomeDeUsuario)
         holder.binding.textViewUsername.text = "@${task.nomeDeUsuario}"
 
-        // 3. RATING
+        // 2. RATING
         holder.binding.ratingBar.rating = task.rating
 
-        // 4. IMAGEM (Usando fotoBase64)
+        // 3. IMAGEM
         if (!task.fotoBase64.isNullOrEmpty()) {
-            // Usa a função utilitária
             displayBase64Image(task.fotoBase64!!, holder.binding.imageProfile)
         } else {
-            // Se não houver foto, usa um placeholder (assumindo R.drawable.person é seu placeholder)
-            holder.binding.imageProfile.setImageResource(R.drawable.person)
+            holder.binding.imageProfile.setImageResource(R.drawable.person) // Placeholder
+        }
+
+        // 🛑 AJUSTE: Uso seguro do 'let' para lidar com o UID nullable (String?)
+        holder.binding.root.setOnClickListener {
+            task.uid?.let { uidNaoNulo ->
+                // O 'let' só é executado se task.uid não for nulo.
+                // 'uidNaoNulo' é tratado como String (não-null), resolvendo o erro de mutabilidade.
+                onItemClicked(uidNaoNulo)
+            }
         }
     }
 

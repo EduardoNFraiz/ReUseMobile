@@ -49,6 +49,7 @@
         android:id="@+id/tvEndereco"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:text="Rua das Oliveiras, nº 123 Campinas - São Paulo"
         android:textColor="@color/VerdeEscuro"
         android:textSize="16sp"

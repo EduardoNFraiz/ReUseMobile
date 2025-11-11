@@ -152,30 +152,48 @@ class CadastroInstituicaoFragment : Fragment() {
         tipoPessoa: String, tipoUsuario: String
     ) {
         val senha = binding.editTextSenha.text.toString().trim()
-        val refContas = database.child("contasPessoaJuridica") // Nó para Pessoas Jurídicas
+        // Referência correta para o nó de Instituições
+        val refInstituicoes = database.child("usuarios").child("pessoaJuridica").child("instituicoes")
+        // Referência correta para o nó de Pessoa Física (para checagem cruzada de usuário)
+        val refPessoaFisica = database.child("usuarios").child("pessoaFisica")
 
-        // Etapa 1: Checagem de CNPJ
-        refContas.orderByChild("cnpj").equalTo(cnpj).addListenerForSingleValueEvent(object : ValueEventListener {
+        // Etapa 1: Checagem de CNPJ (Somente no nó de PJ/Instituições)
+        refInstituicoes.orderByChild("cnpj").equalTo(cnpj).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     Toast.makeText(requireContext(), "Este CNPJ já está cadastrado!", Toast.LENGTH_SHORT).show()
                     return
                 }
 
-                // Etapa 2: Checagem de Nome de Usuário
-                refContas.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(userSnapshot: DataSnapshot) {
-                        if (userSnapshot.exists()) {
-                            Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso!", Toast.LENGTH_SHORT).show()
+                // Etapa 2: Checagem de Nome de Usuário (CHECA NAS DUAS TABELAS)
+                // 2a. Checagem em Pessoa Jurídica (Instituições)
+                refInstituicoes.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(userPjSnapshot: DataSnapshot) {
+                        if (userPjSnapshot.exists()) {
+                            Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso por outra Instituição!", Toast.LENGTH_SHORT).show()
                             return
                         }
 
-                        // Etapa 3: Prossegue com o cadastro no Firebase Auth
-                        registerUser(email, senha, nomeFantasia, usuario, telefone, cnpj, dataCadastro, tipoPessoa, tipoUsuario)
+                        // 2b. Checagem em Pessoa Física (para garantir unicidade global)
+                        refPessoaFisica.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(userPfSnapshot: DataSnapshot) {
+                                if (userPfSnapshot.exists()) {
+                                    Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso por um Usuário Comum!", Toast.LENGTH_SHORT).show()
+                                    return
+                                }
+
+                                // Etapa 3: Se CNPJ e Usuário são únicos, prossegue com o cadastro
+                                registerUser(email, senha, nomeFantasia, usuario, telefone, cnpj, dataCadastro, tipoPessoa, tipoUsuario)
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário (PF): ${error.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário (PJ): ${error.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
@@ -203,7 +221,6 @@ class CadastroInstituicaoFragment : Fragment() {
                         email = email,
                         telefone = telefone,
                         cnpj = cnpj,
-                        // Endereço e Foto Base64 serão adicionados no próximo fragmento.
                         endereço = "",
                         dataCadastro = dataCadastro,
                         tipoPessoa = tipoPessoa,

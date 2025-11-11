@@ -37,6 +37,7 @@ class InstituicaoAdapter(
             }
 
             binding.textViewName.text = instituicao.name
+            binding.textViewUsername.text = "@${instituicao.username}"
             binding.textViewDistancia.text = instituicao.distancia
 
             // Adicione um setOnClickListener aqui, se necessário, usando instituicao.uid

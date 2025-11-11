@@ -1,12 +1,14 @@
 package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth // 🛑 IMPORT NECESSÁRIO
@@ -52,10 +54,31 @@ class PesquisaBrechosFragment : Fragment() {
     }
 
     private fun initRecyclerViewTask(){
-        taskAdapter = TaskAdapter(taskList)
+        // 🛑 AJUSTE 1: Instancia o TaskAdapter com o listener de clique
+        taskAdapter = TaskAdapter(taskList) { clickedUserUid ->
+            navigateToVisualizarBrecho(clickedUserUid)
+        }
         binding.recyclerViewTask.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTask.setHasFixedSize(true)
         binding.recyclerViewTask.adapter = taskAdapter
+    }
+
+    private fun navigateToVisualizarBrecho(userUid: String) {
+        if (!isAdded) return
+
+        try {
+            // 🛑 MUDANÇA ESSENCIAL: CHAME A CLASSE DIRECTIONS DO FRAGMENTO PAI
+            // Use PesquisaFragmentDirections se a ação estiver dentro de PesquisaFragment.
+            val action = PesquisaFragmentDirections.actionPesquisaFragmentToVisualizarPBrechoFragment(userUid)
+
+            // Use findNavController() que resolve para o NavHost principal
+            findNavController().navigate(action)
+
+        } catch (e: Exception) {
+            // Mantenha o log para diagnosticar se houver falha (ex: nome da ação incorreto)
+            Log.e("PesquisaUsuarios", "Erro na navegação: ${e.message}", e)
+            Toast.makeText(requireContext(), "Erro ao navegar para o perfil. Verifique o NavGraph.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun performSearch(searchText: String) {
@@ -104,6 +127,7 @@ class PesquisaBrechosFragment : Fragment() {
 
                         if (!nomeDeUsuario.isNullOrEmpty()) {
                             val taskItem = Task(
+                                uid = brechoUID,
                                 fotoBase64 = fotoBase64,
                                 nomeCompleto = nomeFantasia ?: "Brechó",
                                 nomeDeUsuario = nomeDeUsuario,

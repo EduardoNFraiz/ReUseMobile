@@ -4,6 +4,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Task (
+    var uid: String?,
     var fotoBase64: String? = null,
     var nomeCompleto: String,
     var nomeDeUsuario: String,

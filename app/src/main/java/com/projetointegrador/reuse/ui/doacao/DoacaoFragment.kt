@@ -195,7 +195,8 @@ class DoacaoFragment : Fragment() {
                         val instituicaoDisplay = Instituicao(
                             fotoBase64 = contaPJ.fotoBase64,
                             uid = uid,
-                            name = contaPJ.nomeDeUsuario,
+                            name = contaPJ.nomeCompleto,
+                            username = contaPJ.nomeDeUsuario,
                             distancia = distancia,
                             conta = TipoConta.INSTITUICAO
                         )
@@ -215,7 +216,7 @@ class DoacaoFragment : Fragment() {
 
                     // Ordena pela distância (extrai o número para ordenar, ignora texto)
                     instituicaoAdapter.updateList(instituicaoListForDisplay.sortedBy {
-                        it.distancia.substringBefore(" ")?.toDoubleOrNull() ?: Double.MAX_VALUE
+                        it.distancia.substringBefore(" ").toDoubleOrNull() ?: Double.MAX_VALUE
                     })
 
                     if (instituicaoListForDisplay.isEmpty()) {

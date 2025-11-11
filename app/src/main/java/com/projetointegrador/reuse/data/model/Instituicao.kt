@@ -6,6 +6,7 @@ data class Instituicao(
     var fotoBase64: String? = null,
     var uid: String,
     var name: String,
+    var username: String,
     var distancia: String,
     var conta: TipoConta = TipoConta.INSTITUICAO
 ): Parcelable

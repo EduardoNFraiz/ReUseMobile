@@ -1,33 +1,30 @@
 package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth // Import necessário
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.database
-import com.projetointegrador.reuse.data.model.PecaCadastro // 🛑 MODELO CORRIGIDO
+import com.projetointegrador.reuse.data.model.PecaCadastro
 import com.projetointegrador.reuse.databinding.FragmentPesquisaVendasBinding
-import com.projetointegrador.reuse.ui.adapter.PecaAdapter // Adaptação necessária
+import com.projetointegrador.reuse.ui.adapter.PecaAdapter
 import com.projetointegrador.reuse.R
-import com.projetointegrador.reuse.data.model.Peca
-
-// Nota: Seu PecaAdapter precisará aceitar List<Pair<PecaCadastro, String>>
-// Se o PecaAdapter estiver usando Peca, você pode fazer o cast ou ajuste localmente.
-// Assumindo que você ajustará o PecaAdapter para aceitar PecaCadastro.
 
 class PesquisaVendasFragment : Fragment() {
     private var _binding: FragmentPesquisaVendasBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var database: DatabaseReference
-    // Adaptador deve ser compatível com PecaCadastro, ou você fará o cast no mapeamento
+    // O Adapter agora está ajustado para List<Pair<PecaCadastro, String>>
     private lateinit var pecaAdapter: PecaAdapter
     private var searchListener: ValueEventListener? = null
 
@@ -47,7 +44,7 @@ class PesquisaVendasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 🛑 OBTÉM O UID DO USUÁRIO LOGADO
+        // OBTÉM O UID DO USUÁRIO LOGADO
         currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
         initRecyclerViewPecas()
@@ -57,14 +54,36 @@ class PesquisaVendasFragment : Fragment() {
     }
 
     private fun initRecyclerViewPecas(){
-        // 🛑 Inicialização: O Adapter agora espera PecaCadastro
-        pecaAdapter = PecaAdapter(emptyList()) { pecaUid ->
-            Toast.makeText(requireContext(), "Clicou na peça: $pecaUid", Toast.LENGTH_SHORT).show()
+        // Inicializa o adapter e passa a função de navegação (lambda)
+        pecaAdapter = PecaAdapter(mutableListOf()) { pecaUid ->
+            navigateToComprarPeca(pecaUid)
         }
 
         binding.recyclerViewTask.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerViewTask.setHasFixedSize(true)
         binding.recyclerViewTask.adapter = pecaAdapter
+    }
+
+    /**
+     * Executa a navegação para o Fragmento de compra da peça.
+     * Utiliza o NavController do Fragmento Pai para lidar com a hierarquia ViewPager.
+     */
+    private fun navigateToComprarPeca(pecaUid: String) {
+        if (!isAdded) return
+
+        try {
+            // CRUCIAL: Utiliza PesquisaFragmentDirections, assumindo que a ação está
+            // definida no Fragmento Pai (PesquisaFragment)
+            val action = PesquisaFragmentDirections.actionPesquisaFragmentToComprarPecaFragment(pecaUid)
+
+            // Usa findNavController() que resolverá o NavController do NavHost
+            findNavController().navigate(action)
+
+        } catch (e: Exception) {
+            // Logs de diagnóstico
+            Log.e("PesquisaVendas", "Erro na navegação para ComprarPeca. Verifique o NavGraph e o ID da ação.", e)
+            Toast.makeText(requireContext(), "Erro ao navegar para a peça. Verifique o NavGraph.", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun performVendasSearch(searchText: String) {
@@ -77,28 +96,27 @@ class PesquisaVendasFragment : Fragment() {
             .orderByChild("finalidade")
             .equalTo("Vender")
 
-        searchListener = object : ValueEventListener {
+        val newListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Usamos Pair<PecaCadastro, String> na lista temporária
+                // Usamos Pair<PecaCadastro, String> na lista temporária (Peca + UID)
                 val fullVendasListWithUids = mutableListOf<Pair<PecaCadastro, String>>()
 
                 for (pecaSnapshot in snapshot.children) {
-                    // 🛑 Mapeando para PecaCadastro
                     val peca = pecaSnapshot.getValue(PecaCadastro::class.java)
                     val pecaUid = pecaSnapshot.key
 
                     if (peca != null && pecaUid != null) {
 
-                        // 🛑 FILTRO DE EXCLUSÃO DE PEÇA PRÓPRIA USANDO 'ownerUid'
+                        // FILTRO DE EXCLUSÃO DE PEÇA PRÓPRIA USANDO 'ownerUid'
                         if (peca.ownerUid == currentUserId) {
-                            continue // Pula a peça se for do usuário logado
+                            continue
                         }
 
                         fullVendasListWithUids.add(Pair(peca, pecaUid))
                     }
                 }
 
-                // 2. APLICAÇÃO DO FILTRO DE PESQUISA (LOCAL): Filtra o resultado já excluído
+                // 2. APLICAÇÃO DO FILTRO DE PESQUISA (LOCAL)
                 val filteredList = if (searchLower.isNotEmpty() && searchLower.length >= 1) {
                     fullVendasListWithUids.filter { (peca, _) ->
                         // Filtra pelo campo 'titulo'
@@ -108,11 +126,8 @@ class PesquisaVendasFragment : Fragment() {
                     fullVendasListWithUids
                 }
 
-                Toast.makeText(requireContext(), "DEBUG VENDAS: ${filteredList.size} peças encontradas (Excluindo próprias).", Toast.LENGTH_LONG).show()
-
-                // O PecaAdapter deve estar pronto para receber List<Pair<PecaCadastro, String>>
-                // Se seu adapter usa Peca, você pode precisar mapear PecaCadastro para Peca antes de updateList.
-                pecaAdapter.updateList(filteredList) // 🛑 ATENÇÃO AQUI: Cast forçado se o Adapter for PecaAdapter<Peca>
+                // Exemplo de Toast de debug removido ou ajustado
+                pecaAdapter.updateList(filteredList)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -120,7 +135,8 @@ class PesquisaVendasFragment : Fragment() {
             }
         }
 
-        baseQuery.addListenerForSingleValueEvent(searchListener as ValueEventListener)
+        baseQuery.addListenerForSingleValueEvent(newListener)
+        searchListener = newListener
     }
 
     override fun onDestroyView() {

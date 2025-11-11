@@ -17,9 +17,6 @@
     <action
         android:id="@+id/perfil"
         app:destination="@+id/infoPerfilFragment"/>
-    <action
-        android:id="@+id/perfiluser"
-        app:destination="@+id/visualizarPBrechoFragment"/>
 
     <action android:id="@+id/doacao"
         app:destination="@+id/doacaoFragment"/>
@@ -252,7 +249,17 @@
         android:id="@+id/pesquisaFragment"
         android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaFragment"
         android:label="fragment_pesquisa"
-        tools:layout="@layout/fragment_pesquisa" />
+        tools:layout="@layout/fragment_pesquisa" >
+        <action
+            android:id="@+id/action_pesquisaFragment_to_comprarPecaFragment"
+            app:destination="@id/comprarPecaFragment" />
+        <action
+            android:id="@+id/action_pesquisaFragment_to_visualizarPUsuarioFragment"
+            app:destination="@id/visualizarPUsuarioFragment" />
+        <action
+            android:id="@+id/action_pesquisaFragment_to_visualizarPBrechoFragment"
+            app:destination="@id/visualizarPBrechoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cadRoupaFragment"
         android:name="com.projetointegrador.reuse.ui.closet.CadRoupaFragment"
@@ -301,7 +308,11 @@
         android:id="@+id/visualizarPUsuarioFragment"
         android:name="com.projetointegrador.reuse.ui.pesquisar.VisualizarPUsuarioFragment"
         android:label="fragment_visualizar_p_usuario"
-        tools:layout="@layout/fragment_visualizar_p_usuario" />
+        tools:layout="@layout/fragment_visualizar_p_usuario" >
+        <argument
+            android:name="userUID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/pesquisaUsuariosFragment"
         android:name="com.projetointegrador.reuse.ui.pesquisar.PesquisaUsuariosFragment"
@@ -321,7 +332,11 @@
         android:id="@+id/visualizarPBrechoFragment"
         android:name="com.projetointegrador.reuse.ui.pesquisar.VisualizarPBrechoFragment"
         android:label="fragment_visualizar_p_brecho"
-        tools:layout="@layout/fragment_visualizar_p_brecho" />
+        tools:layout="@layout/fragment_visualizar_p_brecho" >
+        <argument
+            android:name="userUID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/usuarioClosetFragment"
         android:name="com.projetointegrador.reuse.ui.pesquisar.UsuarioClosetFragment"
@@ -380,17 +395,28 @@
         <action
             android:id="@+id/action_comprarPecaFragment_to_avaliacoesFragment"
             app:destination="@id/avaliacoesFragment" />
+        <argument
+            android:name="pecaUID"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/confirmarCompraFragment"
         android:name="com.projetointegrador.reuse.ui.compra.ConfirmarCompraFragment"
         android:label="fragment_confirmar_compra"
-        tools:layout="@layout/fragment_confirmar_compra" />
+        tools:layout="@layout/fragment_confirmar_compra" >
+        <argument
+            android:name="pecaUID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/avaliacoesFragment"
         android:name="com.projetointegrador.reuse.ui.avaliacao.AvaliacoesFragment"
         android:label="fragment_avaliacoes"
-        tools:layout="@layout/fragment_avaliacoes" />
+        tools:layout="@layout/fragment_avaliacoes" >
+        <argument
+            android:name="userUID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/historicoFragment"
         android:name="com.projetointegrador.reuse.ui.closet.HistoricoFragment"

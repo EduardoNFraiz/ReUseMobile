@@ -27,10 +27,11 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="310dp"
-        android:paddingTop="15dp"
         android:paddingHorizontal="15dp"
+        android:paddingTop="15dp"
         android:src="@drawable/camisa"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -73,7 +74,7 @@
         android:id="@+id/btnComprar"
         android:layout_width="350dp"
         android:layout_height="40dp"
-        android:layout_marginTop="570dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/estilobtt1"
         android:text="Comprar"
         android:textAllCaps="false"
@@ -82,108 +83,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="350dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="230dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/estilobtt1"
         android:text="Adicionar ao carrinho"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintTop_toBottomOf="@+id/btnComprar" />
 
-    <LinearLayout
-        android:layout_width="390dp"
-        android:layout_height="180dp"
-        android:layout_marginBottom="20dp"
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnVerMais"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/estilobtt1"
-        android:orientation="vertical"
-        android:padding="12dp"
+        android:gravity="center"
+        android:text="Ver avaliações do vendedor"
+        android:textColor="@color/VerdeEscuro"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imgPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/avatar_background"
-                android:padding="2dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_foreground" />
-
-            <TextView
-                android:id="@+id/txtNome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Thiago"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/estrelapreenchida" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/estrelapreenchida" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/estrelapreenchida" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/estrelapreenchida" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/estrelameiapreenchida" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtComentario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto."
-            android:textSize="14sp" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnVerMais"
-            android:layout_width="350dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/estilobtt1"
-            android:gravity="center"
-            android:text="Ver mais"
-            android:textColor="@color/VerdeEscuro" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

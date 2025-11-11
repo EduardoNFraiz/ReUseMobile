@@ -1,6 +1,7 @@
 package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth // 🛑 IMPORT NECESSÁRIO
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.database
 import com.projetointegrador.reuse.data.model.ContaPessoaFisica
@@ -17,6 +18,7 @@ import com.projetointegrador.reuse.data.model.TipoConta
 import com.projetointegrador.reuse.databinding.FragmentPesquisaUsuariosBinding
 import com.projetointegrador.reuse.ui.adapter.TaskAdapter
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 
 class PesquisaUsuariosFragment : Fragment() {
     private var _binding: FragmentPesquisaUsuariosBinding? = null
@@ -28,7 +30,7 @@ class PesquisaUsuariosFragment : Fragment() {
     private var searchListener: ValueEventListener? = null
 
     private val sharedViewModel: SharedSearchViewModel by activityViewModels()
-    private var currentUserId: String? = null // 🛑 UID do usuário logado
+    private var currentUserId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +45,6 @@ class PesquisaUsuariosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 🛑 OBTÉM O UID DO USUÁRIO LOGADO
         currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
         initRecyclerViewTask()
@@ -53,10 +54,30 @@ class PesquisaUsuariosFragment : Fragment() {
     }
 
     private fun initRecyclerViewTask(){
-        taskAdapter = TaskAdapter(taskList)
+        taskAdapter = TaskAdapter(taskList) { clickedUserUid ->
+            navigateToVisualizarUsuario(clickedUserUid)
+        }
         binding.recyclerViewTask.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTask.setHasFixedSize(true)
         binding.recyclerViewTask.adapter = taskAdapter
+    }
+
+    private fun navigateToVisualizarUsuario(userUid: String) {
+        if (!isAdded) return
+
+        try {
+            // 🛑 MUDANÇA ESSENCIAL: CHAME A CLASSE DIRECTIONS DO FRAGMENTO PAI
+            // Use PesquisaFragmentDirections se a ação estiver dentro de PesquisaFragment.
+            val action = PesquisaFragmentDirections.actionPesquisaFragmentToVisualizarPUsuarioFragment(userUid)
+
+            // Use findNavController() que resolve para o NavHost principal
+            findNavController().navigate(action)
+
+        } catch (e: Exception) {
+            // Mantenha o log para diagnosticar se houver falha (ex: nome da ação incorreto)
+            Log.e("PesquisaUsuarios", "Erro na navegação: ${e.message}", e)
+            Toast.makeText(requireContext(), "Erro ao navegar para o perfil. Verifique o NavGraph.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun performSearch(searchText: String) {
@@ -84,44 +105,25 @@ class PesquisaUsuariosFragment : Fragment() {
                 val newTaskList = mutableListOf<Task>()
 
                 for (userSnapshot in snapshot.children) {
-                    val userUID = userSnapshot.key // UID é a chave principal
+                    val userUID = userSnapshot.key
 
-                    // 🛑 FILTRO DE EXCLUSÃO DO PERFIL LOGADO
                     if (userUID == currentUserId) {
-                        continue // Pula o nó do usuário logado
+                        continue
                     }
 
-                    val map = userSnapshot.value as? Map<*, *>
+                    val conta = userSnapshot.getValue(ContaPessoaFisica::class.java)
 
-                    if (map != null) {
-                        val nomeCompleto = map["nomeCompleto"]?.toString()
-                        val nomeDeUsuario = map["nomeDeUsuario"]?.toString()
-                        val fotoBase64 = map["fotoBase64"]?.toString()
+                    if (conta != null && !conta.nomeDeUsuario.isNullOrEmpty()) {
 
-                        if (!nomeDeUsuario.isNullOrEmpty()) {
-                            val conta = ContaPessoaFisica(
-                                nomeCompleto = nomeCompleto ?: "",
-                                nomeDeUsuario = nomeDeUsuario,
-                                email = map["email"]?.toString() ?: "",
-                                telefone = map["telefone"]?.toString() ?: "",
-                                dataNascimento = map["dataNascimento"]?.toString() ?: "",
-                                cpf = map["cpf"]?.toString() ?: "",
-                                endereço = map["endereço"]?.toString() ?: "",
-                                dataCadastro = map["dataCadastro"]?.toString() ?: "",
-                                tipoPessoa = map["tipoPessoa"]?.toString() ?: "",
-                                tipoUsuario = map["tipoUsuario"]?.toString() ?: "",
-                                fotoBase64 = fotoBase64
-                            )
-
-                            val taskItem = Task(
-                                fotoBase64 = conta.fotoBase64,
-                                nomeCompleto = conta.nomeCompleto,
-                                nomeDeUsuario = conta.nomeDeUsuario,
-                                rating = 4.5f,
-                                conta = TipoConta.USUARIO
-                            )
-                            newTaskList.add(taskItem)
-                        }
+                        val taskItem = Task(
+                            uid = userUID,
+                            fotoBase64 = conta.fotoBase64,
+                            nomeCompleto = conta.nomeCompleto,
+                            nomeDeUsuario = conta.nomeDeUsuario,
+                            rating = 4.5f,
+                            conta = TipoConta.USUARIO
+                        )
+                        newTaskList.add(taskItem)
                     }
                 }
 

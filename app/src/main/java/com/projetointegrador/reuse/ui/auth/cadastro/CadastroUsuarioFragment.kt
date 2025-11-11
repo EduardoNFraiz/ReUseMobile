@@ -154,30 +154,48 @@ class CadastroUsuarioFragment : Fragment() {
     }
 
     private fun checkUnicidadeAndProceed(email: String, usuario: String, cpf: String) {
-        val refContas = database.child("contasPessoaFisica")
+        // Referência correta para o nó de Pessoa Física
+        val refPessoaFisica = database.child("usuarios").child("pessoaFisica")
+        // Referência correta para o nó de Instituições (dentro de Pessoa Jurídica)
+        val refInstituicoes = database.child("usuarios").child("pessoaJuridica").child("instituicoes")
 
-        // Etapa 1: Checagem de CPF
-        refContas.orderByChild("cpf").equalTo(cpf).addListenerForSingleValueEvent(object : ValueEventListener {
+        // Etapa 1: Checagem de CPF (Só precisa checar em Pessoa Física)
+        refPessoaFisica.orderByChild("cpf").equalTo(cpf).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     Toast.makeText(requireContext(), "Este CPF já está cadastrado!", Toast.LENGTH_SHORT).show()
                     return
                 }
 
-                // Etapa 2: Checagem de Nome de Usuário (somente se o CPF for único)
-                refContas.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(userSnapshot: DataSnapshot) {
-                        if (userSnapshot.exists()) {
+                // Etapa 2: Checagem de Nome de Usuário (CHECA NAS DUAS TABELAS)
+                // 2a. Checagem em Pessoa Física
+                refPessoaFisica.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(userPfSnapshot: DataSnapshot) {
+                        if (userPfSnapshot.exists()) {
                             Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso!", Toast.LENGTH_SHORT).show()
                             return
                         }
 
-                        // Etapa 3: Se CPF e Usuário são únicos, prossegue com o cadastro no Firebase Auth
-                        registerUser(email, binding.editTextSenha.text.toString().trim())
+                        // 2b. Checagem em Pessoa Jurídica (Instituições)
+                        refInstituicoes.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(userPjSnapshot: DataSnapshot) {
+                                if (userPjSnapshot.exists()) {
+                                    Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso por uma Instituição!", Toast.LENGTH_SHORT).show()
+                                    return
+                                }
+
+                                // Etapa 3: Se CPF e Usuário são únicos, prossegue com o cadastro no Firebase Auth
+                                registerUser(email, binding.editTextSenha.text.toString().trim())
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(requireContext(), "Erro ao verificar Usuário (PJ): ${error.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Erro ao verificar Usuário (PF): ${error.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
