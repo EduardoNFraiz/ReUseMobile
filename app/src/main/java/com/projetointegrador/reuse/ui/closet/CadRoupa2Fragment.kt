@@ -762,6 +762,3 @@ class CadRoupa2Fragment : Fragment() {
         _binding = null
     }
 }
-
-
-

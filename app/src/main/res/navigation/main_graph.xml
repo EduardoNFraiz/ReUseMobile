@@ -312,6 +312,9 @@
         <argument
             android:name="userUID"
             app:argType="string" />
+        <action
+            android:id="@+id/action_visualizarPUsuarioFragment_to_comprarPecaFragment"
+            app:destination="@id/comprarPecaFragment" />
     </fragment>
     <fragment
         android:id="@+id/pesquisaUsuariosFragment"
@@ -336,6 +339,9 @@
         <argument
             android:name="userUID"
             app:argType="string" />
+        <action
+            android:id="@+id/action_visualizarPBrechoFragment_to_comprarPecaFragment"
+            app:destination="@id/comprarPecaFragment" />
     </fragment>
     <fragment
         android:id="@+id/usuarioClosetFragment"
