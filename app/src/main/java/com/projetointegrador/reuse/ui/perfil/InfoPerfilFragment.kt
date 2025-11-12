@@ -36,6 +36,7 @@ class InfoPerfilFragment : Fragment() {
     private var isEditing: Boolean = false
     private var userPath: String? = null // Caminho do usuário no Firebase (ex: usuarios/pessoaFisica/{uid})
     private var newProfileImageBase64: String? = null // NOVO: Armazena a string Base64 da nova foto
+    private var isInstitution: Boolean = false
 
     // NOVO: Registro do Activity Result Launcher (Substitui startActivityForResult e onActivityResult)
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -72,6 +73,7 @@ class InfoPerfilFragment : Fragment() {
 
         // Esconde o botão salvar por padrão
         binding.bttSalvar.visibility = View.GONE
+        binding.bttAnuncio.visibility = View.GONE
 
         // Inicializa o modo de visualização
         toggleEditMode(false)
@@ -98,6 +100,15 @@ class InfoPerfilFragment : Fragment() {
             // Só navega se NÃO estiver em modo de edição
             if (!isEditing) {
                 findNavController().navigate(R.id.action_infoPerfilFragment_to_editEnderecoFragment)
+            }
+        }
+
+        binding.bttAnuncio.setOnClickListener {
+            if (!isEditing) {
+                // Navega para a tela de edição do anúncio (Configurar no NavGraph!)
+                findNavController().navigate(R.id.action_infoPerfilFragment_to_editarAnuncioFragment)
+            } else {
+                showBottomSheet(message = "Finalize ou cancele a edição do perfil para editar o anúncio.")
             }
         }
 
@@ -180,19 +191,24 @@ class InfoPerfilFragment : Fragment() {
     private fun toggleEditMode(enable: Boolean) {
         isEditing = enable
 
-        // Habilita/desabilita campos
         binding.etNome.isEnabled = enable
         binding.etUsuario.isEnabled = enable
-        // O Email e o CPF/CNPJ não podem ser alterados
         binding.etEmail.isEnabled = false
-        binding.etCpfCnpj.isEnabled = false // REGRA: CPF/CNPJ bloqueado mesmo em edição
+        binding.etCpfCnpj.isEnabled = false
         binding.etTelefone.isEnabled = enable
 
-        // Habilita/desabilita botões
         binding.bttSalvar.visibility = if (enable) View.VISIBLE else View.GONE
-        binding.bttEndereco.isEnabled = !enable // Trava o botão Endereço no modo edição
+        binding.bttEndereco.isEnabled = !enable
 
-        // Atualiza o texto do botão de Edição/Cancelamento
+        // 🛑 Lógica para o botão de Anúncio
+        if (isInstitution) {
+            // Só exibe o botão se for instituição e NÃO estiver editando o perfil principal
+            binding.bttAnuncio.visibility = if (enable) View.GONE else View.VISIBLE
+        } else {
+            binding.bttAnuncio.visibility = View.GONE
+        }
+
+
         binding.bttEditar.text = if (enable) "Cancelar Edição" else "Editar"
     }
 
@@ -202,6 +218,10 @@ class InfoPerfilFragment : Fragment() {
             showBottomSheet(message = "Usuário não autenticado.")
             return
         }
+
+        // 🛑 Reseta o flag da instituição antes de buscar
+        isInstitution = false
+        binding.bttAnuncio.visibility = View.GONE
 
         // 1. Tentar encontrar o usuário em 'pessoaFisica'
         reference.child("usuarios").child("pessoaFisica").child(userId)
@@ -232,6 +252,11 @@ class InfoPerfilFragment : Fragment() {
                         if (snapshot.exists() && !found) {
                             found = true
                             userPath = "usuarios/pessoaJuridica/$subtipo/$userId"
+
+                            // 🛑 É UMA INSTITUIÇÃO (PJ)
+                            isInstitution = true
+                            binding.bttAnuncio.visibility = View.VISIBLE
+
                             fetchUserDetails(snapshot)
                         }
 

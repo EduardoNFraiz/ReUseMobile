@@ -72,30 +72,6 @@
         app:layout_constraintStart_toEndOf="@+id/imagePerfil"
         app:layout_constraintTop_toBottomOf="@+id/textViewNome" />
 
-    <TextView
-        android:id="@+id/textViewCEP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:text="CEP:  78053-224"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintStart_toEndOf="@+id/imagePerfil"/>
-
-    <TextView
-        android:id="@+id/textViewCNPJ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:fontFamily="@font/alata"
-        android:text="CNPJ:  63.169.795/0001-86"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCEP"
-        app:layout_constraintStart_toStartOf="@id/textViewCEP"/>
 
     <TextView
         android:id="@+id/textViewSelectRoupas"

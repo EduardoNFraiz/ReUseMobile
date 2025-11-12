@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Instituicao
 import com.projetointegrador.reuse.databinding.CardviewInstituicaoBinding
-import com.projetointegrador.reuse.util.displayBase64Image // 🛑 IMPORT ESSENCIAL
+import com.projetointegrador.reuse.util.displayBase64Image
 
 class InstituicaoAdapter(
-    private var instituicaoList: List<Instituicao>
+    private var instituicaoList: List<Instituicao>,
+    private val onItemClick: (String) -> Unit
 ): RecyclerView.Adapter<InstituicaoAdapter.MyViewHolder> () {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -40,9 +41,9 @@ class InstituicaoAdapter(
             binding.textViewUsername.text = "@${instituicao.username}"
             binding.textViewDistancia.text = instituicao.distancia
 
-            // Adicione um setOnClickListener aqui, se necessário, usando instituicao.uid
+            // 🛑 Adição do Listener: Chama a função onItemClick com o UID da instituição.
             binding.root.setOnClickListener {
-                // Ação ao clicar na instituição
+                onItemClick.invoke(instituicao.uid)
             }
         }
     }

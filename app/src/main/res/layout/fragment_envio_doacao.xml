@@ -98,6 +98,6 @@
         android:text="Doar"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
-        android:textSize="20dp" />
-
+        android:textSize="20dp"
+        android:enabled="false" />
 </LinearLayout>

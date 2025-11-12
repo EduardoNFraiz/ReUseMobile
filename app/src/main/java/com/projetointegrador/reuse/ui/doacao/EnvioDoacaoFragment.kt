@@ -29,9 +29,17 @@ class EnvioDoacaoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar(binding.toolbar)
+
+        // 🛑 Inicialmente, desabilita o botão, caso não tenha sido feito no XML.
+        // Se estiver definido no XML, esta linha é redundante, mas garante a funcionalidade.
+        binding.btnDoacao.isEnabled = false
+
         initListeners()
 
         binding.radioGroupOpcoes.setOnCheckedChangeListener { group, checkedId ->
+            // 🛑 HABILITA O BOTÃO SEMPRE QUE QUALQUER OPÇÃO FOR SELECIONADA
+            binding.btnDoacao.isEnabled = checkedId != -1
+
             for (i in 0 until group.childCount) {
                 val radio = group.getChildAt(i) as RadioButton
                 if (radio.id == checkedId) {
@@ -45,10 +53,18 @@ class EnvioDoacaoFragment : Fragment() {
 
     private fun initListeners(){
         binding.btnDoacao.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("REALIZEI_DOACAO", true)
+            // O botão só será clicado se estiver habilitado (ou seja, checkedId != -1)
+            val selectedId = binding.radioGroupOpcoes.checkedRadioButtonId
+
+            if (selectedId != -1) {
+                // Aqui você pode pegar a opção selecionada se necessário (e.g., para salvar no banco)
+                val selectedOption = view?.findViewById<RadioButton>(selectedId)?.text.toString()
+
+                val bundle = Bundle().apply {
+                    putBoolean("REALIZEI_DOACAO", true)
+                }
+                findNavController().navigate(R.id.doacao, bundle)
             }
-            findNavController().navigate(R.id.doacao, bundle)
         }
     }
 

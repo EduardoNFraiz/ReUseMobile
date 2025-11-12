@@ -155,19 +155,27 @@ class CadRoupa2Fragment : Fragment() {
     // --- NOVO: Carregamento de UIDs de Gavetas Fixas ---
 
     private fun loadTransacaoGavetaUids() {
+        val ownerUid = auth.currentUser?.uid
+        if (ownerUid == null) {
+            Toast.makeText(requireContext(), "Erro: Usuário não logado.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         // Busca o UID da gaveta "Doação" para uso em transações
-        fetchGavetaUidByName(gavetaDoar.first()) { uid ->
+        // 🛑 Passando o ownerUid
+        fetchGavetaUidByName(gavetaDoar.first(), ownerUid) { uid ->
             uidGavetaDoacao = uid
             if (uid == null) {
-                Toast.makeText(requireContext(), "Aviso: Gaveta 'Doação' não encontrada no banco.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Aviso: Gaveta 'Doação' não encontrada para este usuário.", Toast.LENGTH_LONG).show()
             }
         }
 
         // Busca o UID da gaveta "Vendas" para uso em transações
-        fetchGavetaUidByName(gavetaVender.first()) { uid ->
+        // 🛑 Passando o ownerUid
+        fetchGavetaUidByName(gavetaVender.first(), ownerUid) { uid ->
             uidGavetaVenda = uid
             if (uid == null) {
-                Toast.makeText(requireContext(), "Aviso: Gaveta 'Vendas' não encontrada no banco.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Aviso: Gaveta 'Vendas' não encontrada para este usuário.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -457,15 +465,25 @@ class CadRoupa2Fragment : Fragment() {
         }
     }
 
-    private fun fetchGavetaUidByName(gavetaName: String, onComplete: (String?) -> Unit) {
-        // Busca o UID da gaveta de transação pelo nome (usando index no Firebase)
+    private fun fetchGavetaUidByName(
+        gavetaName: String,
+        ownerUid: String, // 🛑 NOVO: UID do usuário para filtro
+        onComplete: (String?) -> Unit
+    ) {
+        // 🛑 Consulta no Firebase: Ordena por 'ownerUid' e filtra pelo UID do usuário.
+        // O filtro por 'name' será feito no código Kotlin (lado do cliente).
         database.child("gavetas")
-            .orderByChild("name")
-            .equalTo(gavetaName)
-            .limitToFirst(1)
+            .orderByChild("ownerUid") // Deve haver um índice em "ownerUid" no Firebase Rules
+            .equalTo(ownerUid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val uid = snapshot.children.firstOrNull()?.key
+
+                    // 🛑 NOVO: Filtrar o resultado localmente pelo 'name'.
+                    val gavetaEncontrada = snapshot.children.firstOrNull {
+                        it.child("name").getValue(String::class.java) == gavetaName
+                    }
+
+                    val uid = gavetaEncontrada?.key
                     onComplete(uid)
                 }
 

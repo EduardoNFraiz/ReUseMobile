@@ -20,8 +20,6 @@
 
     <action android:id="@+id/doacao"
         app:destination="@+id/doacaoFragment"/>
-    <action android:id="@+id/sobreInstituicao"
-        app:destination="@+id/sobreInstituicaoFragment"/>
 
     <action android:id="@+id/compra"
         app:destination="@+id/comprarPecaFragment"/>
@@ -235,6 +233,9 @@
         <action
             android:id="@+id/action_infoPerfilFragment_to_cadRoupaFragment"
             app:destination="@id/cadRoupaFragment" />
+        <action
+            android:id="@+id/action_infoPerfilFragment_to_editarAnuncioFragment"
+            app:destination="@id/editarAnuncioFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEnderecoFragment"
@@ -357,7 +358,11 @@
         android:id="@+id/doacaoFragment"
         android:name="com.projetointegrador.reuse.ui.doacao.DoacaoFragment"
         android:label="fragment_doacao"
-        tools:layout="@layout/fragment_doacao" />
+        tools:layout="@layout/fragment_doacao" >
+        <action
+            android:id="@+id/action_doacaoFragment_to_sobreInstituicaoFragment"
+            app:destination="@id/sobreInstituicaoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/sobreInstituicaoFragment"
         android:name="com.projetointegrador.reuse.ui.doacao.SobreInstituicaoFragment"
@@ -366,6 +371,9 @@
         <action
             android:id="@+id/action_sobreInstituicaoFragment_to_realizarDoacaoFragment"
             app:destination="@id/realizarDoacaoFragment" />
+        <argument
+            android:name="instituicaoUID"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/realizarDoacaoFragment"
@@ -375,6 +383,9 @@
         <action
             android:id="@+id/action_realizarDoacaoFragment_to_confirmDoacaoFragment"
             app:destination="@id/confirmDoacaoFragment" />
+        <argument
+            android:name="instituicaoUID"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/confirmDoacaoFragment"
@@ -384,12 +395,25 @@
         <action
             android:id="@+id/action_confirmDoacaoFragment_to_envioDoacaoFragment"
             app:destination="@id/envioDoacaoFragment" />
+        <argument
+            android:name="instituicaoUID"
+            app:argType="string" />
+        <argument
+            android:name="pecasUIDS"
+            app:argType="string[]" />
     </fragment>
     <fragment
         android:id="@+id/envioDoacaoFragment"
         android:name="com.projetointegrador.reuse.ui.doacao.EnvioDoacaoFragment"
         android:label="fragment_envio_doacao"
-        tools:layout="@layout/fragment_envio_doacao" />
+        tools:layout="@layout/fragment_envio_doacao" >
+        <argument
+            android:name="instituicaoUID"
+            app:argType="string" />
+        <argument
+            android:name="pecasUIDS"
+            app:argType="string[]" />
+    </fragment>
     <fragment
         android:id="@+id/comprarPecaFragment"
         android:name="com.projetointegrador.reuse.ui.compra.ComprarPecaFragment"
@@ -441,4 +465,9 @@
             android:id="@+id/action_adicionarAvaliacaoFragment_to_historicoFragment"
             app:destination="@id/historicoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editarAnuncioFragment"
+        android:name="com.projetointegrador.reuse.ui.perfil.EditarAnuncioFragment"
+        android:label="fragment_editar_anuncio"
+        tools:layout="@layout/fragment_editar_anuncio" />
 </navigation>

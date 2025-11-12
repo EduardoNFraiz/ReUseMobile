@@ -38,15 +38,13 @@ class DoacaoFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var instituicaoAdapter: InstituicaoAdapter
 
-    // Variáveis do Firebase
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private var instituicaoListener: ValueEventListener? = null
 
-    // Variáveis de Localização
     private var userLatLng: LatLng? = null
-    // Substitua pelo CEP REAL do usuário (deve vir do Firebase ou Localização)
-    private val userCep = "29101010"
+    private var userCep: String? = null
+    private var userAddressUid: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,8 +62,8 @@ class DoacaoFragment : Fragment() {
 
         initRecyclerViewInstituicoes(emptyList())
 
-        // Inicia a busca de localização do usuário e carrega a lista
-        fetchUserLocationAndLoadInstituicoes()
+        // 🛑 Chamada única para buscar dados do usuário e carregar instituições
+        fetchUserAddressUidAndCep()
 
         setupSearchListener()
         initListeners()
@@ -75,7 +73,12 @@ class DoacaoFragment : Fragment() {
     }
 
     private fun initRecyclerViewInstituicoes(instuicaoList: List<Instituicao>){
-        instituicaoAdapter = InstituicaoAdapter(instuicaoList)
+        val onInstitutionClick: (String) -> Unit = { instituicaoUid ->
+            val action = DoacaoFragmentDirections.actionDoacaoFragmentToSobreInstituicaoFragment(instituicaoUid)
+            findNavController().navigate(action)
+        }
+
+        instituicaoAdapter = InstituicaoAdapter(instuicaoList, onInstitutionClick)
         binding.recyclerViewTask.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTask.setHasFixedSize(true)
         binding.recyclerViewTask.adapter = instituicaoAdapter
@@ -87,8 +90,66 @@ class DoacaoFragment : Fragment() {
     private fun setupSearchListener() {
         binding.editTextProcurar.doAfterTextChanged { editable ->
             val searchText = editable.toString().trim()
-            // Recarrega a lista aplicando o filtro
+            loadInstituicoes(searchText, userLatLng)
+        }
+    }
+
+    /**
+     * 🛑 REFATORADO: Busca o UID do endereço do usuário logado, independentemente de ser PF ou PJ.
+     */
+    private fun fetchUserAddressUidAndCep(searchText: String? = null) {
+        val currentUserId = auth.currentUser?.uid ?: run {
+            showBottomSheet(message = "Usuário não logado. A distância será omitida.")
             fetchUserLocationAndLoadInstituicoes(searchText)
+            return
+        }
+
+        // Nodos onde o usuário logado pode ter endereço
+        val paths = listOf(
+            "usuarios/pessoaFisica/$currentUserId",
+            "usuarios/pessoaJuridica/brechos/$currentUserId",
+            "usuarios/pessoaJuridica/instituicoes/$currentUserId"
+        )
+
+        var foundAddress = false
+
+        paths.forEach { path ->
+            database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Tenta obter o 'enderecoUid' ou 'endereço' (assumindo que PJ usa 'endereço')
+                    val addressUidPF = snapshot.child("enderecoUid").getValue(String::class.java)
+                    val addressUidPJ = snapshot.child("endereço").getValue(String::class.java)
+
+                    val foundUid = addressUidPF ?: addressUidPJ
+
+                    if (!foundUid.isNullOrEmpty() && !foundAddress) {
+                        userAddressUid = foundUid
+                        foundAddress = true // Marca que encontrou para evitar re-execução
+
+                        lifecycleScope.launch {
+                            userCep = fetchCepByAddressUidRTDB(userAddressUid!!)
+
+                            if (userCep.isNullOrEmpty()) {
+                                showBottomSheet(message = "CEP do usuário não encontrado. A distância será omitida.")
+                            }
+                            // Continua o fluxo para obter LatLng e carregar instituições
+                            fetchUserLocationAndLoadInstituicoes(searchText)
+                        }
+                    } else if (path == paths.last() && !foundAddress) {
+                        // Se é o último caminho e não encontrou, mostra erro e prossegue sem localização
+                        showBottomSheet(message = "Endereço do usuário não encontrado. A distância será omitida.")
+                        fetchUserLocationAndLoadInstituicoes(searchText)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("RTDB", "Erro ao buscar endereço do usuário: ${error.message}")
+                    if (path == paths.last() && !foundAddress) {
+                        showBottomSheet(message = "Erro ao buscar seu endereço. A distância será omitida.")
+                        fetchUserLocationAndLoadInstituicoes(searchText)
+                    }
+                }
+            })
         }
     }
 
@@ -97,9 +158,9 @@ class DoacaoFragment : Fragment() {
      */
     private fun fetchUserLocationAndLoadInstituicoes(searchText: String? = null) {
         lifecycleScope.launch {
-            // Se as coordenadas do usuário ainda não foram obtidas, busca
-            if (userLatLng == null) {
-                userLatLng = getLatLngFromCep(userCep, requireContext())
+            // Se o CEP foi encontrado, busca as coordenadas
+            if (userCep != null && userLatLng == null) {
+                userLatLng = getLatLngFromCep(userCep!!, requireContext())
                 if (userLatLng == null) {
                     showBottomSheet(message = "Erro ao obter sua localização. A distância será omitida.")
                 }
@@ -110,8 +171,8 @@ class DoacaoFragment : Fragment() {
     }
 
     /**
-     * NOVO MÉTODO: Busca o CEP real no nó 'enderecos' do Realtime Database usando Coroutines.
-     * @param addressUid O UID do endereço que está salvo na ContaPessoaJuridica.
+     * Busca o CEP real no nó 'enderecos' do Realtime Database usando Coroutines.
+     * @param addressUid O UID do endereço.
      */
     private suspend fun fetchCepByAddressUidRTDB(addressUid: String): String? =
         suspendCancellableCoroutine { continuation ->
@@ -149,12 +210,11 @@ class DoacaoFragment : Fragment() {
 
                 // Mapeia e calcula a distância em paralelo
                 val deferredInstituicoes = snapshot.children.mapNotNull { instSnapshot ->
-                    // Usando Dispatchers.IO para operações de rede/DB assíncronas
                     lifecycleScope.async(Dispatchers.IO) {
 
                         val uid = instSnapshot.key ?: return@async null
 
-                        // 1. FILTRO DE USUÁRIO
+                        // 1. FILTRO DE USUÁRIO: Não lista a própria instituição do usuário (se ele for uma)
                         if (uid == currentUserId) return@async null
 
                         val contaPJ = instSnapshot.getValue(ContaPessoaJuridica::class.java)
@@ -166,7 +226,7 @@ class DoacaoFragment : Fragment() {
 
                         if (userLocation != null && !addressUid.isNullOrEmpty()) {
 
-                            // 2. BUSCA O CEP REAL DO NÓ 'enderecos' (CORREÇÃO)
+                            // 2. BUSCA O CEP REAL DO NÓ 'enderecos'
                             val cepReal = fetchCepByAddressUidRTDB(addressUid)
 
                             if (!cepReal.isNullOrEmpty()) {
