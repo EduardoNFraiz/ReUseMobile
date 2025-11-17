@@ -15,6 +15,8 @@ import android.widget.ImageView
 class GavetaAdapter(
     // A lista de pares (Gaveta e UID)
     private var gavetaList: List<Pair<Gaveta, String>>,
+    // 🛑 NOVO: Mapa de contagens de peças (UID da Gaveta -> Quantidade de Peças)
+    private var pecaCountMap: Map<String, Int>,
     // O listener de clique passa o UID da gaveta (String)
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<GavetaAdapter.MyViewHolder>() {
@@ -42,7 +44,8 @@ class GavetaAdapter(
 
         holder.binding.drawerName.text = gaveta.name
 
-        val pecaCount = gaveta.number ?: "0"
+        // 🛑 ATUALIZADO: Busca a contagem de peças no mapa usando o UID da gaveta
+        val pecaCount = pecaCountMap[uid]?.toString() ?: "0"
         holder.binding.itemCount.text = pecaCount
 
         holder.binding.bttThreePoint.setOnClickListener { view ->
@@ -66,10 +69,11 @@ class GavetaAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     /**
-     * Atualiza a lista de dados e notifica o RecyclerView para se redesenhar.
+     * 🛑 ATUALIZADO: Função para atualizar a lista de gavetas E o mapa de contagens.
      */
-    fun updateList(newList: List<Pair<Gaveta, String>>) {
+    fun updateList(newList: List<Pair<Gaveta, String>>, newCountMap: Map<String, Int>) {
         this.gavetaList = newList
+        this.pecaCountMap = newCountMap // Atualiza o mapa de contagens
         notifyDataSetChanged()
     }
 

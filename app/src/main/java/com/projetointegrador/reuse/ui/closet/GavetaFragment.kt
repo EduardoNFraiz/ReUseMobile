@@ -105,26 +105,32 @@ class GavetaFragment : Fragment() {
     }
 
     private fun loadRoupaUidsFromGaveta(gavetaUid: String) {
-        // Busca os UIDs no nó 'peças' (com ç) da gaveta
-        reference.child("gavetas").child(gavetaUid).child("peças")
+
+        // 🛑 AJUSTADO: Busca no nó principal 'pecas', filtrando pelo atributo 'gavetaUid'
+        reference.child("pecas")
+            .orderByChild("gavetaUid") // Ordena e filtra pelo UID da gaveta
+            .equalTo(gavetaUid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val roupaUids = mutableListOf<String>()
-                    for (childSnapshot in snapshot.children) {
-                        val isReferenced = childSnapshot.getValue(Boolean::class.java)
-                        if (isReferenced == true) {
-                            roupaUids.add(childSnapshot.key!!)
-                        }
+
+                    // Itera sobre o snapshot que já contém APENAS as peças desta gaveta
+                    for (pecaSnapshot in snapshot.children) {
+                        // O key do snapshot de cada peça é o UID da peça
+                        roupaUids.add(pecaSnapshot.key!!)
                     }
+
                     if (roupaUids.isNotEmpty()) {
+                        // Continua o fluxo para buscar os detalhes das peças encontradas
                         fetchRoupaDetails(roupaUids)
                     } else {
                         showBottomSheet(message = "Esta gaveta não possui itens cadastrados.")
-                        pecaClosetAdapter.updateList(emptyList()) // Atualiza com vazio
+                        pecaClosetAdapter.updateList(emptyList()) // Atualiza com lista vazia
                     }
                 }
+
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao listar UIDs das roupas: ${error.message}")
+                    showBottomSheet(message = "Erro ao buscar peças por gaveta: ${error.message}")
                     pecaClosetAdapter.updateList(emptyList())
                 }
             })

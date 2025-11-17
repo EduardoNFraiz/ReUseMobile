@@ -24,6 +24,7 @@
     <action android:id="@+id/compra"
         app:destination="@+id/comprarPecaFragment"/>
 
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.projetointegrador.reuse.ui.SplashFragment"
@@ -413,6 +414,9 @@
         <argument
             android:name="pecasUIDS"
             app:argType="string[]" />
+        <action
+            android:id="@+id/action_envioDoacaoFragment_to_doacaoFragment"
+            app:destination="@id/doacaoFragment" />
     </fragment>
     <fragment
         android:id="@+id/comprarPecaFragment"

@@ -7,7 +7,6 @@ data class Gaveta(
     var id: String? = null,
     var ownerUid: String? = null,
     var name: String? = null,
-    var number: String? = null,
     var fotoBase64: String? = null,
     var public: Boolean = false,
 ):Parcelable

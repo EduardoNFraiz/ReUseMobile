@@ -4,7 +4,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Avaliacao (
-    var image: Int,
+    var fotoBase64: String? = null,
     val name: String,
     val description: String,
     val rating: Float,

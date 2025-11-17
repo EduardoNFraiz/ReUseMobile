@@ -51,7 +51,7 @@
         android:layout_gravity="center"
         android:numStars="5"
         android:progressTint="#FF9800"
-        android:rating="4.5"
+        android:rating="5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,11 +72,10 @@
         android:background="@drawable/edittext_preco_background"
         android:hint="Escreva sobre sua experiência"
         android:visibility="visible"
-        android:fontFamily="@font/raleway_extrabold"
         android:inputType="textMultiLine"
         android:maxLength="400"
         android:padding="12dp"
-        android:textColor="@color/black"
+        android:textColor="@color/VerdeEscuro"
         android:textColorHint="@color/VerdeClarinho" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -90,7 +89,4 @@
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18sp"/>
-
-    
-    
 </LinearLayout>

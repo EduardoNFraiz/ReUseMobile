@@ -27,7 +27,6 @@
         android:gravity="center"
         android:layout_marginTop="24dp" />
 
-    <!-- Texto explicativo -->
     <TextView
         android:id="@+id/textoEscolha"
         android:layout_width="match_parent"
@@ -63,7 +62,7 @@
                 android:checked="false"
                 android:textSize="17dp"
                 android:textColor="@color/VerdeEscuro"
-                app:buttonTint="@color/VerdeEscuro"/>/>
+                app:buttonTint="@color/VerdeEscuro"/>
 
             <RadioButton
                 android:id="@+id/opcaoEntrega"
@@ -73,7 +72,7 @@
                 android:checked="false"
                 android:textSize="17dp"
                 android:textColor="@color/VerdeEscuro"
-                app:buttonTint="@color/VerdeEscuro"/>/>
+                app:buttonTint="@color/VerdeEscuro"/>
 
             <RadioButton
                 android:id="@+id/opcaoCombinar"
@@ -82,7 +81,7 @@
                 android:text="Combinar um local com a instituição para ela buscar o pacote"
                 android:textSize="17dp"
                 android:textColor="@color/VerdeEscuro"
-                app:buttonTint="@color/VerdeEscuro"/>/>
+                app:buttonTint="@color/VerdeEscuro"/>
 
         </RadioGroup>
     </LinearLayout>

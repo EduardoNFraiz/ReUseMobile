@@ -34,9 +34,10 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/avatar_background"
                     android:padding="2dp"
                     android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    android:background="@drawable/avatar_background"
                     android:src="@drawable/ic_launcher_foreground"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

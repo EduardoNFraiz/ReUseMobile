@@ -230,7 +230,6 @@ class CriarGavetaFragment : Fragment() {
             gaveta = Gaveta(
                 name = nome,
                 ownerUid = userId, // <-- CRUCIAL: Adiciona o UID do proprietário
-                number = "0",
                 fotoBase64 = imageBase64,
                 public = isPublic
             )
@@ -260,7 +259,6 @@ class CriarGavetaFragment : Fragment() {
             "name" to gaveta.name,
             "public" to gaveta.public,
             "fotoBase64" to gaveta.fotoBase64,
-            "number" to gaveta.number
             // O ownerUid NUNCA deve ser atualizado.
         )
 

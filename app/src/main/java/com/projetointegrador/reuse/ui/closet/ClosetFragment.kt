@@ -20,7 +20,7 @@ import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Gaveta
 import com.projetointegrador.reuse.databinding.FragmentClosetBinding
 import com.projetointegrador.reuse.ui.adapter.GavetaAdapter
-import com.projetointegrador.reuse.util.initToolbar // Mantido se for usado
+import com.projetointegrador.reuse.util.initToolbar
 import com.projetointegrador.reuse.util.showBottomSheet
 
 
@@ -28,12 +28,12 @@ class ClosetFragment : Fragment() {
     private var _binding: FragmentClosetBinding? = null
     private val binding get() = _binding!!
 
-    // O Adapter deve ser inicializado imediatamente, mas como está lateinit,
-    // faremos a inicialização no novo método setupRecyclerView
-    private lateinit var gavetaAdapter: GavetaAdapter // Renomeado para seguir convenção Kotlin
-
+    private lateinit var gavetaAdapter: GavetaAdapter
     private lateinit var reference: DatabaseReference
     private lateinit var auth: FirebaseAuth
+
+    // 🛑 NOVO: Variável para armazenar o mapa de contagem de peças
+    private var pecaCountMap: Map<String, Int> = emptyMap()
 
 
     override fun onCreateView(
@@ -52,7 +52,6 @@ class ClosetFragment : Fragment() {
         reference = Firebase.database.reference
         auth = Firebase.auth
 
-
         initListeners()
         barraDeNavegacao()
 
@@ -67,27 +66,24 @@ class ClosetFragment : Fragment() {
 
 
     private fun setupSearchListener() {
-        binding.editTextPesquisarGavetas.doAfterTextChanged { editable -> // <--- ID CORRIGIDO AQUI
+        binding.editTextPesquisarGavetas.doAfterTextChanged { editable ->
             val searchText = editable.toString().trim()
             if (searchText.length >= 1) {
-                // Se houver texto, use a busca otimizada
                 loadUserGavetas(searchText)
             } else if (searchText.isEmpty()) {
-                // Se o campo estiver vazio, recarregue a lista completa
                 loadUserGavetas(null)
             }
         }
     }
+
     /**
-     * Inicializa a RecyclerView e anexa o Adapter com uma lista vazia.
+     * Inicializa a RecyclerView e anexa o Adapter.
      */
     private fun setupRecyclerView() {
-        // Inicializa a Adapter com uma lista vazia (inicial)
-        gavetaAdapter = GavetaAdapter(emptyList()) { clickedGavetaUID ->
-            // Ação a ser executada quando um item é clicado (Navegação para listagem de PEÇAS)
+        // 🛑 ATUALIZADO: Inicializa o Adapter com lista vazia E mapa de contagem vazio
+        gavetaAdapter = GavetaAdapter(emptyList(), pecaCountMap) { clickedGavetaUID ->
             navigateToGavetaFragment(clickedGavetaUID)
         }
-        // Anexa o Adapter imediatamente
         binding.recyclerViewGaveta.adapter = gavetaAdapter
         binding.recyclerViewGaveta.setHasFixedSize(true)
     }
@@ -95,10 +91,13 @@ class ClosetFragment : Fragment() {
     /**
      * Atualiza a lista do Adapter após os dados serem carregados.
      */
-    private fun updateRecyclerViewData(gavetaList: List<Pair<Gaveta, String>>){
-        // Chama o novo método de atualização no Adapter
-        gavetaAdapter.updateList(gavetaList)
+    private fun updateRecyclerViewData(gavetaList: List<Pair<Gaveta, String>>, countMap: Map<String, Int>){
+        // 🛑 ATUALIZADO: Chama o updateList do Adapter passando a lista de gavetas e o mapa de contagem
+        gavetaAdapter.updateList(gavetaList, countMap)
     }
+
+    // Oculta o loading
+
 
     /**
      * Realiza a navegação para o GavetaFragment (listagem de PEÇAS), passando o UID da gaveta via Bundle.
@@ -123,6 +122,7 @@ class ClosetFragment : Fragment() {
         val userId = auth.currentUser?.uid
         if (userId == null) {
             showBottomSheet(message = "Usuário não autenticado.")
+            updateRecyclerViewData(emptyList(), emptyMap()) // Atualiza com lista/mapa vazio
             return
         }
 
@@ -131,19 +131,15 @@ class ClosetFragment : Fragment() {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        // Usuário é Pessoa Física
-                        // 🛑 REPASSA O searchText
                         getGavetaUidsFromUser(userId, "pessoaFisica", null, searchText)
                     } else {
-                        // Se não for Pessoa Física, tentar encontrar em 'pessoaJuridica'
-                        // 🛑 REPASSA O searchText
                         searchPessoaJuridicaForGavetaUids(userId, searchText)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
-                    updateRecyclerViewData(emptyList())
+                    updateRecyclerViewData(emptyList(), emptyMap())
                 }
             })
     }
@@ -161,14 +157,13 @@ class ClosetFragment : Fragment() {
                         checkedCount++
                         if (snapshot.exists() && !found) {
                             found = true
-                            // 🛑 REPASSA O searchText
                             getGavetaUidsFromUser(userId, "pessoaJuridica", subtipo, searchText)
                             return
                         }
 
                         if (checkedCount == subtipos.size && !found) {
                             showBottomSheet(message = "Nenhuma gaveta encontrada ou tipo de conta não identificado.")
-                            updateRecyclerViewData(emptyList())
+                            updateRecyclerViewData(emptyList(), emptyMap())
                         }
                     }
 
@@ -176,7 +171,7 @@ class ClosetFragment : Fragment() {
                         checkedCount++
                         if (checkedCount == subtipos.size) {
                             showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
-                            updateRecyclerViewData(emptyList())
+                            updateRecyclerViewData(emptyList(), emptyMap())
                         }
                     }
                 })
@@ -195,42 +190,82 @@ class ClosetFragment : Fragment() {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val gavetaUids = mutableListOf<String>()
-                    // O snapshot.children são os UIDs das gavetas
                     for (gavetaSnapshot in snapshot.children) {
                         gavetaUids.add(gavetaSnapshot.key!!)
                     }
 
                     if (gavetaUids.isNotEmpty()) {
-                        // 🛑 AQUI A LISTA FINAL DE UIDs É PASSADA JUNTO COM O FILTRO DE NOME
-                        fetchGavetaDetails(gavetaUids, searchText)
+                        // 🛑 NOVO FLUXO: Primeiro busca a contagem de peças para todos os UIDs,
+                        // e SÓ DEPOIS busca os detalhes e filtra.
+                        fetchPecaCount(gavetaUids) { pecaCountMap ->
+                            fetchGavetaDetails(gavetaUids, searchText, pecaCountMap)
+                        }
                     } else {
-                        // Nenhuma gaveta cadastrada
                         showBottomSheet(message = "Você ainda não possui gavetas cadastradas.")
-                        updateRecyclerViewData(emptyList())
+                        updateRecyclerViewData(emptyList(), emptyMap())
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao listar UIDs das gavetas: ${error.message}")
-                    updateRecyclerViewData(emptyList())
+                    updateRecyclerViewData(emptyList(), emptyMap())
                 }
             })
     }
 
+    // 🛑 NOVO: 3. Busca a contagem de peças para todos os UIDs
+    private fun fetchPecaCount(gavetaUids: List<String>, onCountComplete: (Map<String, Int>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            onCountComplete(emptyMap())
+            return
+        }
+        // 🛑 QUERY OTIMIZADA: Busca apenas as peças cujo proprietário (ownerUid) é o usuário atual.
+        reference.child("pecas")
+            .orderByChild("ownerUid")
+            .equalTo(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val pecaCountMap = mutableMapOf<String, Int>()
+
+                    // Inicializa o mapa com 0 para todas as gavetas do usuário
+                    gavetaUids.forEach { pecaCountMap[it] = 0 }
+
+                    // Itera sobre TODAS as peças (pode ser lento se o nó 'pecas' for muito grande)
+                    // Uma otimização seria usar uma query filtrando pelo ownerUid do usuário.
+                    for (pecaSnapshot in snapshot.children) {
+                        val gavetaUid = pecaSnapshot.child("gavetaUid").getValue(String::class.java)
+
+                        // Se o gavetaUid pertence a uma das gavetas do usuário, incrementa a contagem
+                        if (gavetaUid != null && pecaCountMap.containsKey(gavetaUid)) {
+                            pecaCountMap[gavetaUid] = (pecaCountMap[gavetaUid] ?: 0) + 1
+                        }
+                    }
+
+                    onCountComplete(pecaCountMap)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Em caso de falha na contagem, passa um mapa vazio (ou com 0)
+                    showBottomSheet(message = "Erro ao contar peças: ${error.message}")
+                    onCountComplete(gavetaUids.associateWith { 0 })
+                }
+            })
+    }
+
+
     // 4. Busca os dados completos de cada gaveta
-    private fun fetchGavetaDetails(gavetaUids: List<String>, searchText: String?) {
+    private fun fetchGavetaDetails(gavetaUids: List<String>, searchText: String?, pecaCountMap: Map<String, Int>) {
         val loadedGavetasWithUids = mutableListOf<Pair<Gaveta, String>>()
         val totalGavetas = gavetaUids.size
         var gavetasCarregadas = 0
 
-        // Converte o termo de busca para minúsculas uma única vez
         val searchLower = searchText?.lowercase() ?: ""
 
         for (uid in gavetaUids) {
             reference.child("gavetas").child(uid)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        // Converte o DataSnapshot para o objeto Gaveta
                         val gaveta = snapshot.getValue(Gaveta::class.java)
                         if (gaveta != null) {
                             val nomeGavetaLower = gaveta.name?.lowercase() ?: ""
@@ -243,8 +278,8 @@ class ClosetFragment : Fragment() {
 
                         // Quando todas as gavetas forem carregadas, atualiza o RecyclerView
                         if (gavetasCarregadas == totalGavetas) {
-                            // Passa a lista de pares para o Adapter
-                            updateRecyclerViewData(loadedGavetasWithUids)
+                            // 🛑 ATUALIZADO: Passa a lista de pares E o mapa de contagem
+                            updateRecyclerViewData(loadedGavetasWithUids, pecaCountMap)
                         }
                     }
 
@@ -252,8 +287,8 @@ class ClosetFragment : Fragment() {
                         showBottomSheet(message = "Erro ao buscar detalhes da gaveta $uid: ${error.message}")
                         gavetasCarregadas++
                         if (gavetasCarregadas == totalGavetas) {
-                            // Atualiza mesmo com falha em algumas gavetas
-                            updateRecyclerViewData(loadedGavetasWithUids)
+                            // 🛑 ATUALIZADO: Passa o mapa de contagem
+                            updateRecyclerViewData(loadedGavetasWithUids, pecaCountMap)
                         }
                     }
                 })
@@ -273,8 +308,6 @@ class ClosetFragment : Fragment() {
         binding.buttonCriarGaveta.setOnClickListener {
             val bundle = Bundle().apply {
                 // Ao criar, NÃO passamos VISUALIZAR_INFO e nem GAVETA_ID
-                // Deixando o gavetaId nulo, o CriarGavetaFragment entra no modo Criação.
-                // removemos a flag "HIDE_EDIT_BUTTONS" pois ela não é mais necessária no novo fluxo
             }
             findNavController().navigate(R.id.action_closetFragment_to_criarGavetaFragment, bundle)
         }

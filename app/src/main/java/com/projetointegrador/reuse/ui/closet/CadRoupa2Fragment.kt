@@ -27,10 +27,6 @@ import com.google.firebase.database.database
 import com.google.firebase.database.MutableData
 import com.google.firebase.database.Transaction
 import com.projetointegrador.reuse.util.MoneyTextWatcher
-
-// ⚠️ Se Gaveta não for uma data class, descomente/ajuste conforme necessário:
-// data class Gaveta(val id: String? = null, val name: String? = null, val ownerUid: String? = null, var number: String? = null, val fotoBase64: String? = null, val public: Boolean = false, val pecas: Map<String, Boolean>? = null)
-
 class CadRoupa2Fragment : Fragment() {
     private var _binding: FragmentCadRoupa2Binding? = null
     private val binding get() = _binding!!
@@ -110,50 +106,7 @@ class CadRoupa2Fragment : Fragment() {
         editTextPreco.addTextChangedListener(precoTextWatcher)
     }
 
-    // --- FUNÇÕES DE INCREMENTO E DECREMENTO (Transações Atômicas - ADICIONADO) ---
-
-    private fun incrementaContadorGaveta(gavetaId: String) {
-        // A referência é direta ao campo 'number' dentro da gaveta
-        val gavetaNumberRef = database.child("gavetas").child(gavetaId).child("number")
-        gavetaNumberRef.runTransaction(object : Transaction.Handler {
-            override fun doTransaction(mutableData: MutableData): Transaction.Result {
-                val currentNumberStr = mutableData.getValue(String::class.java)
-                val currentNumberInt = currentNumberStr?.toIntOrNull() ?: 0
-                val newNumberInt = currentNumberInt + 1
-                mutableData.value = newNumberInt.toString()
-                return Transaction.success(mutableData)
-            }
-
-            override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
-                if (!committed) {
-                    Toast.makeText(requireContext(), "Aviso: Falha ao incrementar contador da gaveta. Erro: ${databaseError?.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-    }
-
-    private fun decrementaContadorGaveta(gavetaId: String) {
-        // A referência é direta ao campo 'number' dentro da gaveta
-        val gavetaNumberRef = database.child("gavetas").child(gavetaId).child("number")
-        gavetaNumberRef.runTransaction(object : Transaction.Handler {
-            override fun doTransaction(mutableData: MutableData): Transaction.Result {
-                val currentNumberStr = mutableData.getValue(String::class.java)
-                val currentNumberInt = currentNumberStr?.toIntOrNull() ?: 0
-                val newNumberInt = if (currentNumberInt > 0) currentNumberInt - 1 else 0
-                mutableData.value = newNumberInt.toString()
-                return Transaction.success(mutableData)
-            }
-
-            override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
-                if (!committed) {
-                    Toast.makeText(requireContext(), "Aviso: Falha ao decrementar contador da gaveta. Erro: ${databaseError?.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-    }
-
     // --- NOVO: Carregamento de UIDs de Gavetas Fixas ---
-
     private fun loadTransacaoGavetaUids() {
         val ownerUid = auth.currentUser?.uid
         if (ownerUid == null) {
@@ -597,34 +550,14 @@ class CadRoupa2Fragment : Fragment() {
             pecaRef.setValue(peca)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // 3. Adiciona a referência leve em /gavetas/{gavetaUid}/peças/{pecaUid}
-                        database.child("gavetas")
-                            .child(gavetaUid)
-                            .child("peças")
-                            .child(pecaUid)
-                            .setValue(true)
-                            .addOnCompleteListener { gavetaTask ->
-                                isSavingPeca = false
-                                binding.btnCadastrarPeca.isEnabled = true
-                                if (gavetaTask.isSuccessful) {
-                                    // 4. Incrementa o contador
-                                    incrementaContadorGaveta(gavetaUid)
-
-                                    Toast.makeText(requireContext(), "Peça cadastrada com sucesso!", Toast.LENGTH_SHORT).show()
-
-                                    // 5. Navegação e limpeza da pilha
-                                    val bundle = Bundle().apply {
-                                        putString("GAVETA_ID", gavetaUid)
-                                    }
-                                    findNavController().navigate(
-                                        R.id.action_cadRoupa2Fragment_to_gavetaFragment,
-                                        bundle,
-                                        navOptionsPopToCad1
-                                    )
-                                } else {
-                                    Toast.makeText(requireContext(), "Erro ao vincular à gaveta: ${gavetaTask.exception?.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                        val bundle = Bundle().apply {
+                            putString("GAVETA_ID", gavetaUid)
+                        }
+                        findNavController().navigate(
+                            R.id.action_cadRoupa2Fragment_to_gavetaFragment,
+                            bundle,
+                            navOptionsPopToCad1
+                        )
                     } else {
                         isSavingPeca = false
                         binding.btnCadastrarPeca.isEnabled = true
@@ -666,11 +599,9 @@ class CadRoupa2Fragment : Fragment() {
                     if (gavetaAntigaUid != null && gavetaAntigaUid != novaGavetaUid) {
                         // Remove link e decrementa contador da gaveta antiga
                         database.child("gavetas").child(gavetaAntigaUid).child("peças").child(pecaUid).removeValue()
-                        decrementaContadorGaveta(gavetaAntigaUid)
 
                         // Cria link e incrementa contador na nova gaveta
                         database.child("gavetas").child(novaGavetaUid).child("peças").child(pecaUid).setValue(true)
-                        incrementaContadorGaveta(novaGavetaUid)
                     }
 
                     // NOTA: Se a gaveta não mudou, o link já existia e o contador não precisa de alteração.
@@ -702,7 +633,6 @@ class CadRoupa2Fragment : Fragment() {
                 database.child("pecas").child(pecaUid).removeValue()
                     .addOnSuccessListener {
                         // 3. Decrementa o contador
-                        decrementaContadorGaveta(gavetaUid)
 
                         Toast.makeText(requireContext(), "Peça excluída com sucesso!", Toast.LENGTH_SHORT).show()
 
