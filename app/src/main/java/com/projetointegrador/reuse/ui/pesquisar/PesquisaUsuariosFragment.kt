@@ -80,6 +80,37 @@ class PesquisaUsuariosFragment : Fragment() {
         }
     }
 
+    private fun fetchUserRating(userUid: String, callback: (Float) -> Unit) {
+        database.child("avaliacoes")
+            .orderByChild("avaliadoUID")
+            .equalTo(userUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var totalRating = 0.0
+                    var count = 0
+
+                    for (avaliacaoSnapshot in snapshot.children) {
+                        val avaliado = avaliacaoSnapshot.child("avaliado").getValue(Boolean::class.java)
+                        val rating = avaliacaoSnapshot.child("rating").getValue(Double::class.java)
+
+                        // 🛑 Aplica as duas condições: avaliado é true E o rating existe
+                        if (avaliado == true && rating != null) {
+                            totalRating += rating
+                            count++
+                        }
+                    }
+
+                    val averageRating = if (count > 0) (totalRating / count).toFloat() else 3.0f
+                    callback(averageRating)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("PesquisaUsuarios", "Erro ao buscar rating para $userUid: ${error.message}")
+                    callback(0.0f)
+                }
+            })
+    }
+
     fun performSearch(searchText: String) {
 
         val searchLower = searchText.lowercase()
@@ -102,32 +133,50 @@ class PesquisaUsuariosFragment : Fragment() {
         val newListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val newTaskList = mutableListOf<Task>()
+                val usersToProcess = snapshot.children.toList()
+                if (usersToProcess.isEmpty()) {
+                    taskAdapter.updateList(emptyList())
+                    return
+                }
 
-                for (userSnapshot in snapshot.children) {
-                    val userUID = userSnapshot.key
+                val newTaskList = mutableListOf<Task>()
+                var pendingRatings = usersToProcess.size
+
+                for (userSnapshot in usersToProcess) {
+                    val userUID = userSnapshot.key ?: continue
 
                     if (userUID == currentUserId) {
+                        pendingRatings--
                         continue
                     }
 
                     val conta = userSnapshot.getValue(ContaPessoaFisica::class.java)
 
-                    if (conta != null && !conta.nomeDeUsuario.isNullOrEmpty()) {
+                    if (conta != null && conta.nomeDeUsuario.isNotEmpty()) {
 
-                        val taskItem = Task(
-                            uid = userUID,
-                            fotoBase64 = conta.fotoBase64,
-                            nomeCompleto = conta.nomeCompleto,
-                            nomeDeUsuario = conta.nomeDeUsuario,
-                            rating = 4.5f,
-                            conta = TipoConta.USUARIO
-                        )
-                        newTaskList.add(taskItem)
+                        fetchUserRating(userUID) { averageRating ->
+
+                            val taskItem = Task(
+                                uid = userUID,
+                                fotoBase64 = conta.fotoBase64,
+                                nomeCompleto = conta.nomeCompleto,
+                                nomeDeUsuario = conta.nomeDeUsuario,
+                                rating = averageRating,
+                                conta = TipoConta.USUARIO
+                            )
+                            newTaskList.add(taskItem)
+
+                            pendingRatings--
+
+                            if (pendingRatings == 0) {
+                                newTaskList.sortByDescending { it.rating }
+                                taskAdapter.updateList(newTaskList)
+                            }
+                        }
+                    } else {
+                        pendingRatings-- // Se a conta for nula ou nomeDeUsuario for vazio, decrementa o contador
                     }
                 }
-
-                taskAdapter.updateList(newTaskList)
             }
 
             override fun onCancelled(error: DatabaseError) {

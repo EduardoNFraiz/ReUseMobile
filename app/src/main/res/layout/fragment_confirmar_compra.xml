@@ -198,16 +198,17 @@
             app:buttonTint="@color/VerdeEscuro" />
 
         <RadioButton
-            android:id="@+id/rbCartao"
+            android:id="@+id/rbCartaoCredito"
             android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:text="Crédito"
+            android:layout_height="match_parent"
             android:checked="false"
-            android:textSize="17dp"
+            android:text="Crédito"
             android:textColor="@color/VerdeEscuro"
+            android:textSize="17dp"
             app:buttonTint="@color/VerdeEscuro" />
 
         <RadioButton
+            android:id="@+id/rbCartaoDebito"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:text="Débito"

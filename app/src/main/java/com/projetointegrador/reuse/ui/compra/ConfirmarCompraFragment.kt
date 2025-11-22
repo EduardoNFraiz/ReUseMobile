@@ -17,10 +17,16 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.PecaCadastro
+import com.projetointegrador.reuse.data.model.TransacaoCompra // Importe seu modelo
 import com.projetointegrador.reuse.databinding.FragmentConfirmarCompraBinding
 import com.projetointegrador.reuse.util.displayBase64Image
 import com.projetointegrador.reuse.util.initToolbar
-
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 class ConfirmarCompraFragment : Fragment() {
     private var _binding: FragmentConfirmarCompraBinding? = null
     private val binding get() = _binding!!
@@ -29,6 +35,7 @@ class ConfirmarCompraFragment : Fragment() {
 
     private lateinit var database: DatabaseReference
     private var currentPeca: PecaCadastro? = null
+    private var enderecoCompletoStr: String = "" // Variável para armazenar o endereço completo
 
     private val currentUserId: String? = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -51,7 +58,7 @@ class ConfirmarCompraFragment : Fragment() {
         initToolbar(binding.toolbar)
 
         loadPecaData(pecaUid)
-        loadEnderecoData() // Inicia a busca multi-caminho
+        loadEnderecoData()
     }
 
     // --- LÓGICA DE CARREGAMENTO DE DADOS PRINCIPAL ---
@@ -161,6 +168,8 @@ class ConfirmarCompraFragment : Fragment() {
                 val enderecoCompleto = "$rua, nº $numero\n$cidade - $estado"
 
                 binding.tvEndereco.text = enderecoCompleto
+                // 🛑 Armazena o endereço completo na variável de classe para uso na transação
+                enderecoCompletoStr = enderecoCompleto
             }
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Erro ao buscar detalhes do endereço: ${it.message}")
@@ -182,21 +191,181 @@ class ConfirmarCompraFragment : Fragment() {
 
     private fun initListeners(pecaUid: String) {
         binding.btnConfirmarPedido.setOnClickListener {
-            // Validação de Pagamento
-            if (binding.radioGroupPagamento.checkedRadioButtonId == -1) {
+            val selectedPaymentId = binding.radioGroupPagamento.checkedRadioButtonId
+
+            // 1. Validação de Pagamento
+            if (selectedPaymentId == -1) {
                 Toast.makeText(requireContext(), "Por favor, selecione uma forma de pagamento.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Simulação de retorno de compra
-            val resultadoBundle = bundleOf(
-                "REALIZEI_COMPRA" to true,
-                "PECA_UID_COMPRADA" to pecaUid
-            )
+            // 2. Validação de Dados Essenciais
+            if (currentPeca == null || currentUserId.isNullOrEmpty() || enderecoCompletoStr.isEmpty()) {
+                Toast.makeText(requireContext(), "Erro: Dados essenciais para a compra estão faltando. Tente novamente.", Toast.LENGTH_SHORT).show()
+                Log.e("ConfirmarCompra", "Dados faltantes. Peça: ${currentPeca == null}, User: ${currentUserId.isNullOrEmpty()}, Endereço: ${enderecoCompletoStr.isEmpty()}")
+                return@setOnClickListener
+            }
 
-            setFragmentResult("requestKey", resultadoBundle)
-            findNavController().navigateUp()
+            // 3. Iniciar a transação
+            processarCompra(pecaUid, selectedPaymentId)
         }
+    }
+
+
+    /**
+     * Executa a sequência de operações: 1. Cria Avaliação, 2. Atualiza Peça, 3. Cria Transação.
+     */
+    private fun processarCompra(pecaUid: String, selectedPaymentId: Int) {
+        val precoTotal = currentPeca?.preco ?: "0.00"
+        val vendedorUid = currentPeca?.ownerUid!!
+        val compradorUid = currentUserId!!
+
+        // Obter Forma de Pagamento
+        val formaPagamento = when (selectedPaymentId) {
+            R.id.rbCartaoCredito -> "Cartão de Crédito"
+            R.id.rbPix -> "PIX"
+            R.id.rbCartaoDebito -> "Cartão de Débito"
+            else -> "Pagamento não selecionado"
+        }
+
+        // Assumindo forma de envio simples, pois não há seleção na UI fornecida
+        val formaEnvio = "Correios"
+
+        // 1. 🚀 CRIAR AVALIAÇÃO PENDENTE
+        val avaliacaoRef = database.child("avaliacoes").push()
+        val avaliacaoUid = avaliacaoRef.key!!
+
+        // Cria os dados iniciais da avaliação (pendente)
+        val avaliacaoData = mapOf(
+            "avaliado" to false, // Começa como pendente
+            "avaliadorUID" to compradorUid, // O comprador é quem fará a avaliação
+            "avaliadoUID" to vendedorUid, // O vendedor é quem será avaliado
+            "dataHoraCriacao" to SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+            "rating" to 0.0,
+            "description" to ""
+        )
+
+        avaliacaoRef.setValue(avaliacaoData)
+            .addOnSuccessListener {
+                // 2. 🔄 ATUALIZAR PEÇA
+                atualizarPeca(pecaUid, compradorUid) { sucessoPeca ->
+                    if (sucessoPeca) {
+                        // 3. 📝 CRIAR TRANSAÇÃO
+                        criarTransacaoCompra(
+                            vendedorUid,
+                            compradorUid,
+                            pecaUid,
+                            precoTotal,
+                            formaPagamento,
+                            formaEnvio,
+                            enderecoCompletoStr,
+                            avaliacaoUid
+                        )
+                    } else {
+                        Toast.makeText(requireContext(), "Erro ao atualizar status da peça.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Log.e("ConfirmarCompra", "Falha ao criar avaliação: ${it.message}")
+                Toast.makeText(requireContext(), "Erro na transação. Tente novamente.", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    /**
+     * Atualiza o status da peça comprada no banco.
+     */
+    private fun atualizarPeca(pecaUid: String, novoOwnerUid: String, callback: (Boolean) -> Unit) {
+
+        // 1. Buscar a gaveta 'Recebidos' do novo proprietário
+        database.child("gavetas")
+            .orderByChild("ownerUid")
+            .equalTo(novoOwnerUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var gavetaUid: String? = null
+
+                    // Itera sobre as gavetas encontradas (todas que pertencem ao novoOwnerUid)
+                    for (childSnapshot in snapshot.children) {
+                        val name = childSnapshot.child("name").getValue(String::class.java)
+                        if (name == "Recebidos") {
+                            // Encontrou a gaveta correta
+                            gavetaUid = childSnapshot.key
+                            break
+                        }
+                    }
+
+                    if (gavetaUid.isNullOrEmpty()) {
+                        Log.e("ConfirmarCompra", "Gaveta 'Recebidos' não encontrada para o usuário $novoOwnerUid.")
+                        Toast.makeText(requireContext(), "Erro: Gaveta de destino não encontrada. A compra falhou.", Toast.LENGTH_LONG).show()
+                        callback(false)
+                        return
+                    }
+
+                    // 2. Se a gavetaUid foi encontrada, realiza o update da peça
+                    val updatePeca = mapOf<String, Any>(
+                        "ownerUid" to novoOwnerUid,
+                        "finalidade" to "Organizar",
+                        "gavetaUid" to gavetaUid
+                    )
+
+                    database.child("pecas").child(pecaUid).updateChildren(updatePeca)
+                        .addOnSuccessListener {
+                            Log.d("ConfirmarCompra", "Peça $pecaUid atualizada com sucesso para o novo dono e gaveta.")
+                            callback(true)
+                        }
+                        .addOnFailureListener {
+                            Log.e("ConfirmarCompra", "Erro ao atualizar peça $pecaUid: ${it.message}")
+                            callback(false)
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ConfirmarCompra", "Erro ao buscar gaveta: ${error.message}")
+                    callback(false)
+                }
+            })
+    }
+
+    /**
+     * Cria o registro da transação de compra no banco de dados.
+     */
+    private fun criarTransacaoCompra(
+        vendedorUid: String,
+        compradorUid: String,
+        pecaUid: String,
+        precoTotal: String,
+        formaPagamento: String,
+        formaEnvio: String,
+        enderecoDestino: String,
+        avaliacaoUid: String
+    ) {
+        val transacaoDataHora = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
+        val novaTransacao = TransacaoCompra(
+            vendedorUID = vendedorUid,
+            compradorUID = compradorUid,
+            dataDaTransacao = transacaoDataHora,
+            pecaUID = pecaUid,
+            precoTotal = precoTotal,
+            formaPagamento = formaPagamento,
+            formaEnvio = formaEnvio,
+            enderecoDestino = enderecoDestino,
+            avaliacaoUID = avaliacaoUid
+        )
+
+        database.child("transacoes").child("compra").push().setValue(novaTransacao)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Pedido confirmado e transação registrada!", Toast.LENGTH_LONG).show()
+
+                // 4. ✅ SUCESSO FINAL: Retorna para a tela anterior
+                setFragmentResult("requestKey", bundleOf("REALIZEI_COMPRA" to true, "PECA_UID_COMPRADA" to pecaUid))
+                findNavController().navigateUp()
+            }
+            .addOnFailureListener { e ->
+                Log.e("ConfirmarCompra", "Falha ao registrar transação: ${e.message}")
+                Toast.makeText(requireContext(), "Erro ao finalizar transação no banco. ${e.message}", Toast.LENGTH_LONG).show()
+            }
     }
 
     override fun onDestroyView() {

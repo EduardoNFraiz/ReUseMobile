@@ -15,7 +15,7 @@
         android:id="@+id/textMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sua doação foi \nrealizada!"
+        android:text="Sua compra foi \nrealizada!"
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="@color/VerdeEscuro"

@@ -123,15 +123,4 @@
             android:padding="22dp"
             android:src="@drawable/person_branco" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonTeste"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="824dp"
-        android:text="Comprar peça"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

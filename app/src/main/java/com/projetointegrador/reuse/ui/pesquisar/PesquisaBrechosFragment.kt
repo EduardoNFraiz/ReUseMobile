@@ -11,7 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth // 🛑 IMPORT NECESSÁRIO
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.database
 import com.projetointegrador.reuse.data.model.Task
@@ -29,7 +29,7 @@ class PesquisaBrechosFragment : Fragment() {
     private var searchListener: ValueEventListener? = null
 
     private val sharedViewModel: SharedSearchViewModel by activityViewModels()
-    private var currentUserId: String? = null // 🛑 UID do usuário logado
+    private var currentUserId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +44,6 @@ class PesquisaBrechosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 🛑 OBTÉM O UID DO USUÁRIO LOGADO
         currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
         initRecyclerViewTask()
@@ -54,7 +53,6 @@ class PesquisaBrechosFragment : Fragment() {
     }
 
     private fun initRecyclerViewTask(){
-        // 🛑 AJUSTE 1: Instancia o TaskAdapter com o listener de clique
         taskAdapter = TaskAdapter(taskList) { clickedUserUid ->
             navigateToVisualizarBrecho(clickedUserUid)
         }
@@ -67,18 +65,49 @@ class PesquisaBrechosFragment : Fragment() {
         if (!isAdded) return
 
         try {
-            // 🛑 MUDANÇA ESSENCIAL: CHAME A CLASSE DIRECTIONS DO FRAGMENTO PAI
-            // Use PesquisaFragmentDirections se a ação estiver dentro de PesquisaFragment.
+            // Assumindo que a ação está configurada no nav_graph do fragmento pai (PesquisaFragment)
             val action = PesquisaFragmentDirections.actionPesquisaFragmentToVisualizarPBrechoFragment(userUid)
-
-            // Use findNavController() que resolve para o NavHost principal
             findNavController().navigate(action)
 
         } catch (e: Exception) {
-            // Mantenha o log para diagnosticar se houver falha (ex: nome da ação incorreto)
-            Log.e("PesquisaUsuarios", "Erro na navegação: ${e.message}", e)
+            Log.e("PesquisaBrechos", "Erro na navegação: ${e.message}", e)
             Toast.makeText(requireContext(), "Erro ao navegar para o perfil. Verifique o NavGraph.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * 🛑 NOVO: Busca e calcula o rating médio de um usuário (Brechó).
+     */
+    private fun fetchUserRating(userUid: String, callback: (Float) -> Unit) {
+        database.child("avaliacoes")
+            .orderByChild("avaliadoUid")
+            .equalTo(userUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var totalRating = 0.0
+                    var count = 0
+
+                    for (avaliacaoSnapshot in snapshot.children) {
+                        val avaliado = avaliacaoSnapshot.child("avaliado").getValue(Boolean::class.java)
+                        val rating = avaliacaoSnapshot.child("rating").getValue(Double::class.java)
+
+                        // Aplica as duas condições: avaliado é true E o rating existe
+                        if (avaliado == true && rating != null) {
+                            totalRating += rating
+                            count++
+                        }
+                    }
+
+                    // Retorna 0.0f se não houver avaliações para evitar divisão por zero
+                    val averageRating = if (count > 0) (totalRating / count).toFloat() else 3.0f
+                    callback(averageRating)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("PesquisaBrechos", "Erro ao buscar rating para $userUid: ${error.message}")
+                    callback(0.0f)
+                }
+            })
     }
 
     fun performSearch(searchText: String) {
@@ -86,7 +115,7 @@ class PesquisaBrechosFragment : Fragment() {
         val searchLower = searchText.lowercase()
         searchListener?.let { database.removeEventListener(it) }
 
-        // 🛑 CAMINHO CORRIGIDO: usuarios/pessoaJuridica/brechos
+        // CAMINHO CORRIGIDO: usuarios/pessoaJuridica/brechos
         val baseQuery = database
             .child("usuarios")
             .child("pessoaJuridica")
@@ -108,38 +137,58 @@ class PesquisaBrechosFragment : Fragment() {
         val newListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                val brechosToProcess = snapshot.children.toList()
+                if (brechosToProcess.isEmpty()) {
+                    taskAdapter.updateList(emptyList())
+                    return
+                }
+
                 val newTaskList = mutableListOf<Task>()
+                var pendingRatings = brechosToProcess.size
 
-                for (brechoSnapshot in snapshot.children) {
-                    val brechoUID = brechoSnapshot.key // UID da Pessoa Jurídica
+                for (brechoSnapshot in brechosToProcess) {
+                    val brechoUID = brechoSnapshot.key ?: continue
 
-                    // 🛑 FILTRO DE EXCLUSÃO DO PERFIL LOGADO
+                    // FILTRO DE EXCLUSÃO DO PERFIL LOGADO
                     if (brechoUID == currentUserId) {
-                        continue // Pula o nó do brechó logado
+                        pendingRatings--
+                        continue
                     }
 
                     val map = brechoSnapshot.value as? Map<*, *>
 
                     if (map != null) {
-                        val nomeFantasia = map["nomeFantasia"]?.toString()
-                        val nomeDeUsuario = map["nomeDeUsuario"]?.toString()
-                        val fotoBase64 = map["fotoBase64"]?.toString()
+                        // 🛑 CHAMA A BUSCA DE RATING PARA CADA BRECHÓ
+                        fetchUserRating(brechoUID) { averageRating ->
+                            val nomeFantasia = map["nomeFantasia"]?.toString()
+                            val nomeDeUsuario = map["nomeDeUsuario"]?.toString()
+                            val fotoBase64 = map["fotoBase64"]?.toString()
 
-                        if (!nomeDeUsuario.isNullOrEmpty()) {
-                            val taskItem = Task(
-                                uid = brechoUID,
-                                fotoBase64 = fotoBase64,
-                                nomeCompleto = nomeFantasia ?: "Brechó",
-                                nomeDeUsuario = nomeDeUsuario,
-                                rating = 4.5f,
-                                conta = TipoConta.BRECHO
-                            )
-                            newTaskList.add(taskItem)
+                            if (!nomeDeUsuario.isNullOrEmpty()) {
+                                val taskItem = Task(
+                                    uid = brechoUID,
+                                    fotoBase64 = fotoBase64,
+                                    nomeCompleto = nomeFantasia ?: "Brechó",
+                                    nomeDeUsuario = nomeDeUsuario,
+                                    rating = averageRating, // 🛑 USANDO O RATING CALCULADO
+                                    conta = TipoConta.BRECHO
+                                )
+                                newTaskList.add(taskItem)
+                            }
+
+                            pendingRatings--
+
+                            // 🏁 VERIFICA SE TODAS AS TAREFAS ASSÍNCRONAS TERMINARAM
+                            if (pendingRatings == 0) {
+                                // Ordena a lista (opcional)
+                                newTaskList.sortByDescending { it.rating }
+                                taskAdapter.updateList(newTaskList)
+                            }
                         }
+                    } else {
+                        pendingRatings--
                     }
                 }
-
-                taskAdapter.updateList(newTaskList)
             }
 
             override fun onCancelled(error: DatabaseError) {

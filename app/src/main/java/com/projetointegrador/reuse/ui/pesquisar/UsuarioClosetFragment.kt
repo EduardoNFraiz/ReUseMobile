@@ -107,36 +107,65 @@ class UsuarioClosetFragment : Fragment() {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val pecaListForAdapter = mutableListOf<Pair<PecaCloset, String>>()
-                    // 🛑 Inicializa o mapa para a nova lista
                     val tempPecasMap = mutableMapOf<String, PecaCloset>()
+                    val gavetaUidsToSearch = mutableSetOf<String>()
 
-                    for (pecaSnapshot in snapshot.children) {
+                    // 1. Coleta todas as gavetaUids de peças que não são transações
+                    val filteredPecas = snapshot.children.mapNotNull { pecaSnapshot ->
                         val pecaCadastro = pecaSnapshot.getValue(PecaCadastro::class.java)
                         val pecaUid = pecaSnapshot.key
 
                         if (pecaCadastro != null && pecaUid != null) {
                             val finalidade = pecaCadastro.finalidade?.uppercase()
 
+                            // Mantém o filtro de finalidade: peças de organização
                             if (finalidade != "VENDER" && finalidade != "DOAR" && finalidade != "CARRINHO") {
-
-                                val pecaCloset = PecaCloset(
-                                    titulo = pecaCadastro.titulo,
-                                    preco = pecaCadastro.preco,
-                                    fotoBase64 = pecaCadastro.fotoBase64
-                                )
-                                pecaListForAdapter.add(Pair(pecaCloset, pecaUid))
-
-                                // 🛑 Adiciona a peça ao mapa para acesso rápido pelo UID
-                                tempPecasMap[pecaUid] = pecaCloset
+                                pecaCadastro.gavetaUid?.let { gavetaUidsToSearch.add(it) }
+                                return@mapNotNull Pair(pecaCadastro, pecaUid)
                             }
                         }
+                        return@mapNotNull null
                     }
 
-                    // 🛑 Atualiza a variável de classe com o novo mapa
-                    pecasMap = tempPecasMap
+                    if (gavetaUidsToSearch.isEmpty()) {
+                        pecasMap = tempPecasMap
+                        pecaAdapter.updateList(pecaListForAdapter)
+                        return
+                    }
 
-                    // Atualiza o adapter com a lista (como antes)
-                    pecaAdapter.updateList(pecaListForAdapter)
+                    // 2. Consulta todas as gavetas relevantes de uma vez
+                    database.child("gavetas").addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(gavetasSnapshot: DataSnapshot) {
+
+                            for ((pecaCadastro, pecaUid) in filteredPecas) {
+                                val gavetaUid = pecaCadastro.gavetaUid ?: continue
+
+                                val gavetaSnapshot = gavetasSnapshot.child(gavetaUid)
+
+                                val isPublic = gavetaSnapshot.child("privado").getValue(Boolean::class.java) == false
+
+                                if (isPublic) {
+                                    // Gaveta é pública (privado: false) E não é de transação, então exibe.
+                                    val pecaCloset = PecaCloset(
+                                        titulo = pecaCadastro.titulo,
+                                        preco = pecaCadastro.preco,
+                                        fotoBase64 = pecaCadastro.fotoBase64
+                                    )
+                                    pecaListForAdapter.add(Pair(pecaCloset, pecaUid))
+                                    tempPecasMap[pecaUid] = pecaCloset
+                                }
+                            }
+
+                            pecasMap = tempPecasMap
+                            pecaAdapter.updateList(pecaListForAdapter)
+
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("UsuarioCloset", "Erro ao carregar gavetas: ${error.message}")
+                            Toast.makeText(requireContext(), "Erro ao verificar gavetas.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
                 }
 
                 override fun onCancelled(error: DatabaseError) {

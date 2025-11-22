@@ -95,4 +95,10 @@
     <string name="sucesso_gaveta_criada">Gaveta criada com sucesso!</string>
     <string name="sucesso_gaveta_atualizada">Gaveta atualizada com sucesso!</string>
 
+    <string name="msg_gaveta_reservada">Atenção: Esta é uma gaveta do sistema e suas informações não podem ser editadas.</string>
+    <string name="msg_gaveta_reservada_nao_editavel">Você não pode alterar o nome ou visibilidade de gavetas do sistema (Vendas, Doação, Carrinho, Recebidos).</string>
+    <string name="msg_erro_nome_gaveta_existente">Você já possui uma gaveta com este nome. Por favor, escolha um nome diferente.</string>
+    <string name="adicionar_ao_carrinho">Adicionar ao carrinho</string>
+    <string name="remover_do_carrinho">Remover do carrinho</string>
+
 </resources>

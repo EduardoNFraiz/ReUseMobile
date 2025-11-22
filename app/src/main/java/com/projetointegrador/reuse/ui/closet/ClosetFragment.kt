@@ -302,9 +302,6 @@ class ClosetFragment : Fragment() {
             findNavController().navigate(R.id.action_closetFragment_to_historicoFragment)
         }
 
-        binding.buttonTeste.setOnClickListener {
-            findNavController().navigate(R.id.compra)
-        }
         binding.buttonCriarGaveta.setOnClickListener {
             val bundle = Bundle().apply {
                 // Ao criar, NÃO passamos VISUALIZAR_INFO e nem GAVETA_ID

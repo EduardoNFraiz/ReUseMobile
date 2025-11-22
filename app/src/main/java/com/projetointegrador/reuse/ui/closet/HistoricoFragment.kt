@@ -294,11 +294,6 @@ class HistoricoFragment : Fragment() {
             is TransacaoCompra -> transacao.avaliacaoUID
             else -> return callback(null)
         }
-        val transacaoUID = when (transacao) {
-            is TransacaoDoacao -> transacao.dataDaTransacao // Usando dataHora como chave temporária
-            is TransacaoCompra -> transacao.dataDaTransacao // Usando dataHora como chave temporária
-            else -> ""
-        }
 
         // 1. Determina o UID do perfil oposto
         val perfilOpostoUid = when (transacao) {

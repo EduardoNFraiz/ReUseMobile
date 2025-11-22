@@ -30,6 +30,9 @@ import com.projetointegrador.reuse.util.showBottomSheet
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
+// 🛑 NOVAS CONSTANTES PARA NOMES DE GAVETAS RESERVADAS
+private val RESERVED_GAVETA_NAMES = listOf("Vendas", "Doação", "Carrinho", "Recebidos")
+
 class CriarGavetaFragment : Fragment() {
     private var _binding: FragmentCriarGavetaBinding? = null
     private val binding get() = _binding!!
@@ -83,7 +86,12 @@ class CriarGavetaFragment : Fragment() {
 
         newGaveta = gavetaId.isNullOrBlank()
 
-        setupViewMode(vizualizarInfo)
+        // 🛑 setupViewMode é chamado APÓS o carregamento dos dados para verificar o nome
+        // Se for nova gaveta, chama setupViewMode diretamente
+        if (newGaveta) {
+            setupViewMode(vizualizarInfo, null)
+        }
+
         initListeners()
 
         if (!newGaveta) {
@@ -92,16 +100,29 @@ class CriarGavetaFragment : Fragment() {
     }
 
     // --- SETUP DO MODO VISUALIZAÇÃO/EDIÇÃO/CRIAÇÃO ---
-    private fun setupViewMode(vizualizarInfo: Boolean) {
+    private fun setupViewMode(vizualizarInfo: Boolean, gavetaName: String?) {
+        val isReserved = gavetaName?.let { RESERVED_GAVETA_NAMES.contains(it) } ?: false
+
         if (vizualizarInfo) {
-            binding.bttEditar.visibility = View.VISIBLE
-            binding.bttCriarGaveta.visibility = View.GONE
-            binding.bttSalvar.visibility = View.GONE
-            setFieldsEnabled(false)
+            // Se estiver em modo visualização e o nome for reservado, BLOQUEIA EDIÇÃO
+            if (isReserved) {
+                binding.bttEditar.visibility = View.GONE // Não pode editar
+                binding.bttCriarGaveta.visibility = View.GONE
+                binding.bttSalvar.visibility = View.GONE
+                setFieldsEnabled(false)
+                Toast.makeText(requireContext(), getString(R.string.msg_gaveta_reservada), Toast.LENGTH_LONG).show()
+            } else {
+                // Modo visualização normal, permite entrar em modo edição
+                binding.bttEditar.visibility = View.VISIBLE
+                binding.bttCriarGaveta.visibility = View.GONE
+                binding.bttSalvar.visibility = View.GONE
+                setFieldsEnabled(false)
+            }
         } else {
+            // Modo criação/edição
             binding.bttEditar.visibility = View.GONE
-            binding.bttCriarGaveta.visibility = View.VISIBLE
-            binding.bttSalvar.visibility = View.GONE
+            binding.bttCriarGaveta.visibility = if (newGaveta) View.VISIBLE else View.GONE
+            binding.bttSalvar.visibility = if (!newGaveta) View.VISIBLE else View.GONE
             setFieldsEnabled(true)
         }
     }
@@ -138,6 +159,7 @@ class CriarGavetaFragment : Fragment() {
 
     // --- MANIPULAÇÃO DE IMAGEM E BASE64 ---
     private fun convertImageUriToBase64(uri: Uri): String? {
+        // ... (Função inalterada) ...
         return try {
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -151,6 +173,7 @@ class CriarGavetaFragment : Fragment() {
     }
 
     private fun displayBase64Image(base64String: String) {
+        // ... (Função inalterada) ...
         try {
             val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
             val decodedBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -187,6 +210,10 @@ class CriarGavetaFragment : Fragment() {
                             displayBase64Image(gaveta.fotoBase64!!)
                             imageBase64 = gaveta.fotoBase64
                         }
+
+                        // 🛑 CHAMA setupViewMode APÓS CARREGAR O NOME
+                        setupViewMode(arguments?.getBoolean("VISUALIZAR_INFO") ?: false, gaveta.name)
+
                     } else {
                         showError("Gaveta não encontrada ou dados inválidos.")
                         findNavController().navigateUp()
@@ -215,6 +242,12 @@ class CriarGavetaFragment : Fragment() {
             return
         }
 
+        // 🛑 BLOQUEIO PARA EDIÇÃO DE NOMES RESERVADOS
+        if (!isCreation && gaveta.name?.let { RESERVED_GAVETA_NAMES.contains(it) } == true) {
+            showError(getString(R.string.msg_gaveta_reservada_nao_editavel))
+            return
+        }
+
         if (isCreation && imageBase64.isNullOrBlank()) {
             showError(getString(R.string.msg_erro_imagem_vazia_gaveta))
             return
@@ -225,24 +258,71 @@ class CriarGavetaFragment : Fragment() {
             return
         }
 
-        if (isCreation) {
-            // ✅ AJUSTE AQUI: Cria novo objeto Gaveta, incluindo o 'ownerUid'
-            gaveta = Gaveta(
-                name = nome,
-                ownerUid = userId, // <-- CRUCIAL: Adiciona o UID do proprietário
-                fotoBase64 = imageBase64,
-                public = isPublic
-            )
-            saveGaveta(userId)
-        } else {
-            // Atualiza objeto Gaveta existente e salva
-            gaveta.name = nome
-            gaveta.public = isPublic
-            gaveta.fotoBase64 = imageBase64
-            // O ownerUid já deve estar na gaveta carregada, não precisa ser setado novamente.
-            updateGaveta()
-        }
+        // 🛑 VERIFICAÇÃO DE UNICIDADE DO NOME
+        checkNameUniqueness(userId, nome, isCreation, isPublic)
     }
+
+    // 🛑 NOVO: Função para verificar se o nome da gaveta já existe para o usuário.
+    private fun checkNameUniqueness(userId: String, newName: String, isCreation: Boolean, isPublic: Boolean) {
+        // Desabilita botões enquanto a busca assíncrona acontece
+        binding.bttCriarGaveta.isEnabled = false
+        binding.bttSalvar.isEnabled = false
+
+        // Faz uma consulta que busca todas as gavetas do usuário logado
+        reference.child("gavetas")
+            .orderByChild("ownerUid")
+            .equalTo(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    binding.bttCriarGaveta.isEnabled = true
+                    binding.bttSalvar.isEnabled = true
+
+                    var nameExists = false
+
+                    for (gavetaSnapshot in snapshot.children) {
+                        val existingGavetaName = gavetaSnapshot.child("name").getValue(String::class.java)
+                        val existingGavetaId = gavetaSnapshot.key
+
+                        if (existingGavetaName.equals(newName, ignoreCase = true)) {
+                            // Se for Edição, permite o mesmo nome SE for a própria gaveta sendo editada
+                            if (!isCreation && existingGavetaId == gavetaId) {
+                                continue // É a própria gaveta, o nome é válido
+                            }
+                            nameExists = true
+                            break
+                        }
+                    }
+
+                    if (nameExists) {
+                        showError(getString(R.string.msg_erro_nome_gaveta_existente))
+                    } else {
+                        // Nome é único, prossegue com a criação/atualização
+                        if (isCreation) {
+                            gaveta = Gaveta(
+                                name = newName,
+                                ownerUid = userId,
+                                fotoBase64 = imageBase64,
+                                public = isPublic
+                            )
+                            saveGaveta(userId)
+                        } else {
+                            // Atualiza objeto Gaveta existente e salva
+                            gaveta.name = newName
+                            gaveta.public = isPublic
+                            gaveta.fotoBase64 = imageBase64
+                            updateGaveta()
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    binding.bttCriarGaveta.isEnabled = true
+                    binding.bttSalvar.isEnabled = true
+                    showError("Erro ao verificar nome da gaveta: ${error.message}")
+                }
+            })
+    }
+
 
     // ✅ CORRIGIDO: Usa updateChildren() para APENAS atualizar os campos editáveis.
     // Isso garante que o nó "peças" não seja apagado.

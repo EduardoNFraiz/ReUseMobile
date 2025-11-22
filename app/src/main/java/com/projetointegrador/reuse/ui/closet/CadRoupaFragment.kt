@@ -55,12 +55,12 @@ class CadRoupaFragment : Fragment() {
     // Objeto para armazenar os dados da peça, que será passado via Safe Args
     private var pecaEmAndamento: PecaCadastro = PecaCadastro()
 
-    // Variáveis de contexto (inicializadas no onCreate)
+    // Variáveis de contexto (inicializadas em onViewCreated)
     private var pecaUID: String? = null
     private var gavetaUID: String? = null
     private var isCreating: Boolean = true // Flag final de modo: true=Criação, false=Visualização/Edição
 
-    // Safe Args (usado para receber o PecaCadastro do Cad2, mas aqui usamos os argumentos diretos)
+    // Safe Args
     private val args: CadRoupaFragmentArgs by navArgs()
 
     // ActivityResultLauncher para seleção de imagem (Mantido)
@@ -87,15 +87,7 @@ class CadRoupaFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Recebe os argumentos passados pelo GavetaFragment
-        arguments?.let {
-            pecaUID = it.getString("pecaUID")
-            gavetaUID = it.getString("gavetaUID")
-            // Se 'pecaUID' não for nulo/vazio, NÃO estamos criando.
-            // Isso anula o 'CRIANDO_ROUPA=true' se a navegação foi de uma peça existente.
-            isCreating = pecaUID.isNullOrEmpty()
-        }
+        // 🛑 LÓGICA DE ARGUMENTOS REMOVIDA: Usaremos navArgs exclusivamente em onViewCreated.
     }
 
     override fun onCreateView(
@@ -114,6 +106,12 @@ class CadRoupaFragment : Fragment() {
 
         reference = Firebase.database.reference
 
+        // 🟢 INICIALIZAÇÃO CORRETA: Define as variáveis de estado de forma consistente,
+        // usando apenas os Safe Args (args).
+        pecaUID = args.pecaUID
+        gavetaUID = args.gavetaUID
+        isCreating = pecaUID.isNullOrEmpty()
+
         binding.imageView2.setOnClickListener {
             // Só permite abrir a galeria se o campo estiver habilitado
             if (it.isEnabled) {
@@ -129,8 +127,7 @@ class CadRoupaFragment : Fragment() {
             isImageSelected = false
             pecaEmAndamento = PecaCadastro()
 
-            // Define o gavetaUID padrão da criação, se passado pelo GavetaFragment
-            gavetaUID = args.gavetaUID // No modo de criação, o GavetaFragment passa o ID aqui
+            // O gavetaUID já foi definido corretamente acima a partir de args.gavetaUID
 
             binding.Proximo.setOnClickListener {
                 handleNavigation(isEditingNow = false)
@@ -140,7 +137,7 @@ class CadRoupaFragment : Fragment() {
             binding.toolbar.title = "Visualizar Peça (1/2)"
             binding.buttonEditar.visibility = View.VISIBLE
             setFieldsEnabled(false)
-            gavetaUID = args.gavetaUID
+
             if (pecaUID != null) {
                 loadPecaDetails(pecaUID!!)
             } else {
@@ -176,12 +173,11 @@ class CadRoupaFragment : Fragment() {
     }
 
     /**
-     * Gerencia a navegação de volta, confiando no onResume do GavetaFragment
-     * para recarregar os dados, que já tem o gavetaUID armazenado.
+     * Gerencia a navegação de volta, usando o gavetaUID.
      */
     private fun handleBackNavigation() {
-        // Pega o UID da gaveta do contexto ou dos Safe Args
-        val targetGavetaUID = gavetaUID ?: args.gavetaUID
+        // 🟢 CORREÇÃO CRUCIAL: Agora a variável de classe gavetaUID está garantida.
+        val targetGavetaUID = gavetaUID
 
         if (!targetGavetaUID.isNullOrEmpty()) {
 
@@ -192,13 +188,10 @@ class CadRoupaFragment : Fragment() {
             }
 
             // 2. Navega para o GavetaFragment
-            // Se a ação 'action_cadRoupaFragment_to_gavetaFragment' existir no seu NavGraph, use-a.
-            // É importante usar popUpTo para limpar o CadRoupaFragment da back stack ao navegar.
             findNavController().navigate(
                 R.id.gavetaFragment, // ID do GavetaFragment
                 bundle,
                 // O NavOptions permite limpar a back stack.
-                // O popUpTo garante que o CadRoupaFragment (e o CadRoupa2Fragment, se tiver passado por ele) seja removido.
                 androidx.navigation.navOptions {
                     popUpTo(R.id.gavetaFragment) {
                         inclusive = true // Remove a própria instância antiga do GavetaFragment também, se estiver na pilha
@@ -267,7 +260,7 @@ class CadRoupaFragment : Fragment() {
             if (!validarDados()) return
 
             // Coleta dados da primeira etapa (editados ou novos)
-            // 🛑 ATENÇÃO: Listar TODOS os campos não editados para PRESERVAR os valores carregados do Firebase
+            // 🛑 Garante que os campos não editados da PecaCadastro sejam preservados
             pecaEmAndamento = pecaEmAndamento.copy(
 
                 // --- Campos Editáveis (Tela 1) ---
@@ -277,7 +270,6 @@ class CadRoupaFragment : Fragment() {
                 tamanho = getSelecionarTamanho(),
 
                 // --- Campos do Cad2 (PRESERVAR O VALOR CARREGADO DO BANCO) ---
-                // Se você não especificar, o Kotlin pode resetar para null ou um valor indesejado.
                 finalidade = pecaEmAndamento.finalidade,
                 preco = pecaEmAndamento.preco,
                 titulo = pecaEmAndamento.titulo,
@@ -289,17 +281,14 @@ class CadRoupaFragment : Fragment() {
             )
         }
 
-        // Define o gavetaUID de destino, usando o ID passado pelo GavetaFragment (seja para criação ou o original para edição)
-        val finalGavetaUID = gavetaUID ?: args.gavetaUID
+        // Define o gavetaUID de destino, usando a variável de classe que foi inicializada com args.gavetaUID
+        val finalGavetaUID = gavetaUID
 
-        // 🛑 AJUSTE AQUI: O ID da gaveta só é obrigatório se NÃO estivermos criando (ou seja, se for edição/visualização)
+        // O ID da gaveta só é obrigatório se NÃO estivermos criando (edição/visualização)
         if (!isCreating && finalGavetaUID.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Erro: ID da gaveta não definido para prosseguir.", Toast.LENGTH_LONG).show()
             return
         }
-
-        // Se estiver criando e o finalGavetaUID for nulo, ele será passado como nulo para o CadRoupa2Fragment,
-        // que pode então pedir ao usuário para selecionar uma gaveta na próxima tela, ou armazená-la no "gaveta padrão".
 
         // Navega para CadRoupa2Fragment
         val action = CadRoupaFragmentDirections.actionCadRoupaFragmentToCadRoupa2Fragment(
@@ -307,7 +296,7 @@ class CadRoupaFragment : Fragment() {
             isCreating = isCreating, // Se é um novo cadastro
             isEditing = isEditingNow, // Se é uma edição ativa
             pecaUID = pecaUID, // O ID da peça (nulo se for criação)
-            gavetaUID = finalGavetaUID, // O ID da gaveta original/destino (Pode ser nulo na criação)
+            gavetaUID = finalGavetaUID, // O ID da gaveta original/destino
         )
         findNavController().navigate(action)
     }
