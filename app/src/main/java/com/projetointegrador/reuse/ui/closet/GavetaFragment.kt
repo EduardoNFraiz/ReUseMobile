@@ -38,6 +38,7 @@ class GavetaFragment : Fragment() {
     private lateinit var reference: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
+    // pecaAdapter pode ser PecaClosetAdapter ou PecaCarrinhoAdapter
     private lateinit var pecaAdapter: RecyclerView.Adapter<*>
 
     private val loadedPecasCloset = mutableListOf<Pair<PecaCloset, String>>()
@@ -50,7 +51,6 @@ class GavetaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            // A chave "GAVETA_ID" é usada no retorno do CadRoupaFragment (handleBackNavigation)
             gavetaUID = it.getString("GAVETA_ID")
         }
     }
@@ -68,9 +68,12 @@ class GavetaFragment : Fragment() {
         reference = Firebase.database.reference
         auth = Firebase.auth
         initToolbar(binding.toolbar)
-        // 🛑 Importante: Chame initListeners antes de barraDeNavegacao se houver sobreposição
         initListeners()
         barraDeNavegacao()
+
+        // 🛑 AJUSTE 1: Inicialização padrão do adaptador no onViewCreated (tipo mais comum)
+        // Isso garante que 'pecaAdapter' está inicializado antes de qualquer chamada assíncrona.
+        initRecyclerView(isCarrinho = false)
 
         if (gavetaUID.isNullOrEmpty()) {
             showBottomSheet(message = "Erro: ID da gaveta não foi encontrado.")
@@ -90,10 +93,6 @@ class GavetaFragment : Fragment() {
         loadedPecasCloset.clear()
         loadedPecasCarrinho.clear()
 
-        if (::pecaAdapter.isInitialized) {
-            pecaAdapter.notifyDataSetChanged()
-        }
-
         loadGavetaDetails(uid)
     }
 
@@ -110,7 +109,7 @@ class GavetaFragment : Fragment() {
                         val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS
                         setupViewVisibility(isSpecialGaveta)
 
-                        // O adaptador de carrinho só é usado se o nome for Carrinho
+                        // 🛑 AJUSTE 2: Chama initRecyclerView para garantir que o tipo de adaptador está correto
                         initRecyclerView(gavetaNome == GAVETA_CARRINHO)
 
                         loadRoupaUidsFromGaveta(uid)
@@ -122,6 +121,7 @@ class GavetaFragment : Fragment() {
                     showBottomSheet(message = "Erro ao carregar detalhes da gaveta: ${error.message}")
                 }
             })
+        Log.e("teste","$gavetaUID e $uid")
     }
 
     // Função para controlar a visibilidade de botões de edição/exclusão
@@ -147,14 +147,12 @@ class GavetaFragment : Fragment() {
                     for (pecaSnapshot in snapshot.children) {
                         val uid = pecaSnapshot.key!!
 
-                        // Lógica para usar o modelo correto (PecaCarrinho ou PecaCloset)
                         if (isCarrinho) {
                             val pecaCarrinho = pecaSnapshot.getValue(PecaCarrinho::class.java)
                             if (pecaCarrinho != null) {
                                 loadedPecasCarrinho.add(Pair(pecaCarrinho, uid))
                             }
                         } else {
-                            // Usado para Gaveta Normal e Gaveta Recebidos
                             val pecaCloset = pecaSnapshot.getValue(PecaCloset::class.java)
                             if (pecaCloset != null) {
                                 loadedPecasCloset.add(Pair(pecaCloset, uid))
@@ -179,6 +177,7 @@ class GavetaFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     showBottomSheet(message = "Erro ao buscar peças por gaveta: ${error.message}")
+                    // Garante que a lista é limpa em caso de erro
                     (pecaAdapter as? PecaClosetAdapter)?.updateList(emptyList())
                 }
             })
@@ -188,8 +187,11 @@ class GavetaFragment : Fragment() {
 
     private fun initRecyclerView(isCarrinho: Boolean) {
 
-        // Verifica se o adaptador já foi inicializado com o tipo correto
-        if (::pecaAdapter.isInitialized &&
+        val isAdapterInitialized = ::pecaAdapter.isInitialized
+
+        // 🛑 AJUSTE 3: Só reinicializa se for necessário (não inicializado OU tipo errado)
+        // Se o adaptador já estiver inicializado com o tipo CORRETO, retorna (melhora performance no onResume)
+        if (isAdapterInitialized &&
             ((isCarrinho && pecaAdapter is PecaCarrinhoAdapter) || (!isCarrinho && pecaAdapter is PecaClosetAdapter))) {
             return
         }
@@ -241,21 +243,27 @@ class GavetaFragment : Fragment() {
     }
 
     private fun deleteGaveta() {
+        // 1. Verificações de segurança e estado
         val gavetaUid = gavetaUID ?: return
         val userId = auth.currentUser?.uid ?: run {
             showBottomSheet(message = "Usuário não autenticado. Impossível deletar.")
             return
         }
 
-        showBottomSheet(message = "Iniciando a exclusão da gaveta e suas peças...")
-
-        reference.child("gavetas").child(gavetaUid).child("peças")
+        reference.child("pecas")
+            .orderByChild("gavetaUid")
+            .equalTo(gavetaUid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val pecaUidsToDelete = mutableListOf<String>()
+
+                    // Itera sobre o resultado da busca filtrada
                     for (childSnapshot in snapshot.children) {
+                        // Adiciona o UID da peça encontrada (a chave do nó)
                         pecaUidsToDelete.add(childSnapshot.key!!)
                     }
+
+                    // Chama a função para exclusão dos detalhes e da referência da gaveta
                     deletePecasDetails(gavetaUid, userId, pecaUidsToDelete)
                 }
 
@@ -333,15 +341,13 @@ class GavetaFragment : Fragment() {
             val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS
 
             if (isSpecialGaveta) {
-                // A visibilidade já está GONE, mas este é um fallback de segurança
                 Log.w("GavetaFragment", "Tentativa de cadastro em gaveta de sistema bloqueada: $gavetaNome")
                 return@setOnClickListener
             }
 
-            // 🟢 CORREÇÃO 1: Usa Safe Args para passar o gavetaUID e pecaUID=null (criação)
             val action = GavetaFragmentDirections.actionGavetaFragmentToCadRoupaFragment(
                 pecaUID = null,
-                gavetaUID = gavetaUID // 👈 Passa o UID da gaveta atual
+                gavetaUID = gavetaUID
             )
             findNavController().navigate(action)
         }
@@ -357,11 +363,9 @@ class GavetaFragment : Fragment() {
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
 
         binding.cadastrarRoupa.setOnClickListener {
-            // 🟢 CORREÇÃO 2: Usa Safe Args e passa o gavetaUID também para a navegação da barra.
-            // Isso garante que o CadRoupaFragment saiba para qual gaveta a peça será associada.
             val action = GavetaFragmentDirections.actionGavetaFragmentToCadRoupaFragment(
-                pecaUID = null, // Nulo, pois é criação
-                gavetaUID = gavetaUID // 👈 Passa o UID da gaveta atual
+                pecaUID = null,
+                gavetaUID = gavetaUID
             )
             findNavController().navigate(action)
         }

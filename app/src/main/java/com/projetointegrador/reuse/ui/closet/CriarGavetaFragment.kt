@@ -159,7 +159,6 @@ class CriarGavetaFragment : Fragment() {
 
     // --- MANIPULAÇÃO DE IMAGEM E BASE64 ---
     private fun convertImageUriToBase64(uri: Uri): String? {
-        // ... (Função inalterada) ...
         return try {
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -173,7 +172,6 @@ class CriarGavetaFragment : Fragment() {
     }
 
     private fun displayBase64Image(base64String: String) {
-        // ... (Função inalterada) ...
         try {
             val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
             val decodedBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -200,10 +198,12 @@ class CriarGavetaFragment : Fragment() {
                         gaveta = loadedGaveta
 
                         binding.editTextGaveta.setText(gaveta.name)
-                        if (gaveta.public) {
-                            binding.rbPublico.isChecked = true
-                        } else {
+
+                        // 🛑 AJUSTE: Carrega a visibilidade usando o campo 'privado'
+                        if (gaveta.privado) {
                             binding.rbPrivado.isChecked = true
+                        } else {
+                            binding.rbPublico.isChecked = true
                         }
 
                         if (!gaveta.fotoBase64.isNullOrEmpty()) {
@@ -233,7 +233,8 @@ class CriarGavetaFragment : Fragment() {
         if (feedbackShown) return
 
         val nome = binding.editTextGaveta.text.toString().trim()
-        val isPublic = binding.rbPublico.isChecked
+
+        // 🛑 AJUSTE: Variável para determinar se a gaveta será privada
         val isPrivate = binding.rbPrivado.isChecked
 
         val userId = auth.currentUser?.uid
@@ -253,17 +254,18 @@ class CriarGavetaFragment : Fragment() {
             return
         }
 
-        if (nome.isBlank() || (!isPublic && !isPrivate)) {
+        // Verifica se pelo menos um rádio button de visibilidade foi selecionado
+        if (nome.isBlank() || (!binding.rbPublico.isChecked && !binding.rbPrivado.isChecked)) {
             showError(getString(R.string.msg_erro_visibilidade_vazia_gaveta))
             return
         }
 
-        // 🛑 VERIFICAÇÃO DE UNICIDADE DO NOME
-        checkNameUniqueness(userId, nome, isCreation, isPublic)
+        // 🛑 VERIFICAÇÃO DE UNICIDADE DO NOME, passando 'isPrivate'
+        checkNameUniqueness(userId, nome, isCreation, isPrivate)
     }
 
-    // 🛑 NOVO: Função para verificar se o nome da gaveta já existe para o usuário.
-    private fun checkNameUniqueness(userId: String, newName: String, isCreation: Boolean, isPublic: Boolean) {
+    // 🛑 AJUSTE: Função alterada para receber 'isPrivate' em vez de 'isPublic'
+    private fun checkNameUniqueness(userId: String, newName: String, isCreation: Boolean, isPrivate: Boolean) {
         // Desabilita botões enquanto a busca assíncrona acontece
         binding.bttCriarGaveta.isEnabled = false
         binding.bttSalvar.isEnabled = false
@@ -302,13 +304,13 @@ class CriarGavetaFragment : Fragment() {
                                 name = newName,
                                 ownerUid = userId,
                                 fotoBase64 = imageBase64,
-                                public = isPublic
+                                privado = isPrivate // 🛑 Salvando como 'privado'
                             )
                             saveGaveta(userId)
                         } else {
                             // Atualiza objeto Gaveta existente e salva
                             gaveta.name = newName
-                            gaveta.public = isPublic
+                            gaveta.privado = isPrivate // 🛑 Atualizando 'privado'
                             gaveta.fotoBase64 = imageBase64
                             updateGaveta()
                         }
@@ -325,7 +327,6 @@ class CriarGavetaFragment : Fragment() {
 
 
     // ✅ CORRIGIDO: Usa updateChildren() para APENAS atualizar os campos editáveis.
-    // Isso garante que o nó "peças" não seja apagado.
     private fun updateGaveta() {
         if (gavetaId.isNullOrBlank()) {
             showError("Erro: ID da gaveta para edição não encontrado.")
@@ -337,7 +338,7 @@ class CriarGavetaFragment : Fragment() {
         // CRIA o mapa com APENAS os campos que devem ser atualizados.
         val updateMap = mapOf<String, Any?>(
             "name" to gaveta.name,
-            "public" to gaveta.public,
+            "privado" to gaveta.privado, // 🛑 Chave atualizada para 'privado'
             "fotoBase64" to gaveta.fotoBase64,
             // O ownerUid NUNCA deve ser atualizado.
         )
@@ -430,7 +431,7 @@ class CriarGavetaFragment : Fragment() {
         }
     }
 
-    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas e corretas para a estrutura) ---
+    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas) ---
 
     private fun getUserAccountType(userId: String, gavetaId: String) {
         reference.child("usuarios").child("pessoaFisica").child(userId)

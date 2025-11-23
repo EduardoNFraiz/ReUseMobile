@@ -287,7 +287,7 @@ class AddFotoperfilFragment : Fragment() {
                     name = gavetaName,
                     ownerUid = userId, // <-- CRUCIAL: Vincula a gaveta ao usuário no nó /gavetas
                     fotoBase64 = "",
-                    public = false,
+                    privado = true,
                 )
 
                 // 1. Salva a gaveta no nó principal: /gavetas/{gavetaUid}
