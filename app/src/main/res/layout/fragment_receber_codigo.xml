@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="Recuperação de Senha"
+        android:text="@string/title_recuperar_senha"
         android:textColor="#134313"
         android:textSize="30dp" />
 
@@ -32,7 +32,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/plus_jakarta_sans"
-        android:text="Digite o e-mail da conta que deseja\n alterar a senha"
+        android:text="@string/sub_title_digite_email"
         android:textAlignment="center"
         android:textColor="@color/VerdeClarinho"
         android:textSize="16dp" />
@@ -46,7 +46,7 @@
         android:background="@drawable/edittextestilo"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="E-mail da conta"
+        android:hint="@string/hint_email_recuperar_senha"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="25dp"
         android:paddingVertical="10dp"
@@ -62,7 +62,7 @@
         android:layout_marginTop="144dp"
         android:background="@drawable/estilobtt1"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:text="Enviar código"
+        android:text="@string/btn_enviar_email"
         android:textAllCaps="false"
         android:textColor="#134313"
         android:textSize="18dp"/>

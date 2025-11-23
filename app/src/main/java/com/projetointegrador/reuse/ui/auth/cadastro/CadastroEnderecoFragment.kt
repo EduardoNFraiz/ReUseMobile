@@ -90,13 +90,15 @@ class CadastroEnderecoFragment : Fragment() {
                     binding.editTextNmrrua.requestFocus()
 
                 } else {
-                    Toast.makeText(requireContext(), "CEP não encontrado ou inválido.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_cep_nao_encontrado), Toast.LENGTH_SHORT).show()
                     // Limpar campos preenchidos anteriormente
                     clearAddressFields()
                 }
 
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Erro de rede ao buscar CEP. Preencha manualmente.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_api_cep_buscar_dados), Toast.LENGTH_LONG).show()
                 clearAddressFields()
             }
         }
@@ -136,7 +138,8 @@ class CadastroEnderecoFragment : Fragment() {
 
         for ((nomeCampo, valorCampo) in camposObrigatorios) {
             if (valorCampo.isBlank()) {
-                Toast.makeText(requireContext(), "Preencha o campo $nomeCampo!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_preencha_o_campo, nomeCampo), Toast.LENGTH_SHORT).show()
                 return
             }
         }
@@ -145,13 +148,15 @@ class CadastroEnderecoFragment : Fragment() {
 
         // CEP: Formato xxxxx-xxx
         if (!CEP_PATTERN.matcher(cep).matches()) {
-            Toast.makeText(requireContext(), "CEP inválido. Formato esperado: xxxxx-xxx", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_formato_invalido_cep), Toast.LENGTH_SHORT).show()
             return
         }
 
         // Número: Máximo 5 dígitos
         if (!NUMERO_PATTERN.matcher(numero).matches()) {
-            Toast.makeText(requireContext(), "Número inválido. Deve conter no máximo 5 dígitos numéricos.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_formato_invalido_numero), Toast.LENGTH_SHORT).show()
             return
         }
 

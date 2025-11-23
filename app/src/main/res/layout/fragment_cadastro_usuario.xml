@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="Cadastro Usuário"
+        android:text="@string/title_cadastro_usuario"
         android:textColor="#134313"
         android:textSize="26dp" />
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Nome"
+        android:text="@string/label_nome"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -43,7 +43,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Digite seu nome completo"
+        android:hint="@string/label_hint_nome_usuario"
         android:inputType="text"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Usuário"
+        android:text="@string/label_usuario"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -69,7 +69,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Digite um nome de usuário"
+        android:hint="@string/label_hint_usuario"
         android:inputType="text"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="E-mail"
+        android:text="@string/label_email"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -95,7 +95,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Digite seu endereço de e-mail"
+        android:hint="@string/label_hint_email"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Senha"
+        android:text="@string/label_senha"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -121,7 +121,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Digite uma senha"
+        android:hint="@string/label_hint_senha"
         android:inputType="textPassword"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Confirmar Senha"
+        android:text="@string/label_confirmar_senha"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -147,7 +147,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Digite novamente a senha"
+        android:hint="@string/label_hint_confirmar_senha"
         android:inputType="textPassword"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -160,7 +160,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Telefone"
+        android:text="@string/label_telefone"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -173,7 +173,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="(xx) xxxxx-xxxx"
+        android:hint="@string/label_hint_telefone"
         android:inputType="phone"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -186,7 +186,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="Data de Nascimento"
+        android:text="@string/label_data_de_nascimento"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -199,7 +199,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="dd/mm/aaaa"
+        android:hint="@string/label_hint_data_de_nascimento"
         android:inputType="date"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -212,7 +212,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="10dp"
-        android:text="CPF"
+        android:text="@string/label_cpf"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -225,7 +225,7 @@
         android:background="@drawable/edittextcadastro"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="xxx.xxx.xxx-xx"
+        android:hint="@string/label_hint_cpf"
         android:inputType="text"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
@@ -242,7 +242,7 @@
         android:background="@drawable/estilobtt1"
         android:textColor="@color/VerdeEscuro"
         android:textAllCaps="false"
-        android:text="Próximo"
+        android:text="@string/btn_proximo"
         android:textSize="20dp"
         android:fontFamily="@font/nunito_sans_semibold"/>
 

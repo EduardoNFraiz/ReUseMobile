@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="Escolha sua foto de perfil"
+        android:text="@string/title_escolha_sua_foto_de_perfil"
         android:textColor="#134313"
         android:textSize="30dp" />
 
@@ -58,7 +58,7 @@
         android:layout_marginTop="250dp"
         android:background="@drawable/estilobtt2"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Continuar sem uma foto"
+        android:text="@string/btn_continuar_sem_uma_foto"
         android:textAllCaps="false"
         android:textColor="#5E7858"
         android:textSize="18dp"/>
@@ -72,7 +72,7 @@
         android:background="@drawable/estilobtt1"
         android:textColor="@color/VerdeEscuro"
         android:textAllCaps="false"
-        android:text="Criar conta"
+        android:text="@string/btn_criar_conta"
         android:textSize="20dp"
         android:fontFamily="@font/nunito_sans_semibold"/>
 

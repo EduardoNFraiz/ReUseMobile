@@ -57,10 +57,10 @@ class LoginFragment : Fragment() {
             if (senha.isNotBlank()) {
                 loginUser(email,senha)
             } else {
-                showBottomSheet(message = getString(R.string.password_empty))
+                showBottomSheet(message = getString(R.string.password_empty_login))
             }
         }else{
-            showBottomSheet(message = getString(R.string.email_empty))
+            showBottomSheet(message = getString(R.string.email_empty_login))
         }
     }
 

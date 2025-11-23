@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_extrabold"
         android:gravity="center"
-        android:text="Adicionar Avaliação"
+        android:text="@string/title_adicionar_avaliacao"
         android:textColor="@color/VerdeClaro"
         android:textSize="30sp" />
     
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:paddingStart="15dp"
-        android:text="Como foi sua experiência?"
+        android:text="@string/title_como_foi_sua_experiencia"
         android:textSize="25sp"
         android:fontFamily="@font/nunito_sans_semibold"/>
     <TextView
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:paddingStart="15dp"
-        android:text="Avalie de 1 a 5 estrelas para classificar"
+        android:text="@string/sub_title_como_foi_sua_experiencia"
         android:textSize="17sp"
         android:textColor="#949494"
         android:fontFamily="@font/nunito_sans_light"/>
@@ -58,7 +58,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Conte como foi:"
+        android:text="@string/label_descricao_avaliacao"
         android:paddingStart="15dp"
         android:textSize="25dp"
         android:fontFamily="@font/nunito_sans_semibold"/>
@@ -70,7 +70,7 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
         android:background="@drawable/edittext_preco_background"
-        android:hint="Escreva sobre sua experiência"
+        android:hint="@string/label_hint_descricao_avaliacao"
         android:visibility="visible"
         android:inputType="textMultiLine"
         android:maxLength="400"
@@ -85,7 +85,7 @@
         android:layout_marginTop="450dp"
         android:layout_gravity="center"
         android:background="@drawable/estilobtt1"
-        android:text="Avaliar"
+        android:text="@string/btn_avaliar"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18sp"/>

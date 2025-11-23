@@ -1,104 +1,136 @@
 <resources>
-    <string name="app_name">ReUse</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="aba_usuarios">Usuários</string>
-    <string name="aba_brechos">Brechós</string>
-    <string name="aba_vendas">Vendas</string>
+    //TelaInicialFragment strings
+    <string name="app_name">ReUse</string>
+    <string name="sub_title_app_name">Seu Guarda-roupa Virtual para facilitar sua organização, vendas e doações</string>
+    <string name="btn_ja_possuo_conta">Já possuo uma conta</string>
 
-    <string name="aba_closet_usuario">Closet</string>
-    <string name="aba_avenda">À venda</string>
-
-    <string name="cad_peca">Cadastro de peça</string>
-    <string name="app_photo">croup</string>
-    <string name="app_cor">Cores</string>
-    <string name="app_categoria">Categoria</string>
-    <string name="app_tamanho">Tamanho</string>
-    <string name="app_final">Finalidade</string>
-
-    <string name="app_pp">PP</string>
-    <string name="app_p">P</string>
-    <string name="app_m">M</string>
-    <string name="app_g">G</string>
-    <string name="app_gg">GG</string>
-    <string name="app_xgg">XGG</string>
-
-    <string name="app_roupa">Roupa</string>
-    <string name="app_acessorio">Acessório</string>
-    <string name="app_calcado">Calçado</string>
-    <string name="app_trajebanho">Traje banho</string>
-    <string name="app_esporte">Esporte</string>
-    <string name="app_infantil">Infantil</string>
-    <string name="app_masculino">Masculino</string>
-    <string name="app_unissex">Unissex</string>
-    <string name="app_intima">Íntimo</string>
-    <string name="app_feminino">Feminino</string>
-
-    <string name="app_prox">Próximo</string>
-
-    <string name="app_doar">Doar</string>
-    <string name="app_vender">Vender</string>
-    <string name="app_organizar">Organizar</string>
-
-    <string name="app_cadpeca">Cadastrar peça</string>
-    <string name="app_salvar">Salvar alterações</string>
-    <string name="app_pesquisargav">Pesquisar minhas gavetas</string>
-    <string name="pesquisar">Pesquisar</string>
-    <string name="imagem_da_gaveta">Imagem da gaveta</string>
-    <string name="casacos">casacos</string>
-    <string name="digite_o_pre_o">Digite o preço</string>
-    <string name="digite_o_pre">Digite o preço</string>
-    <string name="r">R$</string>
-    <string name="filtrar">Filtrar</string>
-
-    <string name="text_tile_warning">Atenção</string>
-    <string name="text_button_warning">Entendi</string>
-    <string name="atencao">Atenção</string>
-    <string name="entendi">Entendi</string>
-
-    <string name="text_title_dialog_confirm_logout">Deseja sair da sua conta?</string>
-    <string name="text_button_dialog_confirm_logout">Confirmar</string>
-    <string name="text_message_dialog_confirm_logout">Aperte em confirmar para sair da sua conta</string>
-    <string name="password_empty">Preencha a senha!</string>
-    <string name="email_empty">Preencha seu email!</string>
-
-    <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
-
-    <string name="excluir">Excluir</string>
-    <string name="click_para_excluir">Clique no botão se você realmente deseja excluir</string>
-    <string name="deseja_excluir">Deseja excluir esta gaveta?</string>
-
-    <string name="text_delete_sucess_gaveta">Gaveta excluída com sucesso</string>
-    <string name="text_delete_sucess_peca">Peça excluída com sucesso</string>
-
-    <string name="deseja_excluir_gaveta">Deseja excluir esta gaveta?</string>
-    <string name="click_para_excluir_gaveta">Clique em EXCLUIR para remover a gaveta: %s. As roupas permanecerão no seu guarda-roupa virtual.</string>
-    <string name="error_generic">ERROR!\n</string>
+    //AddFotoperfilFragment strings
+    <string name="title_escolha_sua_foto_de_perfil">Escolha sua foto de perfil</string>
+    <string name="btn_continuar_sem_uma_foto">Continuar sem uma foto</string>
+    <string name="btn_criar_conta">Criar conta</string>
+    <string name="aviso_foto">"Selecione uma foto ou continue sem foto."</string>
+    <string name="error_usuario_nao_autenticado">Erro: Usuário não autenticado. Redirecionando para login.</string>
+    <string name="error_dados_de_conta_nao_encontrados">Erro: Dados de conta não encontrados.</string>
+    <string name="error_tipo_de_usuario_pj_desconhecido">Erro: Tipo de usuário PJ desconhecido.</string>
+    <string name="error__tipo_de_conta_desconhecido">Erro: Tipo de conta desconhecido.</string>
+    <string name="error_gerar_id_para_o_endereco">Erro ao gerar ID para o endereço.</string>
+    <string name="falha_ao_salvar_endereco">Falha ao salvar endereço: %1$s</string>
+    <string name="cadastro_concluido">✅ Cadastro concluído!</string>
+    <string name="falha_ao_salvar_dados_finais_da_conta">❌ Falha ao salvar dados finais da conta.</string>
+    <string name="error_falha_criar_gaveta">Aviso: Falha ao criar gaveta \'%1$s\'.</string>
 
 
-    <string name="msg_erro_nome_vazio_gaveta">O nome da gaveta não pode estar vazio.</string>
-    <string name="msg_erro_visibilidade_vazia_gaveta">Preencha o nome e escolha a visibilidade da gaveta!</string>
-    <string name="msg_erro_imagem_vazia_gaveta">Selecione uma imagem para a gaveta!</string>
+    //CadastroEnderecoFragment strings
+    <string name="title_cadastro_endereco">Cadastro Endereço</string>
+    <string name="label_cep">CEP</string>
+    <string name="label_hint_cep">xxxxx-xxx</string>
+    <string name="label_rua">Rua</string>
+    <string name="label_hint_rua">Informe o nome da rua</string>
+    <string name="label_numero">Número</string>
+    <string name="label_hint_numero">Informe o número da propriedade</string>
+    <string name="label_complemento">Complemento (opcional)</string>
+    <string name="label_hint_complemento">Ex: Casa, Apartamento, etc.</string>
+    <string name="label_bairro">Bairro</string>
+    <string name="label_hint_bairro">Informe o nome do bairro</string>
+    <string name="label_cidade">Cidade</string>
+    <string name="label_hint_cidade">Informe o nome da cidade</string>
+    <string name="label_estado">Estado</string>
+    <string name="label_hint_estado">Informe o nome do Estado</string>
+    <string name="label_pais">País</string>
+    <string name="label_hint_pais">Informe o nome do país</string>
+    <string name="btn_proximo">Próximo</string>
+    <string name="error_cep_nao_encontrado">CEP não encontrado ou inválido.</string>
+    <string name="error_api_cep_buscar_dados">Erro de rede ao buscar CEP. Preencha manualmente.</string>
+    <string name="aviso_preencha_o_campo">Preencha o campo %1$s!</string>
+    <string name="error_formato_invalido_cep">CEP inválido. Formato esperado: xxxxx-xxx</string>
+    <string name="error_formato_invalido_numero">Número inválido. Deve conter no máximo 5 dígitos numéricos.</string>
 
-    <string name="erro_usuario_nao_autenticado">Erro: Usuário não autenticado. Faça login novamente.</string>
-    <string name="erro_falha_gerar_id_gaveta">Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.</string>
-    <string name="erro_salvar_detalhes_gaveta">Erro ao salvar detalhes da gaveta: %1$s</string>
-    <string name="erro_vincular_gaveta_usuario">Erro ao vincular gaveta ao usuário: %1$s</string>
-    <string name="erro_tipo_conta_invalido">Erro: Tipo de conta do usuário inválido ou não encontrado.</string>
-    <string name="erro_processar_imagem">Erro ao processar imagem: %1$s</string>
-    <string name="erro_tipo_conta_nao_encontrado">Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.</string>
 
-    <string name="aviso_gaveta_nao_encontrada">ID da gaveta não encontrado. Não é possível navegar.</string>
-    <string name="aviso_nenhuma_gaveta_encontrada">Nenhuma gaveta encontrada ou tipo de conta não identificado.</string>
-    <string name="aviso_gavetas_nao_cadastradas">Você ainda não possui gavetas cadastradas.</string>
+    //CadastroInstituicaoFragment e CadastroBrechoFragment e CadastroUsuarioFragment strings
+    <string name="title_cadastro_instituicao">Cadastro Instituição</string>
+    <string name="label_nome">Nome</string>
+    <string name="label_hint_nome">Digite o nome da instituição</string>
+    <string name="label_usuario">Usuário</string>
+    <string name="label_hint_usuario">Digite um nome de usuário</string>
+    <string name="label_email">E-mail</string>
+    <string name="label_hint_email">Digite um endereço de e-mail</string>
+    <string name="label_senha">Senha</string>
+    <string name="label_hint_senha">Digite uma senha</string>
+    <string name="label_confirmar_senha">Confirmar Senha</string>
+    <string name="label_hint_confirmar_senha">Digite novamente a senha</string>
+    <string name="label_telefone">Telefone</string>
+    <string name="label_hint_telefone">(xx) xxxxx-xxxx</string>
+    <string name="label_cnpj">CNPJ</string>
+    <string name="label_hint_cnpj">xx. xxx. xxx/0001-xx</string>
+    <string name="label_tipo">Tipo:</string>
+    <string name="option_brecho">Brechó</string>
+    <string name="option_instituicao">Instituição</string>
+    <string name="aviso_nome_usuario">O nome de usuário não pode conter espaços em branco!</string>
+    <string name="aviso_formato_email">E-mail inválido. Verifique o formato.</string>
+    <string name="aviso_tamanho_senha">A senha deve ter pelo menos 6 caracteres!</string>
+    <string name="aviso_senhas_diferentes">As senhas não coincidem!</string>
+    <string name="aviso_formato_telefone">Telefone inválido. Formato esperado: (xx) xxxxx-xxxx</string>
+    <string name="aviso_formato_cnpj">CNPJ inválido. Formato esperado: xx.xxx.xxx/xxxx-xx</string>
+    <string name="aviso_cnpj_ja_cadastrado">Este CNPJ já está cadastrado!</string>
+    <string name="aviso_nome_usuario_ja_cadastrado">Este Nome de Usuário já está em uso por outra conta!</string>
+    <string name="erro_ao_verificar_nome_de_usuario">Erro ao verificar Nome de Usuário: %1$s</string>
+    <string name="erro_ao_verificar_cnpj">Erro ao verificar CNPJ: %1$s</string>
+    <string name="sucesso_autenticacao">Autenticação criada! Continue para o endereço.</string>
+    <string name="aviso_email_ja_cadastrado">Este E-mail já está cadastrado!</string>
+    <string name="error_desconhecido_no_cadastro">Erro desconhecido no cadastro.</string>
+    <string name="title_cadastro_brecho">Cadastro Brechó</string>
+    <string name="label_hint_nome_brecho">Digite o nome do brechó</string>
+    <string name="title_cadastro_usuario">Cadastro Usuário</string>
+    <string name="label_hint_nome_usuario">Digite seu nome completo</string>
+    <string name="label_data_de_nascimento">Data de Nascimento</string>
+    <string name="label_hint_data_de_nascimento">dd/mm/aaaa</string>
+    <string name="label_cpf">CPF</string>
+    <string name="label_hint_cpf">xxx.xxx.xxx-xx</string>
+    <string name="aviso_formato_data_de_nascimento">Data de Nascimento inválida. Formato esperado: dd/mm/aaaa</string>
+    <string name="aviso_formato_cpf">CPF inválido. Formato esperado: xxx.xxx.xxx-xx</string>
+    <string name="aviso_cpf_ja_cadastrado">Este CPF já está cadastrado!</string>
+    <string name="error_verificar_cpf">Erro ao verificar CPF: %1$s</string>
 
-    <string name="sucesso_gaveta_criada">Gaveta criada com sucesso!</string>
-    <string name="sucesso_gaveta_atualizada">Gaveta atualizada com sucesso!</string>
+    //ReceberCodigoFragment strings
+    <string name="title_recuperar_senha">Recuperação de Senha</string>
+    <string name="sub_title_digite_email">Digite o e-mail da conta que deseja\n alterar a senha</string>
+    <string name="hint_email_recuperar_senha">E-mail da conta</string>
+    <string name="btn_enviar_email">Enviar</string>
+    <string name="email_empty">Preencha um email!</string>
+    <string name="enviamos_msg_redefinir_senha">Enviamos uma mensagem no seu email para redefinir a senha!</string>
 
-    <string name="msg_gaveta_reservada">Atenção: Esta é uma gaveta do sistema e suas informações não podem ser editadas.</string>
-    <string name="msg_gaveta_reservada_nao_editavel">Você não pode alterar o nome ou visibilidade de gavetas do sistema (Vendas, Doação, Carrinho, Recebidos).</string>
-    <string name="msg_erro_nome_gaveta_existente">Você já possui uma gaveta com este nome. Por favor, escolha um nome diferente.</string>
-    <string name="adicionar_ao_carrinho">Adicionar ao carrinho</string>
-    <string name="remover_do_carrinho">Remover do carrinho</string>
+
+    //EscolherPerfilCFragment strings
+    <string name="title_escolha_perfil">Em que perfil você se encaixa?</string>
+    <string name="btn_perfilusuario">Usuário</string>
+    <string name="btn_perfilbrecho">Brechó</string>
+    <string name="btn_perfilinstituicao">Instituição</string>
+
+    //LoginFragment strings
+    <string name="title_login">Bem-vindo(a) de volta!</string>
+    <string name="hint_loginemail">Email</string>
+    <string name="hint_loginsenha">Senha</string>
+    <string name="text_esqueceu_senha">Esqueceu a senha?</string>
+    <string name="btn_login">Login</string>
+    <string name="password_empty_login">Preencha sua senha para efetuar o login!</string>
+    <string name="email_empty_login">Preencha seu email para efetuar o login!</string>
+
+
+    //AdicionarAvaliacaoFragment e AvaliacoesFragment strings
+    <string name="title_adicionar_avaliacao">Adicionar Avaliação</string>
+    <string name="title_como_foi_sua_experiencia">Como foi sua experiência?</string>
+    <string name="sub_title_como_foi_sua_experiencia">Avalie de 1 a 5 estrelas para classificar</string>
+    <string name="label_descricao_avaliacao">Conte como foi:</string>
+    <string name="label_hint_descricao_avaliacao">Escreva sobre sua experiência</string>
+    <string name="btn_avaliar">Avaliar</string>
+    <string name="aviso_preencha_descricao_avaliacao">Por favor, adicione uma descrição da sua experiência.</string>
+    <string name="error_avaliacao_id_nao_encontrado">Erro: ID da avaliação não encontrado.</string>
+    <string name="sucesso_avaliacao_feita">Avaliação adicionada com sucesso!</string>
+    <string name="erro_ao_enviar_avaliacao">Erro ao enviar avaliação: %1$s</string>
+    <string name="error_atualizar_avaliacao">Falha ao atualizar a avaliação: %1$s</string>
+    <string name="title_avaliacao">Avaliações</string>
 
 </resources>

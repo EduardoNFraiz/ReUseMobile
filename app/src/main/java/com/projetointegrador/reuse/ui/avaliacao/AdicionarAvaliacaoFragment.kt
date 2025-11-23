@@ -44,7 +44,7 @@ class AdicionarAvaliacaoFragment : Fragment() {
         avaliacaoId = arguments?.getString("AVALIACAO_ID")
 
         if (avaliacaoId.isNullOrEmpty()) {
-            showBottomSheet(message = "Erro: ID da avaliação não encontrado.")
+            showBottomSheet(message = getString(R.string.error_avaliacao_id_nao_encontrado))
             findNavController().popBackStack() // Volta para a tela anterior
             return
         }
@@ -69,7 +69,7 @@ class AdicionarAvaliacaoFragment : Fragment() {
         val descriptionText = binding.editTextDetalhes.text.toString().trim()
 
         if (descriptionText.isEmpty()) {
-            showBottomSheet(message = "Por favor, adicione uma descrição da sua experiência.")
+            showBottomSheet(message = getString(R.string.aviso_preencha_descricao_avaliacao))
             return
         }
 
@@ -84,12 +84,12 @@ class AdicionarAvaliacaoFragment : Fragment() {
             .child(avaliacaoId!!)
             .updateChildren(updateMap)
             .addOnSuccessListener {
-                showBottomSheet(message = "Avaliação adicionada com sucesso!")
+                showBottomSheet(message = getString(R.string.sucesso_avaliacao_feita))
                 findNavController().popBackStack(R.id.historicoFragment, false) // Volta para o histórico
             }
             .addOnFailureListener { e ->
-                Log.e("Avaliacao", "Falha ao atualizar a avaliação: ${e.message}")
-                showBottomSheet(message = "Erro ao enviar avaliação: ${e.message}")
+                Log.e("Avaliacao", getString(R.string.error_atualizar_avaliacao, e.message))
+                showBottomSheet(message = getString(R.string.erro_ao_enviar_avaliacao, e.message))
             }
     }
 

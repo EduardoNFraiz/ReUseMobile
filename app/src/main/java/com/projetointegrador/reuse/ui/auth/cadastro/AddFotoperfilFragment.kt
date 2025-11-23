@@ -93,7 +93,7 @@ class AddFotoperfilFragment : Fragment() {
             val hasPhotoSelected = uriFotoPerfil != null
             if (!hasPhotoSelected) {
                 // Se o usuário clicou em 'Criar Conta' mas não selecionou a foto
-                Toast.makeText(requireContext(), "Selecione uma foto ou continue sem foto.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.aviso_foto, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             uploadAndFinalizeRegistration(shouldUploadPhoto = true)
@@ -130,7 +130,8 @@ class AddFotoperfilFragment : Fragment() {
     private fun uploadAndFinalizeRegistration(shouldUploadPhoto: Boolean) {
         val user = auth.currentUser
         if (user == null) {
-            Toast.makeText(requireContext(), "Erro: Usuário não autenticado. Redirecionando para login.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_usuario_nao_autenticado), Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.loginFragment)
             return
         }
@@ -142,7 +143,8 @@ class AddFotoperfilFragment : Fragment() {
         val contaASerSalva = contaFisica ?: contaJuridica
 
         if (contaASerSalva == null) {
-            Toast.makeText(requireContext(), "Erro: Dados de conta não encontrados.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_dados_de_conta_nao_encontrados), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -163,14 +165,16 @@ class AddFotoperfilFragment : Fragment() {
                 "brecho" -> "brechos"
                 "instituicao" -> "instituicoes"
                 else -> {
-                    Toast.makeText(requireContext(), "Erro: Tipo de usuário PJ desconhecido.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_tipo_de_usuario_pj_desconhecido), Toast.LENGTH_LONG).show()
                     return // Sai da função em caso de erro
                 }
             }
             dbRootNode = "usuarios/pessoaJuridica/$tipoUsuarioPlural"
             isPessoaFisica = false
         } else {
-            Toast.makeText(requireContext(), "Erro interno: Tipo de conta desconhecido.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error__tipo_de_conta_desconhecido), Toast.LENGTH_LONG).show()
             return
         }
         // ------------------------------------------------------------------------------------------
@@ -182,7 +186,8 @@ class AddFotoperfilFragment : Fragment() {
         val enderecoId = enderecoRef.key
 
         if (enderecoId == null) {
-            Toast.makeText(requireContext(), "Erro ao gerar ID para o endereço.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_gerar_id_para_o_endereco), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -204,7 +209,8 @@ class AddFotoperfilFragment : Fragment() {
 
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Falha ao salvar endereço: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.falha_ao_salvar_endereco, e.message), Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }
     }
@@ -257,10 +263,12 @@ class AddFotoperfilFragment : Fragment() {
                     createDefaultGavetas(uid, dbRootNode)
 
                     // 2. Navegação
-                    Toast.makeText(requireContext(), "✅ Cadastro concluído!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.cadastro_concluido), Toast.LENGTH_LONG).show()
                     findNavController().navigate(R.id.action_global_closetFragment)
                 } else {
-                    Toast.makeText(requireContext(), "❌ Falha ao salvar dados finais da conta.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.falha_ao_salvar_dados_finais_da_conta), Toast.LENGTH_LONG).show()
                     result.exception?.printStackTrace()
                 }
             }
@@ -298,7 +306,8 @@ class AddFotoperfilFragment : Fragment() {
                     }
                     .addOnFailureListener { e ->
                         // Log em caso de falha, mas o fluxo principal de cadastro continua
-                        Toast.makeText(requireContext(), "Aviso: Falha ao criar gaveta '$gavetaName'.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_falha_criar_gaveta, gavetaName), Toast.LENGTH_SHORT).show()
                     }
             }
         }

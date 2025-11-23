@@ -101,7 +101,7 @@ class CadastroInstituicaoFragment : Fragment() {
         // 3. Verificar se todos os campos estão preenchidos
         for ((nomeCampo, valorCampo) in campos) {
             if (valorCampo.isBlank()) {
-                Toast.makeText(requireContext(), "Preencha o campo $nomeCampo!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.aviso_preencha_o_campo, Toast.LENGTH_SHORT).show()
                 return
             }
         }
@@ -110,35 +110,41 @@ class CadastroInstituicaoFragment : Fragment() {
 
         // Nome de Usuário: Sem espaços em branco
         if (!USERNAME_PATTERN.matcher(usuario).matches()) {
-            Toast.makeText(requireContext(), "O nome de usuário não pode conter espaços em branco!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_nome_usuario), Toast.LENGTH_SHORT).show()
             return
         }
 
         // E-mail: Formato válido
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            Toast.makeText(requireContext(), "E-mail inválido. Verifique o formato.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_formato_email), Toast.LENGTH_SHORT).show()
             return
         }
 
         // Senha: Mínimo 6 caracteres e confirmação
         if (senha.length < 6) {
-            Toast.makeText(requireContext(), "A senha deve ter pelo menos 6 caracteres!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_tamanho_senha), Toast.LENGTH_SHORT).show()
             return
         }
         if (senha != confSenha) {
-            Toast.makeText(requireContext(), "As senhas não coincidem!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_senhas_diferentes), Toast.LENGTH_SHORT).show()
             return
         }
 
         // Telefone: Formato (xx) xxxxx-xxxx ou (xx) xxxx-xxxx
         if (!PHONE_PATTERN.matcher(telefone).matches()) {
-            Toast.makeText(requireContext(), "Telefone inválido. Formato esperado: (xx) xxxxx-xxxx", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_formato_telefone), Toast.LENGTH_SHORT).show()
             return
         }
 
         // CNPJ: Formato xx.xxx.xxx/xxxx-xx
         if (!CNPJ_PATTERN.matcher(cnpj).matches()) {
-            Toast.makeText(requireContext(), "CNPJ inválido. Formato esperado: xx.xxx.xxx/xxxx-xx", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_formato_cnpj), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -161,7 +167,8 @@ class CadastroInstituicaoFragment : Fragment() {
         refInstituicoes.orderByChild("cnpj").equalTo(cnpj).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    Toast.makeText(requireContext(), "Este CNPJ já está cadastrado!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.aviso_cnpj_ja_cadastrado), Toast.LENGTH_SHORT).show()
                     return
                 }
 
@@ -170,7 +177,8 @@ class CadastroInstituicaoFragment : Fragment() {
                 refInstituicoes.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(userPjSnapshot: DataSnapshot) {
                         if (userPjSnapshot.exists()) {
-                            Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso por outra Instituição!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.aviso_nome_usuario_ja_cadastrado), Toast.LENGTH_SHORT).show()
                             return
                         }
 
@@ -178,7 +186,7 @@ class CadastroInstituicaoFragment : Fragment() {
                         refPessoaFisica.orderByChild("nomeDeUsuario").equalTo(usuario).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(userPfSnapshot: DataSnapshot) {
                                 if (userPfSnapshot.exists()) {
-                                    Toast.makeText(requireContext(), "Este Nome de Usuário já está em uso por um Usuário Comum!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), R.string.aviso_nome_usuario_ja_cadastrado, Toast.LENGTH_SHORT).show()
                                     return
                                 }
 
@@ -187,19 +195,24 @@ class CadastroInstituicaoFragment : Fragment() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário (PF): ${error.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(),
+                                    getString(
+                                        R.string.erro_ao_verificar_nome_de_usuario,
+                                        error.message
+                                    ), Toast.LENGTH_SHORT).show()
                             }
                         })
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(requireContext(), "Erro ao verificar Nome de Usuário (PJ): ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.erro_ao_verificar_nome_de_usuario, Toast.LENGTH_SHORT).show()
                     }
                 })
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Erro ao verificar CNPJ: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.erro_ao_verificar_cnpj, error.message), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -227,7 +240,8 @@ class CadastroInstituicaoFragment : Fragment() {
                         tipoUsuario = tipoUsuario,
                     )
 
-                    Toast.makeText(requireContext(), "Autenticação criada! Continue para o endereço.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.sucesso_autenticacao), Toast.LENGTH_SHORT).show()
 
                     // 2. Navegar para a próxima tela, passando o objeto ContaPessoaJuridica (PJ)
                     val action = CadastroInstituicaoFragmentDirections.actionCadastroInstituicaoFragmentToCadastroEnderecoFragment(null, contaPessoaJuridica)
@@ -236,9 +250,10 @@ class CadastroInstituicaoFragment : Fragment() {
                 } else {
                     val errorMessage = task.exception?.message
                     if (errorMessage != null && errorMessage.contains("email address is already in use")) {
-                        Toast.makeText(requireContext(), "Este E-mail já está cadastrado!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.aviso_email_ja_cadastrado), Toast.LENGTH_LONG).show()
                     } else {
-                        Toast.makeText(requireContext(), errorMessage ?: "Erro desconhecido no cadastro.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), errorMessage ?: getString(R.string.error_desconhecido_no_cadastro), Toast.LENGTH_LONG).show()
                     }
                 }
             }

@@ -49,7 +49,7 @@ class ReceberCodigoFragment : Fragment() {
         if(email.isNotBlank()) {
             recoverAccountUser(email)
         } else {
-            showBottomSheet(message = getString(R.string.password_empty))
+            showBottomSheet(message = getString(R.string.email_empty))
         }
     }
 
@@ -58,7 +58,7 @@ class ReceberCodigoFragment : Fragment() {
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful){
-                        showBottomSheet(message = "Enviamos uma mensagem no seu email para redefinir a senha!")
+                        showBottomSheet(message = getString(R.string.enviamos_msg_redefinir_senha))
                     }else{
                         Toast.makeText(requireContext(),task.exception?.message, Toast.LENGTH_SHORT).show()
                     }
