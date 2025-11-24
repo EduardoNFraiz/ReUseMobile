@@ -104,7 +104,7 @@ class ClosetFragment : Fragment() {
      */
     private fun navigateToGavetaFragment(gavetaUID: String) {
         if (gavetaUID.isEmpty()) {
-            showBottomSheet(message = "ID da gaveta não encontrado. Não é possível navegar.")
+            showBottomSheet(message = getString(R.string.error_uid_gaveta_nao_encontrado))
             return
         }
 
@@ -121,7 +121,7 @@ class ClosetFragment : Fragment() {
     private fun loadUserGavetas(searchText: String?) {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showBottomSheet(message = "Usuário não autenticado.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             updateRecyclerViewData(emptyList(), emptyMap()) // Atualiza com lista/mapa vazio
             return
         }
@@ -138,7 +138,10 @@ class ClosetFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_buscar_tipo_de_conta,
+                        error.message
+                    ))
                     updateRecyclerViewData(emptyList(), emptyMap())
                 }
             })
@@ -162,7 +165,7 @@ class ClosetFragment : Fragment() {
                         }
 
                         if (checkedCount == subtipos.size && !found) {
-                            showBottomSheet(message = "Nenhuma gaveta encontrada ou tipo de conta não identificado.")
+                            showBottomSheet(message = getString(R.string.error_nenhuma_gaveta_encontrada_ou_tipo_conta_nao_identificado))
                             updateRecyclerViewData(emptyList(), emptyMap())
                         }
                     }
@@ -170,7 +173,10 @@ class ClosetFragment : Fragment() {
                     override fun onCancelled(error: DatabaseError) {
                         checkedCount++
                         if (checkedCount == subtipos.size) {
-                            showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
+                            showBottomSheet(message = getString(
+                                R.string.error_buscar_subtipo,
+                                error.message
+                            ))
                             updateRecyclerViewData(emptyList(), emptyMap())
                         }
                     }
@@ -201,13 +207,16 @@ class ClosetFragment : Fragment() {
                             fetchGavetaDetails(gavetaUids, searchText, pecaCountMap)
                         }
                     } else {
-                        showBottomSheet(message = "Você ainda não possui gavetas cadastradas.")
+                        showBottomSheet(message = getString(R.string.aviso_nao_possui_gavetas_cadastradas))
                         updateRecyclerViewData(emptyList(), emptyMap())
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao listar UIDs das gavetas: ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_listar_uids_gavetas,
+                        error.message
+                    ))
                     updateRecyclerViewData(emptyList(), emptyMap())
                 }
             })
@@ -247,7 +256,7 @@ class ClosetFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     // Em caso de falha na contagem, passa um mapa vazio (ou com 0)
-                    showBottomSheet(message = "Erro ao contar peças: ${error.message}")
+                    showBottomSheet(message = getString(R.string.error_contar_pecas, error.message))
                     onCountComplete(gavetaUids.associateWith { 0 })
                 }
             })
@@ -284,7 +293,11 @@ class ClosetFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        showBottomSheet(message = "Erro ao buscar detalhes da gaveta $uid: ${error.message}")
+                        showBottomSheet(message = getString(
+                            R.string.erro_ao_buscar_detalhes_da_gavetaa,
+                            uid,
+                            error.message
+                        ))
                         gavetasCarregadas++
                         if (gavetasCarregadas == totalGavetas) {
                             // 🛑 ATUALIZADO: Passa o mapa de contagem

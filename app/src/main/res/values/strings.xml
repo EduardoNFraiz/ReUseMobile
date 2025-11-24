@@ -133,4 +133,152 @@
     <string name="error_atualizar_avaliacao">Falha ao atualizar a avaliação: %1$s</string>
     <string name="title_avaliacao">Avaliações</string>
 
+    //CadRoupaFragment e CadRoupa2Fragment strings
+    <string name="title_finalidade">Finalidade</string>
+    <string name="option_finalidade_doar">Doar</string>
+    <string name="option_finalidade_vender">Vender</string>
+    <string name="option_finalidade_organizar">Organizar</string>
+    <string name="btn_cadastrar_peca">Cadastrar peça</string>
+    <string name="btn_salvar_alteracoes">Salvar alterações</string>
+    <string name="hint_preco_peca">Digite o preço</string>
+    <string name="hint_nome_peca">Digite o título/nome para a peça</string>
+    <string name="hint_detalhes_peca">Digite os detalhes da peça</string>
+    <string name="error_usuario_nao_logado">Erro: Usuário não logado.</string>
+    <string name="aviso_gaveta_doacao_nao_encontrada">Aviso: Gaveta \'Doação\' não encontrada para este usuário.</string>
+    <string name="aviso_gaveta_vendas_nao_encontrada">Aviso: Gaveta \'Vendas\' não encontrada para este usuário.</string>
+    <string name="status_edit_peca2">Editar Peça (2/2)</string>
+    <string name="status_visualizar_peca2">Visualizar Peça (2/2)</string>
+    <string name="status_cadastrar_peca2">Cadastrar Peça (2/2)</string>
+    <string name="error_detalhes_peca_nao_encontrados">Detalhes da peça não encontrados.</string>
+    <string name="error_ao_carregar_detalhes_peca">Erro ao carregar detalhes da peça: %1$s</string>
+    <string name="error_buscar_tipo_de_conta">Erro ao buscar tipo de conta: %1$s</string>
+    <string name="error_nenhuma_gaveta_encontrada_ou_tipo_conta_nao_identificado">Nenhuma gaveta encontrada ou tipo de conta não identificado.</string>
+    <string name="error_buscar_subtipo">Erro ao buscar subtipo: %1$s</string>
+    <string name="error_sem_gavetas_customizadas_organizacao">Você não possui gavetas customizadas de organização.</string>
+    <string name="error_listar_uids_gavetas">Erro ao listar UIDs das gavetas: %1$s</string>
+    <string name="erro_carregar_detalhes_das_gavetas">Erro ao carregar detalhes das gavetas: %1$s</string>
+    <string name="error_ao_buscar_uid_da_gaveta">Erro ao buscar UID da gaveta \'%1$s\': %2$s</string>
+    <string name="showbottonsheet_btn_excluir">Excluir</string>
+    <string name="showbottonsheet_msg_excluir">Clique no botão se você realmente deseja excluir</string>
+    <string name="showbottonsheet_title_excluir_gaveta">Deseja excluir esta gaveta?</string>
+    <string name="error_uid_peca_ou_gaveta_não_encontrado_p_exclusao">Erro: ID da peça ou gaveta não encontrado para exclusão.</string>
+    <string name="error_uid_gaveta_invalido_nulo">Erro: ID da gaveta de destino é inválido ou nulo.</string>
+    <string name="error_salvar_os_detalhes_da_peca">Erro ao salvar os detalhes da peça: %1$s</string>
+    <string name="error_gerar_id_da_peca">Erro ao gerar ID da peça.</string>
+    <string name="error_uid_peca_ou_gaveta_invalido">Erro: ID da peça ou gaveta inválido.</string>
+    <string name="sucesso_peca_atualizada">Peça atualizada com sucesso!</string>
+    <string name="error_atualizar_peca">Erro ao atualizar a peça: %1$s</string>
+    <string name="sucesso_peca_excluida">Peça excluída com sucesso!</string>
+    <string name="error_excluir_peca">Erro ao excluir peça: %1$s</string>
+    <string name="error_desvincular_peca_da_gaveta">Erro ao desvincular peça da gaveta: %1$s</string>
+    <string name="aviso_selecione_finalidade">Por favor, selecione a Finalidade da peça.</string>
+    <string name="error_uid_gaveta_nao_encontrado_tente_novamente">Erro de seleção: ID da gaveta não foi encontrado. Por favor, selecione novamente e aguarde o carregamento do UID.</string>
+    <string name="aviso_digite_um_titulo_peca">Por favor, insira um Título para a peça.</string>
+    <string name="aviso_digite_um_preco_peca">Por favor, insira o Preço de venda.</string>
+
+    <string name="title_cadastro_peca">Cadastro de peça</string>
+    <string name="subtitle_cores">Cores</string>
+    <string name="subtitle_categoria">Categoria</string>
+    <string name="subtitle_tamanho">Tamanho</string>
+    <string name="option_cor_branco">Branco</string>
+    <string name="option_cor_preto">Preto</string>
+    <string name="option_cor_azul">Azul</string>
+    <string name="option_cor_vermelho">Vermelho</string>
+    <string name="option_cor_roxo">Roxo</string>
+    <string name="option_cor_amarelo">Amarelo</string>
+    <string name="option_cor_verde">Verde</string>
+    <string name="option_cor_rosa">Rosa</string>
+    <string name="option_cor_laranja">Laranja</string>
+    <string name="option_cor_colorido">Colorido</string>
+    <string name="option_tamanho_pp">PP</string>
+    <string name="option_tamanho_p">P</string>
+    <string name="option_tamanho_m">M</string>
+    <string name="option_tamanho_g">G</string>
+    <string name="option_tamanho_gg">GG</string>
+    <string name="option_tamanho_xgg">XGG</string>
+    <string name="option_categoria_roupa">Roupa</string>
+    <string name="option_categoria_acessorio">Acessório</string>
+    <string name="option_categoria_calcado">Calçado</string>
+    <string name="option_categoria_trajebanho">Traje banho</string>
+    <string name="option_categoria_esporte">Esporte</string>
+    <string name="option_categoria_infantil">Infantil</string>
+    <string name="option_categoria_masculino">Masculino</string>
+    <string name="option_categoria_unissex">Unissex</string>
+    <string name="option_categoria_intima">Íntimo</string>
+    <string name="option_categoria_feminino">Feminino</string>
+    <string name="btn_editar">Editar</string>
+    <string name="error_converter_imagem">Erro ao converter imagem.</string>
+    <string name="status_cadastrar_peca">Cadastrar Peça (1/2)</string>
+    <string name="status_visualizar_peca">Visualizar Peça (1/2)</string>
+    <string name="error_uid_peca_ausente">Erro de navegação: ID da peça ausente.</string>
+    <string name="btn_cancelar_edicao">Cancelar Edição</string>
+    <string name="status_editar_peca">Editar Peça (1/2)</string>
+    <string name="error_uid_gaveta_ausente">Erro: ID da gaveta ausente. Voltando para o Closet.</string>
+    <string name="error_peca_nao_encontrada">Peça não encontrada.</string>
+    <string name="error_id_gaveta_nao_definido_para_prosseguir">Erro: ID da gaveta não definido para prosseguir.</string>
+    <string name="error_processar_imagem_io">Erro ao processar imagem (IO): %1$s</string>
+    <string name="error_processar_imagem_geral">Erro ao processar imagem (Geral): %1$s</string>
+    <string name="aviso_selecione_uma_foto_cadastro_peca">Por favor, clique no ícone para selecionar uma foto.</string>
+    <string name="aviso_selecione_uma_cor_cadastro_peca">Por favor, selecione ao menos uma cor.</string>
+    <string name="aviso_selecione_uma_categoria_cadastro_peca">Por favor, selecione ao menos uma categoria.</string>
+    <string name="aviso_selecione_um_tamanho_cadastro_peca">Por favor, selecione um tamanho.</string>
+
+    //ClosetFragment strings
+    <string name="title_meu_closet">Meu Closet</string>
+    <string name="hint_pesquisar_gavetas">Pesquisar gavetas</string>
+    <string name="btn_criar_gaveta">Criar gaveta</string>
+    <string name="error_uid_gaveta_nao_encontrado">ID da gaveta não encontrado. Não é possível navegar.</string>
+    <string name="aviso_nao_possui_gavetas_cadastradas">Você ainda não possui gavetas cadastradas.</string>
+    <string name="error_contar_pecas">Erro ao contar peças: %1$s</string>
+    <string name="erro_ao_buscar_detalhes_da_gavetaa">Erro ao buscar detalhes da gaveta %1$s: %2$s</string>
+
+    //CriarGavetaFragment strings
+    <string name="title_criar_gaveta">Crição de gaveta</string>
+    <string name="label_nome_gaveta">Digite o nome da gaveta:</string>
+    <string name="label_hint_nome_gaveta">Nome da gaveta</string>
+    <string name="option_visibilidade_privado">Privado</string>
+    <string name="option_visibilidade_publico">Público</string>
+    <string name="msg_gaveta_reservada">Atenção: Esta é uma gaveta do sistema e suas informações não podem ser editadas.</string>
+    <string name="msg_gaveta_reservada_nao_editavel">Você não pode alterar o nome ou visibilidade de gavetas do sistema (Vendas, Doação, Carrinho, Recebidos).</string>
+    <string name="error_nome_gaveta_existente">Você já possui uma gaveta com este nome. Por favor, escolha um nome diferente.</string>
+    <string name="error_nome_vazio_gaveta">O nome da gaveta não pode estar vazio.</string>
+    <string name="error_visibilidade_vazia_gaveta">Preencha o nome e escolha a visibilidade da gaveta!</string>
+    <string name="error_imagem_vazia_gaveta">Selecione uma imagem para a gaveta!</string>
+    <string name="error_processar_imagem">Erro ao processar imagem: %1$s</string>
+    <string name="error_gaveta_nao_encontrada">Gaveta não encontrada ou dados inválidos.</string>
+    <string name="error_carregar_dados_gaveta">Erro ao carregar dados da gaveta: %1$s</string>
+    <string name="error_verificar_nome_da_gaveta">Erro ao verificar nome da gaveta: %1$s</string>
+    <string name="error_id_da_gaveta_para_edicao_nao_encontrado">Erro: ID da gaveta para edição não encontrado.</string>
+    <string name="error_salvar_detalhes_gaveta">Erro ao salvar detalhes da gaveta: %1$s</string>
+    <string name="sucesso_gaveta_criada">Gaveta criada com sucesso!</string>
+    <string name="sucesso_gaveta_atualizada">Gaveta atualizada com sucesso!</string>
+    <string name="erro_falha_gerar_id_gaveta">Erro interno: Falha ao gerar ID único da gaveta. Tente novamente.</string>
+    <string name="text_tile_warning">Atenção</string>
+    <string name="text_button_warning">Entendi</string>
+    <string name="error_tipo_conta_nao_encontrado">Não foi possível determinar o tipo de conta do usuário para vincular a gaveta.</string>
+    <string name="error_vincular_gaveta_usuario">Erro ao vincular gaveta ao usuário: %1$s</string>
+    <string name="error_tipo_conta_invalido">Erro: Tipo de conta do usuário inválido ou não encontrado.</string>
+
+    //GavetaFragment strings
+    <string name="title_nome_gaveta">.</string>
+    <string name="error_id_gaveta_nao_encontrado">Erro: ID da gaveta não foi encontrado.</string>
+    <string name="error_detalhes_gaveta_nao_encontrados">Detalhes da gaveta não encontrados.</string>
+    <string name="error_carregar_detalhes_da_gaveta">Erro ao carregar detalhes da gaveta: %1$s</string>
+    <string name="aviso_carrinho_vazio">Seu carrinho está vazio.</string>
+    <string name="aviso_recebidos_vazio">Nenhuma peça em Recebidos.</string>
+    <string name="aviso_gaveta_vazia">Esta gaveta não possui itens cadastrados.</string>
+    <string name="error_buscar_pecas_por_gavetas">Erro ao buscar peças por gaveta: %1$s</string>
+    <string name="showbottonsheet_msg_excluir_gaveta">ATENÇÃO: Tem certeza que deseja excluir a gaveta \'%1$s\'? Esta ação é irreversível e todas as peças de roupa contidas nela serão PERMANENTEMENTE EXCLUÍDAS!</string>
+    <string name="error_falha_listar_pecas_exclusao">ERRO: Falha ao listar peças para exclusão. %1$s</string>
+    <string name="error_falha_excluir_pecas_no_gaveta">ERRO: Falha ao excluir peças ou nó da gaveta. %1$s</string>
+    <string name="aviso_gaveta_pecas_excluidas_falha_limpar_registro_usuario">AVISO: A gaveta e peças foram excluídas, mas houve falha ao limpar o registro do seu usuário.</string>
+    <string name="sucesso_exclusao_gaveta_com_pecas">Gaveta e todas as peças contidas foram excluídas com sucesso!</string>
+    <string name="title_historico_transacao">Histórico de Transação</string>
+    <string name="error_localizar_detalhes_avaliacao">Erro ao localizar detalhes da avaliação.</string>
+    <string name="aviso_historico_vazio">Nenhum histórico de transação encontrado.</string>
+
+    //HistoricoFragment strings
+
+
+
 </resources>

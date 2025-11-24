@@ -76,7 +76,7 @@ class GavetaFragment : Fragment() {
         initRecyclerView(isCarrinho = false)
 
         if (gavetaUID.isNullOrEmpty()) {
-            showBottomSheet(message = "Erro: ID da gaveta não foi encontrado.")
+            showBottomSheet(message = getString(R.string.error_id_gaveta_nao_encontrado))
             findNavController().popBackStack()
         }
     }
@@ -114,17 +114,18 @@ class GavetaFragment : Fragment() {
 
                         loadRoupaUidsFromGaveta(uid)
                     } else {
-                        showBottomSheet(message = "Detalhes da gaveta não encontrados.")
+                        showBottomSheet(message = getString(R.string.error_detalhes_gaveta_nao_encontrados))
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao carregar detalhes da gaveta: ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_carregar_detalhes_da_gaveta,
+                        error.message
+                    ))
                 }
             })
-        Log.e("teste","$gavetaUID e $uid")
     }
 
-    // Função para controlar a visibilidade de botões de edição/exclusão
     private fun setupViewVisibility(isSpecialGaveta: Boolean) {
         if (isSpecialGaveta) {
             binding.buttonCadastrarRoupa.visibility = View.GONE
@@ -163,20 +164,23 @@ class GavetaFragment : Fragment() {
                     // Atualiza a lista dependendo do tipo de gaveta
                     if (isCarrinho) {
                         (pecaAdapter as? PecaCarrinhoAdapter)?.updateList(loadedPecasCarrinho)
-                        if (loadedPecasCarrinho.isEmpty()) showBottomSheet(message = "Seu carrinho está vazio.")
+                        if (loadedPecasCarrinho.isEmpty()) showBottomSheet(message = getString(R.string.aviso_carrinho_vazio))
                     } else {
                         (pecaAdapter as? PecaClosetAdapter)?.updateList(loadedPecasCloset)
                         val message = if (gavetaNome == GAVETA_RECEBIDOS) {
-                            "Nenhuma peça em Recebidos."
+                            getString(R.string.aviso_recebidos_vazio)
                         } else {
-                            "Esta gaveta não possui itens cadastrados."
+                            getString(R.string.aviso_gaveta_vazia)
                         }
                         if (loadedPecasCloset.isEmpty()) showBottomSheet(message = message)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar peças por gaveta: ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_buscar_pecas_por_gavetas,
+                        error.message
+                    ))
                     // Garante que a lista é limpa em caso de erro
                     (pecaAdapter as? PecaClosetAdapter)?.updateList(emptyList())
                 }
@@ -216,7 +220,7 @@ class GavetaFragment : Fragment() {
 
     private fun navigateToRoupaDetails(roupaUID: String) {
         val currentGavetaUID = gavetaUID ?: run {
-            showBottomSheet(message = "Erro de contexto: ID da gaveta atual não encontrado.")
+            showBottomSheet(message = getString(R.string.error_id_gaveta_nao_encontrado))
             return
         }
 
@@ -235,9 +239,9 @@ class GavetaFragment : Fragment() {
         val gavetaNome = binding.textViewGaveta.text.toString()
 
         showBottomSheet(
-            titleDialog = R.string.atencao,
-            titleButton = R.string.entendi,
-            message = "ATENÇÃO: Tem certeza que deseja excluir a gaveta '$gavetaNome'? Esta ação é irreversível e todas as peças de roupa contidas nela serão PERMANENTEMENTE EXCLUÍDAS!",
+            titleDialog = R.string.text_tile_warning,
+            titleButton = R.string.text_button_warning,
+            message = getString(R.string.showbottonsheet_msg_excluir_gaveta, gavetaNome),
             onClick = { deleteGaveta() }
         )
     }
@@ -246,7 +250,7 @@ class GavetaFragment : Fragment() {
         // 1. Verificações de segurança e estado
         val gavetaUid = gavetaUID ?: return
         val userId = auth.currentUser?.uid ?: run {
-            showBottomSheet(message = "Usuário não autenticado. Impossível deletar.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             return
         }
 
@@ -268,7 +272,10 @@ class GavetaFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "ERRO: Falha ao listar peças para exclusão. ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_falha_listar_pecas_exclusao,
+                        error.message
+                    ))
                 }
             })
     }
@@ -285,7 +292,10 @@ class GavetaFragment : Fragment() {
             if (task.isSuccessful) {
                 removeGavetaReferenceFromUser(gavetaUid, userId)
             } else {
-                showBottomSheet(message = "ERRO: Falha ao excluir peças ou nó da gaveta. ${task.exception?.message}")
+                showBottomSheet(message = getString(
+                    R.string.error_falha_excluir_pecas_no_gaveta,
+                    task.exception?.message
+                ))
             }
         }
     }
@@ -316,7 +326,7 @@ class GavetaFragment : Fragment() {
                     }
 
                     if (attempts == subtipos.size) {
-                        showBottomSheet(message = "AVISO: A gaveta e peças foram excluídas, mas houve falha ao limpar o registro do seu usuário.")
+                        showBottomSheet(message = getString(R.string.aviso_gaveta_pecas_excluidas_falha_limpar_registro_usuario))
                         onGavetaDeletionSuccess(skipNotification = true)
                     }
                 }
@@ -325,7 +335,7 @@ class GavetaFragment : Fragment() {
 
     private fun onGavetaDeletionSuccess(skipNotification: Boolean = false) {
         if (!skipNotification) {
-            showBottomSheet(message = "Gaveta e todas as peças contidas foram excluídas com sucesso!")
+            showBottomSheet(message = getString(R.string.sucesso_exclusao_gaveta_com_pecas))
         }
         findNavController().popBackStack(R.id.closetFragment, false)
     }

@@ -31,7 +31,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="105dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="@string/cad_peca"
+        android:text="@string/title_cadastro_peca"
         android:textColor="#134313"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -45,7 +45,6 @@
         android:layout_marginTop="105dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/bg_image_rounded"
-        android:contentDescription="@string/app_photo"
         android:padding="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +58,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="190dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="@string/app_cor"
+        android:text="@string/subtitle_cores"
         android:textColor="#134313"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +91,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Branco" />
+            android:text="@string/option_cor_branco" />
 
         <CheckBox
             android:id="@+id/radioPreto"
@@ -106,7 +105,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Preto"
+            android:text="@string/option_cor_preto"
             android:textSize="15sp" />
 
         <CheckBox
@@ -119,7 +118,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Azul"
+            android:text="@string/option_cor_azul"
             android:textSize="15sp" />
 
         <CheckBox
@@ -132,7 +131,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Vermelho"
+            android:text="@string/option_cor_vermelho"
             android:textSize="11sp" />
 
         <CheckBox
@@ -145,7 +144,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Roxo" />
+            android:text="@string/option_cor_roxo" />
 
         <!-- Segunda fileira -->
 
@@ -159,7 +158,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Amarelo"
+            android:text="@string/option_cor_amarelo"
             android:textSize="13sp" />
 
         <CheckBox
@@ -172,7 +171,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Verde"
+            android:text="@string/option_cor_verde"
             android:textSize="15sp" />
 
         <CheckBox
@@ -185,7 +184,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Rosa" />
+            android:text="@string/option_cor_rosa" />
 
         <CheckBox
             android:id="@+id/radioLaranja"
@@ -198,7 +197,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:textSize="15sp"
-            android:text="Laranja" />
+            android:text="@string/option_cor_laranja" />
 
         <CheckBox
             android:id="@+id/radioMulti"
@@ -211,7 +210,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:textSize="13sp"
-            android:text="Colorido" />
+            android:text="@string/option_cor_colorido" />
 
     </GridLayout>
 
@@ -224,7 +223,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="360dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="@string/app_categoria"
+        android:text="@string/subtitle_categoria"
         android:textColor="#134313"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -257,7 +256,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_roupa" />
+            android:text="@string/option_categoria_roupa" />
 
         <CheckBox
             android:id="@+id/acess"
@@ -271,7 +270,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_acessorio"
+            android:text="@string/option_categoria_acessorio"
             android:textSize="11sp" />
 
         <CheckBox
@@ -284,7 +283,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_calcado"
+            android:text="@string/option_categoria_calcado"
             android:textSize="13sp" />
 
         <CheckBox
@@ -297,7 +296,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_trajebanho"
+            android:text="@string/option_categoria_trajebanho"
             android:textSize="10sp" />
 
         <CheckBox
@@ -310,7 +309,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_esporte" />
+            android:text="@string/option_categoria_esporte" />
 
         <!-- Segunda fileira -->
 
@@ -324,7 +323,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_masculino"
+            android:text="@string/option_categoria_masculino"
             android:textSize="11sp" />
 
         <CheckBox
@@ -337,7 +336,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_feminino"
+            android:text="@string/option_categoria_feminino"
             android:textSize="12sp" />
 
         <CheckBox
@@ -350,7 +349,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_infantil" />
+            android:text="@string/option_categoria_infantil" />
 
         <CheckBox
             android:id="@+id/intimo"
@@ -362,7 +361,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_intima" />
+            android:text="@string/option_categoria_intima" />
 
         <CheckBox
             android:id="@+id/uni"
@@ -374,7 +373,7 @@
             android:fontFamily="@font/raleway_medium"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/app_unissex" />
+            android:text="@string/option_categoria_unissex" />
 
     </GridLayout>
 
@@ -426,7 +425,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="@string/app_tamanho"
+        android:text="@string/subtitle_tamanho"
         android:textColor="#134313"
         android:textSize="25dp"
         app:layout_constraintBottom_toTopOf="@+id/Tamanho"
@@ -455,7 +454,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_pp"
+            android:text="@string/option_tamanho_pp"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -471,7 +470,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_p"
+            android:text="@string/option_tamanho_p"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -487,7 +486,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_m"
+            android:text="@string/option_tamanho_m"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -503,7 +502,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_g"
+            android:text="@string/option_tamanho_g"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -519,7 +518,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_gg"
+            android:text="@string/option_tamanho_gg"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -535,7 +534,7 @@
             android:checked="true"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
-            android:text="@string/app_xgg"
+            android:text="@string/option_tamanho_xgg"
             android:textColor="@color/VerdeEscuro"
             android:textSize="16sp"
             tools:layout_editor_absoluteX="23dp"
@@ -548,7 +547,7 @@
         android:layout_width="350dp"
         android:layout_height="40dp"
         android:background="@drawable/estilobtt1"
-        android:text="@string/app_prox"
+        android:text="@string/btn_proximo"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18dp"
@@ -566,7 +565,7 @@
         android:layout_marginTop="48dp"
         android:background="@drawable/estilobtt2"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Editar"
+        android:text="@string/btn_editar"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="18dp"

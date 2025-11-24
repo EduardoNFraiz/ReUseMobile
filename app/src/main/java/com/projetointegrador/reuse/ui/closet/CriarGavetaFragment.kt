@@ -166,7 +166,7 @@ class CriarGavetaFragment : Fragment() {
             val byteArray = byteArrayOutputStream.toByteArray()
             Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (e: IOException) {
-            showError(getString(R.string.erro_processar_imagem, e.message))
+            showError(getString(R.string.error_processar_imagem, e.message))
             null
         }
     }
@@ -215,13 +215,13 @@ class CriarGavetaFragment : Fragment() {
                         setupViewMode(arguments?.getBoolean("VISUALIZAR_INFO") ?: false, gaveta.name)
 
                     } else {
-                        showError("Gaveta não encontrada ou dados inválidos.")
+                        showError(getString(R.string.error_gaveta_nao_encontrada))
                         findNavController().navigateUp()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showError("Erro ao carregar dados da gaveta: ${error.message}")
+                    showError(getString(R.string.error_carregar_dados_gaveta, error.message))
                     findNavController().navigateUp()
                 }
             })
@@ -239,7 +239,7 @@ class CriarGavetaFragment : Fragment() {
 
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showError(getString(R.string.erro_usuario_nao_autenticado))
+            showError(getString(R.string.error_usuario_nao_logado))
             return
         }
 
@@ -250,13 +250,13 @@ class CriarGavetaFragment : Fragment() {
         }
 
         if (isCreation && imageBase64.isNullOrBlank()) {
-            showError(getString(R.string.msg_erro_imagem_vazia_gaveta))
+            showError(getString(R.string.error_imagem_vazia_gaveta))
             return
         }
 
         // Verifica se pelo menos um rádio button de visibilidade foi selecionado
         if (nome.isBlank() || (!binding.rbPublico.isChecked && !binding.rbPrivado.isChecked)) {
-            showError(getString(R.string.msg_erro_visibilidade_vazia_gaveta))
+            showError(getString(R.string.error_visibilidade_vazia_gaveta))
             return
         }
 
@@ -296,7 +296,7 @@ class CriarGavetaFragment : Fragment() {
                     }
 
                     if (nameExists) {
-                        showError(getString(R.string.msg_erro_nome_gaveta_existente))
+                        showError(getString(R.string.error_nome_gaveta_existente))
                     } else {
                         // Nome é único, prossegue com a criação/atualização
                         if (isCreation) {
@@ -320,37 +320,33 @@ class CriarGavetaFragment : Fragment() {
                 override fun onCancelled(error: DatabaseError) {
                     binding.bttCriarGaveta.isEnabled = true
                     binding.bttSalvar.isEnabled = true
-                    showError("Erro ao verificar nome da gaveta: ${error.message}")
+                    showError(getString(R.string.error_verificar_nome_da_gaveta, error.message))
                 }
             })
     }
 
-
-    // ✅ CORRIGIDO: Usa updateChildren() para APENAS atualizar os campos editáveis.
     private fun updateGaveta() {
         if (gavetaId.isNullOrBlank()) {
-            showError("Erro: ID da gaveta para edição não encontrado.")
+            showError(getString(R.string.error_id_da_gaveta_para_edicao_nao_encontrado))
             return
         }
 
         binding.bttSalvar.isEnabled = false
 
-        // CRIA o mapa com APENAS os campos que devem ser atualizados.
         val updateMap = mapOf<String, Any?>(
             "name" to gaveta.name,
-            "privado" to gaveta.privado, // 🛑 Chave atualizada para 'privado'
+            "privado" to gaveta.privado,
             "fotoBase64" to gaveta.fotoBase64,
-            // O ownerUid NUNCA deve ser atualizado.
         )
 
         reference.child("gavetas").child(gavetaId!!)
-            .updateChildren(updateMap) // Usa updateChildren em vez de setValue
+            .updateChildren(updateMap)
             .addOnCompleteListener { task ->
                 binding.bttSalvar.isEnabled = true
                 if (task.isSuccessful) {
                     showSuccessAndReturnToView()
                 } else {
-                    showError(getString(R.string.erro_salvar_detalhes_gaveta, task.exception?.message))
+                    showError(getString(R.string.error_salvar_detalhes_gaveta, task.exception?.message))
                 }
             }
     }
@@ -388,7 +384,7 @@ class CriarGavetaFragment : Fragment() {
                     getUserAccountType(userId, tempGavetaId)
                 } else {
                     binding.bttCriarGaveta.isEnabled = true
-                    showError(getString(R.string.erro_salvar_detalhes_gaveta, taskGaveta.exception?.message))
+                    showError(getString(R.string.error_salvar_detalhes_gaveta, taskGaveta.exception?.message))
                 }
             }
     }
@@ -410,9 +406,9 @@ class CriarGavetaFragment : Fragment() {
         if (!feedbackShown) {
             feedbackShown = true
             showBottomSheet(
-                titleDialog = R.string.atencao,
+                titleDialog = R.string.text_tile_warning,
                 message = message,
-                titleButton = R.string.entendi
+                titleButton = R.string.text_button_warning
             )
             feedbackShown = false
         }
@@ -446,7 +442,7 @@ class CriarGavetaFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     binding.bttCriarGaveta.isEnabled = true
-                    showError("Erro ao buscar tipo de conta: ${error.message}")
+                    showError(getString(R.string.error_buscar_tipo_de_conta, error.message))
                 }
             })
     }
@@ -467,7 +463,7 @@ class CriarGavetaFragment : Fragment() {
                         }
                         if (checkedCount == subtipos.size && !found) {
                             binding.bttCriarGaveta.isEnabled = true
-                            showError(getString(R.string.erro_tipo_conta_nao_encontrado))
+                            showError(getString(R.string.error_tipo_conta_nao_encontrado))
                         }
                     }
 
@@ -475,7 +471,7 @@ class CriarGavetaFragment : Fragment() {
                         checkedCount++
                         if (checkedCount == subtipos.size && !found) {
                             binding.bttCriarGaveta.isEnabled = true
-                            showError("Erro ao buscar subtipo: ${error.message}")
+                            showError(getString(R.string.error_buscar_subtipo, error.message))
                         }
                     }
                 })
@@ -505,12 +501,12 @@ class CriarGavetaFragment : Fragment() {
                     if (taskUser.isSuccessful) {
                         showSuccessAndNavigate(gavetaId)
                     } else {
-                        showError(getString(R.string.erro_vincular_gaveta_usuario, taskUser.exception?.message))
+                        showError(getString(R.string.error_vincular_gaveta_usuario, taskUser.exception?.message))
                     }
                 }
         } else {
             binding.bttCriarGaveta.isEnabled = true
-            showError(getString(R.string.erro_tipo_conta_invalido))
+            showError(getString(R.string.error_tipo_conta_invalido))
         }
     }
 

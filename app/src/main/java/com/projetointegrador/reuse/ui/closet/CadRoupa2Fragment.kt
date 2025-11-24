@@ -90,21 +90,24 @@ class CadRoupa2Fragment : Fragment() {
     private fun loadTransacaoGavetaUids() {
         val ownerUid = auth.currentUser?.uid
         if (ownerUid == null) {
-            Toast.makeText(requireContext(), "Erro: Usuário não logado.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_usuario_nao_logado), Toast.LENGTH_LONG).show()
             return
         }
 
         fetchGavetaUidByName(gavetaDoar.first(), ownerUid) { uid ->
             uidGavetaDoacao = uid
             if (uid == null) {
-                Toast.makeText(requireContext(), "Aviso: Gaveta 'Doação' não encontrada para este usuário.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_gaveta_doacao_nao_encontrada), Toast.LENGTH_LONG).show()
             }
         }
 
         fetchGavetaUidByName(gavetaVender.first(), ownerUid) { uid ->
             uidGavetaVenda = uid
             if (uid == null) {
-                Toast.makeText(requireContext(), "Aviso: Gaveta 'Vendas' não encontrada para este usuário.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_gaveta_vendas_nao_encontrada), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -125,7 +128,9 @@ class CadRoupa2Fragment : Fragment() {
         setFieldsEnabled(shouldEnableFields)
 
         if (!isCreating && pecaUid != null) {
-            binding.toolbar.title = if (isEditing) "Editar Peça (2/2)" else "Visualizar Peça (2/2)"
+            binding.toolbar.title = if (isEditing) getString(R.string.status_edit_peca2) else getString(
+                R.string.status_visualizar_peca2
+            )
 
             if (isEditing) {
                 populateUIStage2(pecaEmAndamento)
@@ -134,11 +139,11 @@ class CadRoupa2Fragment : Fragment() {
             }
 
         } else if (isCreating) {
-            binding.toolbar.title = "Cadastrar Peça (2/2)"
+            binding.toolbar.title = getString(R.string.status_cadastrar_peca2)
             // Definições padrão para criação
             binding.radioButton5.isChecked = true
             findUserAccountType()
-            updatePrecoFieldsVisibility(getString(R.string.app_organizar))
+            updatePrecoFieldsVisibility(getString(R.string.option_finalidade_organizar))
         }
     }
 
@@ -147,11 +152,11 @@ class CadRoupa2Fragment : Fragment() {
         binding.editTextTitulo.setText(peca.titulo)
         binding.editTextDetalhes.setText(peca.detalhe)
 
-        val finalidade = peca.finalidade ?: getString(R.string.app_organizar)
+        val finalidade = peca.finalidade ?: getString(R.string.option_finalidade_organizar)
         when (finalidade) {
-            getString(R.string.app_organizar) -> binding.radioButton5.isChecked = true
-            getString(R.string.app_doar) -> binding.radioButton6.isChecked = true
-            getString(R.string.app_vender) -> binding.radioButton7.isChecked = true
+            getString(R.string.option_finalidade_organizar) -> binding.radioButton5.isChecked = true
+            getString(R.string.option_finalidade_organizar) -> binding.radioButton6.isChecked = true
+            getString(R.string.option_finalidade_organizar) -> binding.radioButton7.isChecked = true
             else -> binding.radioButton5.isChecked = true
         }
         updatePrecoFieldsVisibility(finalidade)
@@ -174,11 +179,11 @@ class CadRoupa2Fragment : Fragment() {
                     binding.editTextTitulo.setText(peca.titulo)
                     binding.editTextDetalhes.setText(peca.detalhe)
 
-                    val finalidade = peca.finalidade ?: getString(R.string.app_organizar)
+                    val finalidade = peca.finalidade ?: getString(R.string.option_finalidade_organizar)
                     when (finalidade) {
-                        getString(R.string.app_organizar) -> binding.radioButton5.isChecked = true
-                        getString(R.string.app_doar) -> binding.radioButton6.isChecked = true
-                        getString(R.string.app_vender) -> binding.radioButton7.isChecked = true
+                        getString(R.string.option_finalidade_organizar) -> binding.radioButton5.isChecked = true
+                        getString(R.string.option_finalidade_doar) -> binding.radioButton6.isChecked = true
+                        getString(R.string.option_finalidade_vender) -> binding.radioButton7.isChecked = true
                         else -> binding.radioButton5.isChecked = true
                     }
                     updatePrecoFieldsVisibility(finalidade)
@@ -186,12 +191,15 @@ class CadRoupa2Fragment : Fragment() {
                     findUserAccountType()
 
                 } else {
-                    showBottomSheet(message = "Detalhes da peça não encontrados.")
+                    showBottomSheet(message = getString(R.string.error_detalhes_peca_nao_encontrados))
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                showBottomSheet(message = "Erro ao carregar detalhes da peça: ${error.message}")
+                showBottomSheet(message = getString(
+                    R.string.error_ao_carregar_detalhes_peca,
+                    error.message
+                ))
             }
         })
     }
@@ -207,7 +215,7 @@ class CadRoupa2Fragment : Fragment() {
     }
 
     private fun updatePrecoFieldsVisibility(finalidade: String) {
-        val isVenda = finalidade == getString(R.string.app_vender)
+        val isVenda = finalidade == getString(R.string.option_finalidade_vender)
         binding.editEditText.visibility = if (isVenda) View.VISIBLE else View.GONE
         binding.editTextTitulo.visibility = if (isVenda) View.VISIBLE else View.GONE
         binding.editTextDetalhes.visibility = if (isVenda) View.VISIBLE else View.GONE
@@ -222,7 +230,7 @@ class CadRoupa2Fragment : Fragment() {
     private fun findUserAccountType() {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            Toast.makeText(requireContext(), "Usuário não autenticado. Carregando gavetas padrão.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.error_usuario_nao_logado, Toast.LENGTH_SHORT).show()
             updateSpinner(emptyList())
             return
         }
@@ -238,7 +246,8 @@ class CadRoupa2Fragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao buscar tipo de conta: ${error.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_buscar_tipo_de_conta, error.message), Toast.LENGTH_LONG).show()
                     updateSpinner(emptyList())
                 }
             })
@@ -261,14 +270,16 @@ class CadRoupa2Fragment : Fragment() {
                             return
                         }
                         if (subtiposChecados == totalSubtipos && !found) {
-                            Toast.makeText(requireContext(), "Nenhuma gaveta encontrada ou tipo de conta não identificado.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.error_nenhuma_gaveta_encontrada_ou_tipo_conta_nao_identificado), Toast.LENGTH_LONG).show()
                             updateSpinner(emptyList())
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
                         subtiposChecados++
-                        Toast.makeText(requireContext(), "Erro ao buscar subtipo: ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_buscar_subtipo, error.message), Toast.LENGTH_LONG).show()
                         if (subtiposChecados == totalSubtipos && !found) {
                             updateSpinner(emptyList())
                         }
@@ -295,14 +306,16 @@ class CadRoupa2Fragment : Fragment() {
                     if (gavetaUids.isNotEmpty()) {
                         fetchAllGavetaDetails(gavetaUids)
                     } else {
-                        Toast.makeText(requireContext(), "Você não possui gavetas customizadas de organização.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_sem_gavetas_customizadas_organizacao), Toast.LENGTH_LONG).show()
                         updateSpinner(emptyList())
                         gavetaSelecionada = null
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao listar UIDs das gavetas: ${error.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_listar_uids_gavetas, error.message), Toast.LENGTH_LONG).show()
                     updateSpinner(emptyList())
                 }
             })
@@ -347,14 +360,15 @@ class CadRoupa2Fragment : Fragment() {
                             gavetaSelecionada = gavetaOriginalUid // Confirma o UID selecionado
                         }
                     } else {
-                        Toast.makeText(requireContext(), "Nenhuma gaveta de organização válida encontrada.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), R.string.error_sem_gavetas_customizadas_organizacao, Toast.LENGTH_LONG).show()
                         updateSpinner(emptyList())
                         gavetaSelecionada = null
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao carregar detalhes das gavetas: ${error.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.erro_carregar_detalhes_das_gavetas, error.message), Toast.LENGTH_LONG).show()
                     updateSpinner(emptyList())
                 }
             })
@@ -400,7 +414,8 @@ class CadRoupa2Fragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao buscar UID da gaveta '$gavetaName': ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_ao_buscar_uid_da_gaveta, gavetaName, error.message), Toast.LENGTH_SHORT).show()
                     onComplete(null)
                 }
             })
@@ -413,20 +428,19 @@ class CadRoupa2Fragment : Fragment() {
             val finalidadeSelecionada = when (checkedId) {
                 R.id.radioButton5 -> {
                     findUserAccountType()
-                    getString(R.string.app_organizar)
+                    getString(R.string.option_finalidade_organizar)
                 }
                 R.id.radioButton6 -> {
                     updateSpinner(gavetaDoar)
                     gavetaSelecionada = uidGavetaDoacao
                     binding.spinner.onItemSelectedListener = null
-                    // CORREÇÃO: Use R.string.app_doar
-                    getString(R.string.app_doar)
+                    getString(R.string.option_finalidade_doar)
                 }
                 R.id.radioButton7 -> {
                     updateSpinner(gavetaVender)
                     gavetaSelecionada = uidGavetaVenda
                     binding.spinner.onItemSelectedListener = null
-                    getString(R.string.app_vender)
+                    getString(R.string.option_finalidade_vender)
                 }
                 else -> null
             }
@@ -451,9 +465,9 @@ class CadRoupa2Fragment : Fragment() {
                 isSavingPeca = true
                 binding.bttSalvar.isEnabled = false
                 pecaEmAndamento.finalidade = when (binding.Finalidade.checkedRadioButtonId) {
-                    R.id.radioButton5 -> getString(R.string.app_organizar)
-                    R.id.radioButton6 -> getString(R.string.app_doar)
-                    R.id.radioButton7 -> getString(R.string.app_vender)
+                    R.id.radioButton5 -> getString(R.string.option_finalidade_organizar)
+                    R.id.radioButton6 -> getString(R.string.option_finalidade_doar)
+                    R.id.radioButton7 -> getString(R.string.option_finalidade_vender)
                     else -> pecaEmAndamento.finalidade
                 }
 
@@ -466,16 +480,17 @@ class CadRoupa2Fragment : Fragment() {
 
         binding.trash2.setOnClickListener {
             showBottomSheet(
-                titleButton = R.string.excluir,
-                titleDialog = R.string.deseja_excluir,
-                message = getString(R.string.click_para_excluir),
+                titleButton = R.string.showbottonsheet_btn_excluir,
+                titleDialog = R.string.showbottonsheet_title_excluir_gaveta,
+                message = getString(R.string.showbottonsheet_msg_excluir),
                 onClick = {
                     val pecaUid = args.pecaUID
                     val gavetaUid = args.gavetaUID
                     if (pecaUid != null && gavetaUid != null) {
                         deletePeca(pecaUid, gavetaUid)
                     } else {
-                        Toast.makeText(requireContext(), "Erro: ID da peça ou gaveta não encontrado para exclusão.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_uid_peca_ou_gaveta_não_encontrado_p_exclusao), Toast.LENGTH_SHORT).show()
                     }
                 }
             )
@@ -488,7 +503,8 @@ class CadRoupa2Fragment : Fragment() {
         if (gavetaUid.isNullOrBlank()) {
             isSavingPeca = false
             binding.btnCadastrarPeca.isEnabled = true
-            Toast.makeText(requireContext(), "Erro: ID da gaveta de destino é inválido ou nulo.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_uid_gaveta_invalido_nulo), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -512,13 +528,18 @@ class CadRoupa2Fragment : Fragment() {
                     } else {
                         isSavingPeca = false
                         binding.btnCadastrarPeca.isEnabled = true
-                        Toast.makeText(requireContext(), "Erro ao salvar os detalhes da peça: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(
+                                R.string.error_salvar_os_detalhes_da_peca,
+                                task.exception?.message
+                            ), Toast.LENGTH_SHORT).show()
                     }
                 }
         } else {
             isSavingPeca = false
             binding.btnCadastrarPeca.isEnabled = true
-            Toast.makeText(requireContext(), "Erro ao gerar ID da peça.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_gerar_id_da_peca), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -526,7 +547,8 @@ class CadRoupa2Fragment : Fragment() {
         if (pecaUid.isNullOrBlank() || novaGavetaUid.isNullOrBlank()) {
             isSavingPeca = false
             binding.bttSalvar.isEnabled = true
-            Toast.makeText(requireContext(), "Erro: ID da peça ou gaveta inválido.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_uid_peca_ou_gaveta_invalido), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -541,7 +563,8 @@ class CadRoupa2Fragment : Fragment() {
                         database.child("gavetas").child(gavetaAntigaUid).child("peças").child(pecaUid).removeValue()
                         database.child("gavetas").child(novaGavetaUid).child("peças").child(pecaUid).setValue(true)
                     }
-                    Toast.makeText(requireContext(), "Peça atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.sucesso_peca_atualizada), Toast.LENGTH_SHORT).show()
 
                     val bundle = Bundle().apply {
                         putString("GAVETA_ID", novaGavetaUid)
@@ -552,7 +575,8 @@ class CadRoupa2Fragment : Fragment() {
                         navOptionsPopToCad1
                     )
                 } else {
-                    Toast.makeText(requireContext(), "Erro ao atualizar a peça: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_atualizar_peca, task.exception?.message), Toast.LENGTH_SHORT).show()
                 }
                 isSavingPeca = false
                 binding.bttSalvar.isEnabled = true
@@ -564,7 +588,8 @@ class CadRoupa2Fragment : Fragment() {
             .addOnSuccessListener {
                 database.child("pecas").child(pecaUid).removeValue()
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Peça excluída com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.sucesso_peca_excluida), Toast.LENGTH_SHORT).show()
                         val bundle = Bundle().apply {
                             putString("GAVETA_ID", gavetaUid)
                         }
@@ -575,18 +600,20 @@ class CadRoupa2Fragment : Fragment() {
                         )
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Erro ao excluir peça: ${it.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_excluir_peca, it.message), Toast.LENGTH_SHORT).show()
                     }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Erro ao desvincular peça da gaveta: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_desvincular_peca_da_gaveta, it.message), Toast.LENGTH_SHORT).show()
             }
     }
 
     // --- Validação e Navegação ---
     private fun collectFinalData() {
         pecaEmAndamento.apply {
-            if (finalidade == getString(R.string.app_vender)) {
+            if (finalidade == getString(R.string.option_finalidade_vender)) {
                 preco = precoTextWatcher.getFormattedValueForSave()
                 titulo = binding.editTextTitulo.text?.toString() ?: ""
                 detalhe = binding.editTextDetalhes.text?.toString() ?: ""
@@ -600,20 +627,24 @@ class CadRoupa2Fragment : Fragment() {
 
     private fun validarDados(): Boolean {
         if (binding.Finalidade.checkedRadioButtonId == -1) {
-            Toast.makeText(requireContext(), "Por favor, selecione a Finalidade da peça.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_selecione_finalidade), Toast.LENGTH_SHORT).show()
             return false
         }
         if (gavetaSelecionada.isNullOrBlank()) {
-            Toast.makeText(requireContext(), "Erro de seleção: ID da gaveta não foi encontrado. Por favor, selecione novamente e aguarde o carregamento do UID.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_uid_gaveta_nao_encontrado_tente_novamente), Toast.LENGTH_LONG).show()
             return false
         }
-        if (pecaEmAndamento.finalidade == getString(R.string.app_vender)) {
+        if (pecaEmAndamento.finalidade == getString(R.string.option_finalidade_vender)) {
             if (binding.editTextTitulo.text.isNullOrBlank()) {
-                Toast.makeText(requireContext(), "Por favor, insira um Título para a peça.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_digite_um_titulo_peca), Toast.LENGTH_SHORT).show()
                 return false
             }
             if (binding.editEditText.text.isNullOrBlank()) {
-                Toast.makeText(requireContext(), "Por favor, insira o Preço de venda.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_digite_um_preco_peca), Toast.LENGTH_SHORT).show()
                 return false
             }
         }

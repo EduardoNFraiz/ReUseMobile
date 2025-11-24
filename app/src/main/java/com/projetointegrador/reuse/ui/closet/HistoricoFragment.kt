@@ -76,11 +76,10 @@ class HistoricoFragment : Fragment() {
                     putString("AVALIACAO_ID", historicoItem.avaliacaoUID)
                 }
 
-                Log.e("Historico", "NAVEGANDO")
                 findNavController().navigate(R.id.action_historicoFragment_to_adicionarAvaliacaoFragment, bundle)
             } else {
                 Log.e("Historico", "Item Historico não encontrado para AvaliacaoUID: $avaliacaoUID")
-                showBottomSheet(message = "Erro ao localizar detalhes da avaliação.")
+                showBottomSheet(message = getString(R.string.error_localizar_detalhes_avaliacao))
             }
         }
 
@@ -93,20 +92,18 @@ class HistoricoFragment : Fragment() {
 
     private fun loadAllHistoricoData() {
         if (userId.isEmpty()) {
-            showBottomSheet(message = "Usuário não autenticado.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             return
         }
 
         historicoFinalList.clear()
-        pendingFetches.set(0) // Reseta o contador
+        pendingFetches.set(0)
 
-        // Chamadas assíncronas para buscar os dois tipos de transação
         fetchDoacaoData()
         fetchCompraData()
     }
 
     private fun fetchDoacaoData() {
-        // Incrementa o contador antes de iniciar a busca
         pendingFetches.incrementAndGet()
 
         database.child("transacoes/doacao")
@@ -125,7 +122,6 @@ class HistoricoFragment : Fragment() {
     }
 
     private fun fetchCompraData() {
-        // Incrementa o contador antes de iniciar a busca
         pendingFetches.incrementAndGet()
 
         database.child("transacoes/compra")
@@ -182,7 +178,7 @@ class HistoricoFragment : Fragment() {
             historicoAdapter.updateList(sortedList)
 
             if (sortedList.isEmpty()) {
-                showBottomSheet(message = "Nenhum histórico de transação encontrado.")
+                showBottomSheet(message = getString(R.string.aviso_historico_vazio))
             }
         }
     }

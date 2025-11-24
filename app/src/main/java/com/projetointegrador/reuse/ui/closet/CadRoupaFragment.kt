@@ -78,7 +78,8 @@ class CadRoupaFragment : Fragment() {
                     isImageSelected = true
                 } else {
                     isImageSelected = false
-                    Toast.makeText(requireContext(), "Erro ao converter imagem.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_converter_imagem), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -121,7 +122,7 @@ class CadRoupaFragment : Fragment() {
 
         if (isCreating) {
             // 🚀 MODO DE CRIAÇÃO (Novo Cadastro)
-            binding.toolbar.title = "Cadastrar Peça (1/2)"
+            binding.toolbar.title = getString(R.string.status_cadastrar_peca2)
             binding.buttonEditar.visibility = View.GONE
             setFieldsEnabled(true)
             isImageSelected = false
@@ -134,14 +135,15 @@ class CadRoupaFragment : Fragment() {
             }
         } else {
             // 👀 MODO DE VISUALIZAÇÃO/EDIÇÃO (A partir da Gaveta)
-            binding.toolbar.title = "Visualizar Peça (1/2)"
+            binding.toolbar.title = getString(R.string.status_visualizar_peca)
             binding.buttonEditar.visibility = View.VISIBLE
             setFieldsEnabled(false)
 
             if (pecaUID != null) {
                 loadPecaDetails(pecaUID!!)
             } else {
-                Toast.makeText(requireContext(), "Erro de navegação: ID da peça ausente.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_uid_peca_ausente), Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
             }
 
@@ -149,8 +151,8 @@ class CadRoupaFragment : Fragment() {
             binding.buttonEditar.setOnClickListener {
                 isEditingActive = !isEditingActive
                 setFieldsEnabled(isEditingActive)
-                binding.buttonEditar.text = if (isEditingActive) "Cancelar Edição" else "Editar"
-                binding.toolbar.title = if (isEditingActive) "Editar Peça (1/2)" else "Visualizar Peça (1/2)"
+                binding.buttonEditar.text = if (isEditingActive) getString(R.string.btn_cancelar_edicao) else getString(R.string.btn_editar)
+                binding.toolbar.title = if (isEditingActive) getString(R.string.status_editar_peca) else getString(R.string.status_visualizar_peca)
 
                 if (!isEditingActive) {
                     // Se cancelou a edição, reverte os campos para o estado carregado (re-popula)
@@ -200,7 +202,8 @@ class CadRoupaFragment : Fragment() {
             )
         } else {
             // Se o UID da gaveta está ausente (erro), volta para a tela principal (Closet)
-            Toast.makeText(requireContext(), "Erro: ID da gaveta ausente. Voltando para o Closet.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_uid_gaveta_ausente), Toast.LENGTH_SHORT).show()
             // Assumindo que R.id.closetFragment está no nível mais alto ou é o ponto de partida seguro.
             findNavController().popBackStack(R.id.closetFragment, false)
         }
@@ -218,13 +221,14 @@ class CadRoupaFragment : Fragment() {
                         pecaEmAndamento = peca // Armazena o objeto carregado
                         populateUIStage1(peca)
                     } else {
-                        Toast.makeText(requireContext(), "Peça não encontrada.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_peca_nao_encontrada), Toast.LENGTH_SHORT).show()
                         findNavController().navigateUp()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Erro ao carregar detalhes: ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_detalhes_peca_nao_encontrados, Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                 }
             })
@@ -286,7 +290,8 @@ class CadRoupaFragment : Fragment() {
 
         // O ID da gaveta só é obrigatório se NÃO estivermos criando (edição/visualização)
         if (!isCreating && finalGavetaUID.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Erro: ID da gaveta não definido para prosseguir.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_id_gaveta_nao_definido_para_prosseguir), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -311,7 +316,6 @@ class CadRoupaFragment : Fragment() {
     }
 
     private fun convertImageUriToBase64(uri: Uri): String? {
-        // ... (lógica mantida)
         try {
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -320,15 +324,16 @@ class CadRoupaFragment : Fragment() {
             return Base64.encodeToString(byteArray, Base64.NO_WRAP)
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "Erro ao processar imagem (IO): ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_processar_imagem_io, e.message), Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "Erro ao processar imagem (Geral): ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_processar_imagem_geral, e.message), Toast.LENGTH_SHORT).show()
         }
         return null
     }
 
-    // --- Funções de Validação e Coleta de Dados (Mantidas) ---
 
     private fun setFieldsEnabled(isEnabled: Boolean) {
         binding.radioCores.children.forEach { if (it is CheckBox) it.isEnabled = isEnabled }
@@ -353,26 +358,29 @@ class CadRoupaFragment : Fragment() {
 
         // Se está criando ou editando ativamente, valida os campos
         if (!isImageSelected && imageBase64.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Por favor, clique no ícone para selecionar uma foto.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_selecione_uma_foto_cadastro_peca), Toast.LENGTH_SHORT).show()
             return false
         }
         if (!isAnyCheckBoxChecked(binding.radioCores)) {
-            Toast.makeText(requireContext(), "Por favor, selecione ao menos uma cor.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_selecione_uma_cor_cadastro_peca), Toast.LENGTH_SHORT).show()
             return false
         }
         if (!isAnyCheckBoxChecked(binding.categoria)) {
-            Toast.makeText(requireContext(), "Por favor, selecione ao menos uma categoria.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_selecione_uma_categoria_cadastro_peca), Toast.LENGTH_SHORT).show()
             return false
         }
         if (binding.Tamanho.checkedRadioButtonId == -1) {
-            Toast.makeText(requireContext(), "Por favor, selecione um tamanho.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_selecione_um_tamanho_cadastro_peca), Toast.LENGTH_SHORT).show()
             return false
         }
         return true
     }
 
     private fun getSelecionarCores(): String {
-        // ... (lógica mantida)
         val cores = mutableListOf<String>()
         for (i in 0 until binding.radioCores.childCount) {
             val view = binding.radioCores.getChildAt(i)
@@ -384,7 +392,6 @@ class CadRoupaFragment : Fragment() {
     }
 
     private fun getSelecionarCategorias(): String {
-        // ... (lógica mantida)
         val categorias = mutableListOf<String>()
         for (i in 0 until binding.categoria.childCount) {
             val view = binding.categoria.getChildAt(i)
@@ -396,7 +403,6 @@ class CadRoupaFragment : Fragment() {
     }
 
     private fun getSelecionarTamanho(): String {
-        // ... (lógica mantida)
         val checkedId = binding.Tamanho.checkedRadioButtonId
         if (checkedId != -1) {
             return when (checkedId) {
@@ -411,8 +417,6 @@ class CadRoupaFragment : Fragment() {
         }
         return ""
     }
-
-    // --- Funções Auxiliares de Preenchimento (Mantidas) ---
 
     private fun setCheckboxesState(viewGroup: ViewGroup, selectedValues: List<String>) {
         viewGroup.children.forEach { view ->
@@ -437,7 +441,6 @@ class CadRoupaFragment : Fragment() {
         }
     }
 
-    // --- Navegação e Ciclo de Vida (Mantidas) ---
 
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
@@ -456,7 +459,6 @@ class CadRoupaFragment : Fragment() {
         _binding = null
     }
 
-    // Extensão para simplificar o loop nos 'children' de um ViewGroup
     private val ViewGroup.children: List<View>
         get() = (0 until childCount).map { getChildAt(it) }
 }
