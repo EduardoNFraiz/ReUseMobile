@@ -95,13 +95,13 @@ class AVendaFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("AVendaFragment", "Erro ao carregar peças à venda: ${error.message}")
-                    Toast.makeText(requireContext(), "Erro ao carregar itens à venda.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_ao_carregar_itens_venda), Toast.LENGTH_SHORT).show()
                 }
             })
     }
 
     private fun initListeners() {
-        // ...
     }
 
     override fun onDestroyView() {

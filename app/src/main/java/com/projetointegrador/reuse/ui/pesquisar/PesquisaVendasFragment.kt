@@ -82,7 +82,8 @@ class PesquisaVendasFragment : Fragment() {
         } catch (e: Exception) {
             // Logs de diagnóstico
             Log.e("PesquisaVendas", "Erro na navegação para ComprarPeca. Verifique o NavGraph e o ID da ação.", e)
-            Toast.makeText(requireContext(), "Erro ao navegar para a peça. Verifique o NavGraph.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_navegar_para_peca_verifique_navgraph), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -131,7 +132,8 @@ class PesquisaVendasFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "ERRO FIREBASE VENDAS: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_firebase_vendas, error.message), Toast.LENGTH_LONG).show()
             }
         }
 

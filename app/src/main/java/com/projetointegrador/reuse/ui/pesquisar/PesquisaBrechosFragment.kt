@@ -14,6 +14,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.database
+import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.Task
 import com.projetointegrador.reuse.data.model.TipoConta
 import com.projetointegrador.reuse.databinding.FragmentPesquisaBrechosBinding
@@ -71,7 +72,8 @@ class PesquisaBrechosFragment : Fragment() {
 
         } catch (e: Exception) {
             Log.e("PesquisaBrechos", "Erro na navegação: ${e.message}", e)
-            Toast.makeText(requireContext(), "Erro ao navegar para o perfil. Verifique o NavGraph.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_navegar_para_perfil_verifique_navgraph), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -192,7 +194,8 @@ class PesquisaBrechosFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "ERRO FIREBASE BRECHÓS: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_firebase_brechos, error.message), Toast.LENGTH_LONG).show()
             }
         }
 

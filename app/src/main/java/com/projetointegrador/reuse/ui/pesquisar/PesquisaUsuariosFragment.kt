@@ -1,6 +1,7 @@
 package com.projetointegrador.reuse.ui.pesquisar
 
 import android.os.Bundle
+import com.projetointegrador.reuse.R
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -76,7 +77,7 @@ class PesquisaUsuariosFragment : Fragment() {
         } catch (e: Exception) {
             // Mantenha o log para diagnosticar se houver falha (ex: nome da ação incorreto)
             Log.e("PesquisaUsuarios", "Erro na navegação: ${e.message}", e)
-            Toast.makeText(requireContext(), "Erro ao navegar para o perfil. Verifique o NavGraph.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.error_ao_navegar_para_visualizar_usuario), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -180,7 +181,8 @@ class PesquisaUsuariosFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "ERRO FIREBASE USUÁRIOS: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_firebase_usuarios, error.message), Toast.LENGTH_LONG).show()
             }
         }
 

@@ -400,4 +400,18 @@
     <string name="error_salvar_dados">Erro ao salvar dados: %1$s</string>
 
 
+    //AVendaFragment, PesquisaBrechosFragment, PesquisaFragment, PesquisaUsuariosFragment e PesquisaVendasFragment, UsuarioClosetFragment, VisualizarPBrechoFragment e VisualizarPUsuarioFragment strings
+    <string name="error_ao_carregar_itens_venda">Erro ao carregar itens à venda.</string>
+    <string name="error_navegar_para_perfil_verifique_navgraph">Erro ao navegar para o perfil. Verifique o NavGraph.</string>
+    <string name="error_firebase_brechos">ERRO FIREBASE BRECHÓS: %1$s</string>
+    <string name="title_pesquisar">Pesquisa</string>
+    <string name="hint_procurar">Procurar</string>
+    <string name="aba_usuarios">Usuários</string>
+    <string name="aba_brechos">Brechós</string>
+    <string name="aba_vendas">Vendas</string>
+    <string name="error_firebase_usuarios">ERRO FIREBASE USUÁRIOS: %1$s</string>
+    <string name="error_navegar_para_peca_verifique_navgraph">Erro ao navegar para a peça. Verifique o NavGraph.</string>
+    <string name="error_firebase_vendas">ERRO FIREBASE VENDAS: %1$s</string>
+
+
 </resources>
