@@ -42,7 +42,7 @@
                     android:id="@+id/tvNomeProduto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Camiseta Flamengo 2024/25"
+                    android:text="@string/nome_peca_transacao"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -59,7 +59,7 @@
                     android:layout_height="20dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/estilobtt1"
-                    android:text="Adicionar avaliação"
+                    android:text="@string/btn_adicionar_avaliacao"
                     android:textAllCaps="false"
                     android:layout_marginStart="140dp"
                     android:textColor="@color/VerdeEscuro"

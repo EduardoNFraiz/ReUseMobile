@@ -423,4 +423,24 @@
     <string name="aba_avenda">À venda</string>
     <string name="aba_closet_usuario">Closet</string>
 
+    //CardViews (itens de recyclerview)
+    <string name="nome_perfil_avaliacao">Thiago</string>
+    <string name="descricao_avaliacao_">Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto.</string>
+    <string name="nome_gaveta">casacos</string>
+    <string name="numero_pecas_gaveta">0</string>
+    <string name="nome_perfil_instituicao">Eduardo Neumann</string>
+    <string name="nome_usuario_instituicao">eduardo_neumann</string>
+    <string name="distancia_instituicao">2,0 km de distância</string>
+    <string name="nome_peca_cardview"></string>
+    <string name="preco_peca_cardview"></string>
+    <string name="nome_peca_closet">Camisa de time GG</string>
+    <string name="preco_peca_closet">R$81,00</string>
+    <string name="perfil_nome">Eduardo Neumann</string>
+    <string name="nome_usuario_perfil">\@eduardo_neumann</string>
+    <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
+    <string name="btn_adicionar_avaliacao">Adicionar avaliação</string>
+    <string name="nome_peca_transacao">Camiseta Flamengo 2024/25</string>
+
+
+
 </resources>

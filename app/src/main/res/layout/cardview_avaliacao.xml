@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
                     android:layout_marginTop="16dp"
-                    android:text="Thiago"
+                    android:text="@string/nome_perfil_avaliacao"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
                 android:layout_marginTop="8dp"
                 android:paddingStart="12dp"
                 android:padding="15dp"
-                android:text="Comprei 4 pares de meia do @eduardo_neumann e veio exatamente como estava no anúncio. Valeu o dinheiro gasto."
+                android:text="@string/descricao_avaliacao_"
                 android:textSize="14sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
