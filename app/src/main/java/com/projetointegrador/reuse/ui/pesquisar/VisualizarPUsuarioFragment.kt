@@ -52,7 +52,8 @@ class VisualizarPUsuarioFragment : Fragment() {
             loadPerfilData(uid)
             initTabs(uid)
         } ?: run {
-            Toast.makeText(requireContext(), "UID do usuário não encontrado.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_id_usuario_nao_encontrado), Toast.LENGTH_LONG).show()
             findNavController().navigateUp()
         }
     }
@@ -76,7 +77,8 @@ class VisualizarPUsuarioFragment : Fragment() {
             }
             .addOnFailureListener {
                 Log.e("VisualizarP", "Erro ao carregar dados do perfil: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar perfil.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_perfil), Toast.LENGTH_SHORT).show()
             }
     }
 

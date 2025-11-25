@@ -69,7 +69,8 @@ class UsuarioClosetFragment : Fragment() {
                     showAmplifiedImage(peca.fotoBase64!!)
                 } else {
                     // Se não tiver foto, pode seguir para a tela de detalhes normal da peça
-                    Toast.makeText(requireContext(), "Abrir detalhes de: $pecaUid", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.aviso_abrir_detalhes_peca, pecaUid), Toast.LENGTH_SHORT).show()
                     // Exemplo de navegação para detalhes:
                     // findNavController().navigate(R.id.detalheRoupaFragment, bundleOf("pecaUid" to pecaUid))
                 }
@@ -163,14 +164,16 @@ class UsuarioClosetFragment : Fragment() {
 
                         override fun onCancelled(error: DatabaseError) {
                             Log.e("UsuarioCloset", "Erro ao carregar gavetas: ${error.message}")
-                            Toast.makeText(requireContext(), "Erro ao verificar gavetas.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.error_verificar_gavetas), Toast.LENGTH_SHORT).show()
                         }
                     })
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("UsuarioCloset", "Erro ao carregar peças: ${error.message}")
-                    Toast.makeText(requireContext(), "Erro ao carregar closet.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_carregar_closet), Toast.LENGTH_SHORT).show()
                 }
             })
     }

@@ -52,7 +52,8 @@ class VisualizarPBrechoFragment : Fragment() {
             loadPerfilBrechoData(uid) // 🛑 Carrega os dados do Brechó
             initTabs(uid)             // 🛑 Inicializa as abas com o UID
         } ?: run {
-            Toast.makeText(requireContext(), "UID do Brechó não encontrado.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_id_brecho_nao_encontrado), Toast.LENGTH_LONG).show()
             findNavController().navigateUp()
         }
     }
@@ -78,7 +79,8 @@ class VisualizarPBrechoFragment : Fragment() {
             }
             .addOnFailureListener {
                 Log.e("VisualizarPBrecho", "Erro ao carregar dados do perfil do Brechó: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar perfil do Brechó.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_perfil_do_brecho), Toast.LENGTH_SHORT).show()
             }
     }
 

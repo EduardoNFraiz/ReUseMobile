@@ -399,7 +399,6 @@
     <string name="sucesso_dados_atualizados">Dados atualizados com sucesso!</string>
     <string name="error_salvar_dados">Erro ao salvar dados: %1$s</string>
 
-
     //AVendaFragment, PesquisaBrechosFragment, PesquisaFragment, PesquisaUsuariosFragment e PesquisaVendasFragment, UsuarioClosetFragment, VisualizarPBrechoFragment e VisualizarPUsuarioFragment strings
     <string name="error_ao_carregar_itens_venda">Erro ao carregar itens à venda.</string>
     <string name="error_navegar_para_perfil_verifique_navgraph">Erro ao navegar para o perfil. Verifique o NavGraph.</string>
@@ -412,6 +411,16 @@
     <string name="error_firebase_usuarios">ERRO FIREBASE USUÁRIOS: %1$s</string>
     <string name="error_navegar_para_peca_verifique_navgraph">Erro ao navegar para a peça. Verifique o NavGraph.</string>
     <string name="error_firebase_vendas">ERRO FIREBASE VENDAS: %1$s</string>
-
+    <string name="aviso_abrir_detalhes_peca">Abrir detalhes de: %1$s</string>
+    <string name="error_verificar_gavetas">Erro ao verificar gavetas.</string>
+    <string name="error_carregar_closet">Erro ao carregar closet.</string>
+    <string name="error_id_brecho_nao_encontrado">UID do Brechó não encontrado.</string>
+    <string name="error_carregar_perfil_do_brecho">Erro ao carregar perfil do Brechó.</string>
+    <string name="title_nome_perfil">Eduardo Neumann</string>
+    <string name="title_nome_usuario">\@eduardo_neumann</string>
+    <string name="error_id_usuario_nao_encontrado">UID do usuário não encontrado.</string>
+    <string name="error_carregar_perfil">Erro ao carregar perfil.</string>
+    <string name="aba_avenda">À venda</string>
+    <string name="aba_closet_usuario">Closet</string>
 
 </resources>
