@@ -134,7 +134,8 @@ class RealizarDoacaoFragment : Fragment() {
                     pecaAdapter.updateList(pecasListWithUid)
 
                     if (pecasListWithUid.isEmpty()) {
-                        Toast.makeText(requireContext(), "Você não tem roupas cadastradas para doação.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.aviso_sem_roupas_cadastradas_para_doacao), Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -146,11 +147,11 @@ class RealizarDoacaoFragment : Fragment() {
 
     private fun initListeners() {
         binding.btnDoacao.setOnClickListener {
-            // 🛑 Obtém o Array<String> com todos os UIDs selecionados usando o método do PecaDoacaoAdapter
             val pecasSelecionadasUids = pecaAdapter.getSelectedPecaUids()
 
             if (pecasSelecionadasUids.isEmpty()) {
-                Toast.makeText(requireContext(), "Selecione pelo menos uma peça para doar.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_selecione_pelo_menos_uma_peca_para_doar), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

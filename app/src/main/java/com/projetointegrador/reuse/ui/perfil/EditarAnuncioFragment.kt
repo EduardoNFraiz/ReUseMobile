@@ -79,7 +79,7 @@ class EditarAnuncioFragment : Fragment() {
 
     private fun loadData() {
         if (currentUserUid == null) {
-            Toast.makeText(requireContext(), "Usuário não autenticado.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.error_usuario_nao_logado, Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
@@ -104,7 +104,8 @@ class EditarAnuncioFragment : Fragment() {
             }
             .addOnFailureListener {
                 Log.e("EditarAnuncio", "Erro ao carregar dados da instituição: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar dados.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_dados), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -147,7 +148,8 @@ class EditarAnuncioFragment : Fragment() {
             }
             .addOnFailureListener {
                 Log.e("EditarAnuncio", "Erro ao carregar endereço com UID $enderecoUID: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar dados de endereço.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_dados_endereco), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -176,13 +178,15 @@ class EditarAnuncioFragment : Fragment() {
 
         // Verifica se o modo de edição está ativo antes de salvar
         if (!isEditing) {
-            Toast.makeText(requireContext(), "Pressione 'Editar' para salvar alterações.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_pressione_editar_salvar_alteracoes), Toast.LENGTH_SHORT).show()
             return
         }
 
         val enderecoFinal = enderecoFormatadoParaAnuncio
         if (enderecoFinal.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Aguarde o endereço ser carregado ou vincule um endereço.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_aguarde_o_endereco_ser_carregado_ou_vincule_um_endereco), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -196,7 +200,8 @@ class EditarAnuncioFragment : Fragment() {
         database.child("anuncios").child(currentUserUid)
             .setValue(novoAnuncioMap)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Anúncio salvo com sucesso!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.sucesso_anuncio_salvo), Toast.LENGTH_SHORT).show()
                 // Após salvar, retorna ao modo de visualização
                 toggleEditMode(false)
                 // Navega para cima (opcional, dependendo do fluxo)
@@ -204,7 +209,8 @@ class EditarAnuncioFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Log.e("EditarAnuncio", "Erro ao salvar anúncio: ${e.message}")
-                Toast.makeText(requireContext(), "Falha ao salvar anúncio.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_falha_salvar_anuncio), Toast.LENGTH_SHORT).show()
             }
     }
 

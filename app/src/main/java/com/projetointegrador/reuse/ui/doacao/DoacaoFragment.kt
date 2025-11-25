@@ -84,9 +84,6 @@ class DoacaoFragment : Fragment() {
         binding.recyclerViewTask.adapter = instituicaoAdapter
     }
 
-    /**
-     * Configura o listener para o campo de pesquisa.
-     */
     private fun setupSearchListener() {
         binding.editTextProcurar.doAfterTextChanged { editable ->
             val searchText = editable.toString().trim()
@@ -94,12 +91,9 @@ class DoacaoFragment : Fragment() {
         }
     }
 
-    /**
-     * 🛑 REFATORADO: Busca o UID do endereço do usuário logado, independentemente de ser PF ou PJ.
-     */
     private fun fetchUserAddressUidAndCep(searchText: String? = null) {
         val currentUserId = auth.currentUser?.uid ?: run {
-            showBottomSheet(message = "Usuário não logado. A distância será omitida.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             fetchUserLocationAndLoadInstituicoes(searchText)
             return
         }
@@ -130,14 +124,14 @@ class DoacaoFragment : Fragment() {
                             userCep = fetchCepByAddressUidRTDB(userAddressUid!!)
 
                             if (userCep.isNullOrEmpty()) {
-                                showBottomSheet(message = "CEP do usuário não encontrado. A distância será omitida.")
+                                showBottomSheet(message = getString(R.string.error_cep_nao_encontrado_distancia_nao_calculada))
                             }
                             // Continua o fluxo para obter LatLng e carregar instituições
                             fetchUserLocationAndLoadInstituicoes(searchText)
                         }
                     } else if (path == paths.last() && !foundAddress) {
                         // Se é o último caminho e não encontrou, mostra erro e prossegue sem localização
-                        showBottomSheet(message = "Endereço do usuário não encontrado. A distância será omitida.")
+                        showBottomSheet(message = getString(R.string.error_endereco_nao_encontrado_distancia_nao_calculada))
                         fetchUserLocationAndLoadInstituicoes(searchText)
                     }
                 }
@@ -145,7 +139,7 @@ class DoacaoFragment : Fragment() {
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("RTDB", "Erro ao buscar endereço do usuário: ${error.message}")
                     if (path == paths.last() && !foundAddress) {
-                        showBottomSheet(message = "Erro ao buscar seu endereço. A distância será omitida.")
+                        showBottomSheet(message = getString(R.string.error_buscar_proprio_endereco_distancia_nao_calculada))
                         fetchUserLocationAndLoadInstituicoes(searchText)
                     }
                 }
@@ -153,16 +147,13 @@ class DoacaoFragment : Fragment() {
         }
     }
 
-    /**
-     * Tenta obter as coordenadas do CEP do usuário e, em seguida, carrega e filtra as instituições.
-     */
     private fun fetchUserLocationAndLoadInstituicoes(searchText: String? = null) {
         lifecycleScope.launch {
             // Se o CEP foi encontrado, busca as coordenadas
             if (userCep != null && userLatLng == null) {
                 userLatLng = getLatLngFromCep(userCep!!, requireContext())
                 if (userLatLng == null) {
-                    showBottomSheet(message = "Erro ao obter sua localização. A distância será omitida.")
+                    showBottomSheet(message = getString(R.string.error_obter_localizacao_propria_distancia_nao_calculada))
                 }
             }
             // Carrega a lista com as coordenadas do usuário (userLatLng pode ser null)
@@ -170,21 +161,14 @@ class DoacaoFragment : Fragment() {
         }
     }
 
-    /**
-     * Busca o CEP real no nó 'enderecos' do Realtime Database usando Coroutines.
-     * @param addressUid O UID do endereço.
-     */
     private suspend fun fetchCepByAddressUidRTDB(addressUid: String): String? =
         suspendCancellableCoroutine { continuation ->
-
-            // Caminha até enderecos/UID_ENDERECO/cep
             database.child("enderecos").child(addressUid).child("cep")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val cep = snapshot.getValue(String::class.java)
                         continuation.resume(cep)
                     }
-
                     override fun onCancelled(error: DatabaseError) {
                         Log.e("RTDB", "Erro ao buscar CEP para UID $addressUid: ${error.message}")
                         continuation.resume(null)
@@ -192,45 +176,34 @@ class DoacaoFragment : Fragment() {
                 })
         }
 
-
-    /**
-     * Carrega, filtra e calcula a distância das instituições.
-     */
     private fun loadInstituicoes(searchText: String?, userLocation: LatLng?) {
         val path = "usuarios/pessoaJuridica/instituicoes"
         val currentUserId = auth.currentUser?.uid
         val searchLower = searchText?.lowercase() ?: ""
 
-        // Remove listeners antigos
         instituicaoListener?.let { database.child(path).removeEventListener(it) }
 
-        // Define o novo listener
         instituicaoListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                // Mapeia e calcula a distância em paralelo
                 val deferredInstituicoes = snapshot.children.mapNotNull { instSnapshot ->
                     lifecycleScope.async(Dispatchers.IO) {
 
                         val uid = instSnapshot.key ?: return@async null
 
-                        // 1. FILTRO DE USUÁRIO: Não lista a própria instituição do usuário (se ele for uma)
                         if (uid == currentUserId) return@async null
 
                         val contaPJ = instSnapshot.getValue(ContaPessoaJuridica::class.java)
                         if (contaPJ == null) return@async null
 
-                        // Lógica de Distância
                         var distancia: String
                         val addressUid = contaPJ.endereço
 
-                        if (userLocation != null && !addressUid.isNullOrEmpty()) {
+                        if (userLocation != null && addressUid.isNotEmpty()) {
 
-                            // 2. BUSCA O CEP REAL DO NÓ 'enderecos'
                             val cepReal = fetchCepByAddressUidRTDB(addressUid)
 
                             if (!cepReal.isNullOrEmpty()) {
-                                // 3. Agora geolocaliza o CEP REAL
                                 val instLocation = getLatLngFromCep(cepReal, requireContext())
 
                                 if (instLocation != null) {
@@ -238,7 +211,6 @@ class DoacaoFragment : Fragment() {
                                         userLocation.latitude, userLocation.longitude,
                                         instLocation.latitude, instLocation.longitude
                                     )
-                                    // Formata para 1 casa decimal
                                     distancia = "${DecimalFormat("#.#").format(distanceKm)} km de distância"
                                 } else {
                                     distancia = "Localização não encontrada"
@@ -251,7 +223,6 @@ class DoacaoFragment : Fragment() {
                             distancia = "Distância indisponível" // User Location ou Address UID vazio
                         }
 
-                        // Mapeamento
                         val instituicaoDisplay = Instituicao(
                             fotoBase64 = contaPJ.fotoBase64,
                             uid = uid,
@@ -261,7 +232,6 @@ class DoacaoFragment : Fragment() {
                             conta = TipoConta.INSTITUICAO
                         )
 
-                        // 4. FILTRO DE PESQUISA
                         val nomeLower = instituicaoDisplay.name.lowercase()
                         if (searchLower.isEmpty() || nomeLower.contains(searchLower)) {
                             return@async instituicaoDisplay
@@ -270,11 +240,9 @@ class DoacaoFragment : Fragment() {
                     }
                 }
 
-                // Aguarda todas as coroutines e atualiza o UI na Main Thread
                 lifecycleScope.launch(Dispatchers.Main) {
                     val instituicaoListForDisplay = deferredInstituicoes.mapNotNull { it.await() }
 
-                    // Ordena pela distância (extrai o número para ordenar, ignora texto)
                     instituicaoAdapter.updateList(instituicaoListForDisplay.sortedBy {
                         it.distancia.substringBefore(" ").toDoubleOrNull() ?: Double.MAX_VALUE
                     })
@@ -287,7 +255,8 @@ class DoacaoFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Erro ao carregar instituições: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_instituicoes, error.message), Toast.LENGTH_LONG).show()
                 instituicaoAdapter.updateList(emptyList())
             }
         }
@@ -302,7 +271,6 @@ class DoacaoFragment : Fragment() {
     }
 
     private fun initListeners() {
-        // Se houver outros listeners, adicione aqui
     }
 
     private fun barraDeNavegacao() {

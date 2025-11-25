@@ -191,7 +191,7 @@ class EditEnderecoFragment : Fragment() {
     private fun loadUserData() {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showBottomSheet(message = "Usuário não autenticado.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             return
         }
 
@@ -212,7 +212,7 @@ class EditEnderecoFragment : Fragment() {
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                    showBottomSheet(message = getString(R.string.error_buscar_tipo_de_conta, error.message))
                 }
             })
     }
@@ -232,12 +232,12 @@ class EditEnderecoFragment : Fragment() {
                         }
 
                         if (subtipo == subtipos.last() && !found) {
-                            showBottomSheet(message = "Usuário não encontrado em nenhuma categoria. Não é possível carregar o endereço.")
+                            showBottomSheet(message = getString(R.string.error_usuario_nao_encontrado_endereco_nao_carregado))
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
+                        showBottomSheet(message = getString(R.string.subtipo_nao_encontrado, error.message))
                     }
                 })
         }
@@ -251,7 +251,7 @@ class EditEnderecoFragment : Fragment() {
         val retrievedAddressUID = userSnapshot.child("endereço").getValue(String::class.java)
 
         if (retrievedAddressUID.isNullOrEmpty()) {
-            showBottomSheet(message = "O ID do endereço (campo 'endereço') não foi encontrado no perfil do usuário, ou está vazio.")
+            showBottomSheet(message = getString(R.string.error_endereo_nao_encontrado_nos_dados_do_usuario))
             return
         }
 
@@ -264,13 +264,19 @@ class EditEnderecoFragment : Fragment() {
                     if (addressSnapshot.exists()) {
                         fetchAddressDetails(addressSnapshot)
                     } else {
-                        showBottomSheet(message = "Endereço encontrado no perfil (UID: $addressUID), mas os detalhes não foram encontrados na tabela 'enderecos'.")
+                        showBottomSheet(message = getString(
+                            R.string.error_endereco_encontrado_detalhes_nao,
+                            addressUID
+                        ))
                         clearAddressFields()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar detalhes do endereço: ${error.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_buscar_detalhes_endereco,
+                        error.message
+                    ))
                 }
             })
     }
@@ -331,7 +337,7 @@ class EditEnderecoFragment : Fragment() {
 
         // Precisamos do UID do endereço para saber onde salvar
         if (addressUID == null) {
-            showBottomSheet(message = "O ID do endereço não foi carregado. Não é possível salvar.")
+            showBottomSheet(message = getString(R.string.error_id_endereco_nao_carregado_nao_possivel_salvar))
             return
         }
 
@@ -349,7 +355,7 @@ class EditEnderecoFragment : Fragment() {
 
         // 2. Validação básica
         if (cep.isBlank() || rua.isBlank() || numero.isBlank() || bairro.isBlank() || cidade.isBlank() || estado.isBlank() || pais.isBlank()) {
-            showBottomSheet(message = "Preencha todos os campos obrigatórios (exceto Complemento).")
+            showBottomSheet(message = getString(R.string.aviso_preencha_todos_os_campos_obrigatorios))
             return
         }
 
@@ -370,12 +376,15 @@ class EditEnderecoFragment : Fragment() {
             .updateChildren(updateMap)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    showBottomSheet(message = "Endereço atualizado com sucesso!")
+                    showBottomSheet(message = getString(R.string.sucesso_endereco_atualizado))
                     toggleEditMode(false)
                     // Navega de volta após o sucesso
                     findNavController().navigate(R.id.action_editEnderecoFragment_to_infoPerfilFragment)
                 } else {
-                    showBottomSheet(message = "Erro ao salvar endereço: ${task.exception?.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_salvar_endereco,
+                        task.exception?.message
+                    ))
                 }
             }
     }

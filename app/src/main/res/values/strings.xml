@@ -273,12 +273,131 @@
     <string name="error_falha_excluir_pecas_no_gaveta">ERRO: Falha ao excluir peças ou nó da gaveta. %1$s</string>
     <string name="aviso_gaveta_pecas_excluidas_falha_limpar_registro_usuario">AVISO: A gaveta e peças foram excluídas, mas houve falha ao limpar o registro do seu usuário.</string>
     <string name="sucesso_exclusao_gaveta_com_pecas">Gaveta e todas as peças contidas foram excluídas com sucesso!</string>
+
+    //HistoricoFragment strings
     <string name="title_historico_transacao">Histórico de Transação</string>
     <string name="error_localizar_detalhes_avaliacao">Erro ao localizar detalhes da avaliação.</string>
     <string name="aviso_historico_vazio">Nenhum histórico de transação encontrado.</string>
+    <string name="title_preco_peca">R$00,00</string>
+    <string name="title_nome_peca">-----</string>
+    <string name="title_descricao_peca">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="btn_comprar">Comprar</string>
+    <string name="btn_adicionar_ao_carrinho">Adicionar ao carrinho</string>
+    <string name="btn_remover_do_carrinho">Remover do carrinho</string>
+    <string name="btn_ver_avaliacoes_vendedor">Ver avaliações do vendedor</string>
+    <string name="error_gaveta_carrinho_nao_encontrada">Erro: Gaveta \'Carrinho\' não encontrada.</string>
+    <string name="sucesso_adicionado_ao_carrinho">Adicionado ao carrinho com sucesso!</string>
+    <string name="error_ao_adicionar_ao_carrinho">Erro ao adicionar ao carrinho.</string>
+    <string name="error_salvar_peca_banco">Erro ao salvar peça no banco.</string>
+    <string name="sucesso_removido_do_carrinho">Removido do carrinho com sucesso!</string>
+    <string name="error_remover_peca_banco">Erro ao remover peça do banco.</string>
+    <string name="error_remover_peca_do_carrinho">Erro ao remover do carrinho.</string>
+    <string name="error_carregar_dados_peca">Erro ao carregar dados da peça.</string>
+    <string name="error_informacao_vendedor_indisponivel">Informação do vendedor indisponível.</string>
 
-    //HistoricoFragment strings
+    //ComprarPecaFragment, ConfirmarCompraFragment e DialogCompraFragment strings
+    <string name="title_envio">Envio</string>
+    <string name="subtitle_confirme_seu_endereco">Confirme seu endereço</string>
+    <string name="text_confirme_seu_endereco">Rua das Oliveiras, nº 123 Campinas - São Paulo</string>
+    <string name="title_confirme_seu_pedido">Confirme seu pedido</string>
+    <string name="text_pedido_nome">Camiseta Flamengo 2024/25</string>
+    <string name="text_pedido_descricao">Camisa masculina oficial do Flamengo edição 2024/25, Seminovo.</string>
+    <string name="title_forma_de_pagamento_e_valores">Forma de pagamento e valores</string>
+    <string name="text_total_preco">Total:</string>
+    <string name="text_valor">R$240</string>
+    <string name="option_pagamento_pix">Pix</string>
+    <string name="option_pagamento_credito">Crédito</string>
+    <string name="option_pagamento_debito">Débito</string>
+    <string name="btn_confirmar_pedido">Confirmar pedido</string>
+    <string name="error_endereco_entrega_nao_definido">Endereço de entrega não definido.</string>
+    <string name="error_ao_carregar_endereco">Erro ao carregar endereço.</string>
+    <string name="error_ao_carregar_detalhes_endereco">Erro ao carregar detalhes do endereço.</string>
+    <string name="aviso_selecione_uma_forma_de_pagamento">Por favor, selecione uma forma de pagamento.</string>
+    <string name="aviso_dados_faltando_compra_tente_novamente">Erro: Dados essenciais para a compra estão faltando. Tente novamente.</string>
+    <string name="error_ao_atualizar_status_da_peca">Erro ao atualizar status da peça.</string>
+    <string name="error_na_transacao_tente_novamente">Erro na transação. Tente novamente.</string>
+    <string name="error_gaveta_destino_nao_encontrada_falha_compra">Erro: Gaveta de destino não encontrada. A compra falhou.</string>
+    <string name="sucesso_pedido_confirmado_transacao_registrada">Pedido confirmado e transação registrada!</string>
+    <string name="error_finalizar_transacao_banco">Erro ao finalizar transação no banco. %1$s</string>
+    <string name="text_sua_compra_foi_nrealizada">Sua compra foi \nrealizada!</string>
 
+
+    //DialogDoacaoFragment strings
+    <string name="text_sua_doacao_foi_nrealizada">Sua doação foi \nrealizada!</string>
+
+    //ConfirmDoacaoFragment, EnvioDoacaoFragment, RealizarDoacaoFragment, SobreInstituicaoFragment e DoacaoFragment strings
+    <string name="title_nome_instituicao">Projeto</string>
+    <string name="title_nomeusuario_instituicao">\@projeto</string>
+    <string name="title_confirme_as_roupas_selecionadas">Confirme as roupas selecionadas</string>
+    <string name="btn_fazer_doacao">Fazer doação</string>
+    <string name="aviso_nenhuma_peca_selecionada_para_doacao">Nenhuma peça selecionada para doação.</string>
+    <string name="error_navegacao_verifique_nav_graph">Erro de navegação. Verifique os argumentos do nav_graph.</string>
+    <string name="title_doacao">Doação</string>
+    <string name="hint_procurar_instituicoes">Procurar Instituições</string>
+    <string name="title_instituicoes_proximas">Instituições Próximas</string>
+    <string name="error_cep_nao_encontrado_distancia_nao_calculada">CEP do usuário não encontrado. A distância será omitida.</string>
+    <string name="error_endereco_nao_encontrado_distancia_nao_calculada">Endereço do usuário não encontrado. A distância será omitida.</string>
+    <string name="error_buscar_proprio_endereco_distancia_nao_calculada">Erro ao buscar seu endereço. A distância será omitida.</string>
+    <string name="error_obter_localizacao_propria_distancia_nao_calculada">Erro ao obter sua localização. A distância será omitida.</string>
+    <string name="error_carregar_instituicoes">Erro ao carregar instituições: %1$s</string>
+    <string name="title_escolha_forma_de_envio">Escolha uma forma de envio</string>
+    <string name="option_envio_correios">Envio do pacote via correios</string>
+    <string name="option_entrega_conta_propria">Vou entregar por conta própria no endereço da instituição</string>
+    <string name="option_entrega_combinar_local">Combinar um local com a instituição para ela buscar o pacote</string>
+    <string name="btn_doar">Doar</string>
+    <string name="aviso_espere_carregamento_tente_novamente">Aguarde o carregamento do endereço ou tente novamente.</string>
+    <string name="error_nao_foi_possivel_encontrar_recebidos_instituicao">Não foi possível encontrar a gaveta \'Recebidos\' na instituição.</string>
+    <string name="error_gerar_uid_avaliacao">Erro ao gerar UID para Avaliação.</string>
+    <string name="sucesso_doacao_registrada_avalie">Doação registrada com sucesso. Deixe sua avaliação!</string>
+    <string name="error_finalizar_doacao">Erro ao finalizar doação: %1$s</string>
+    <string name="title_selecione_roupas_doar">Selecione as roupas que deseja doar</string>
+    <string name="aviso_sem_roupas_cadastradas_para_doacao">Você não tem roupas cadastradas para doação.</string>
+    <string name="aviso_selecione_pelo_menos_uma_peca_para_doar">Selecione pelo menos uma peça para doar.</string>
+    <string name="text_breve_descricao_anuncio">O Projeto Em Nome Do Bem é uma instituição que cuida de crianças em situação de vulnerabilidade.</string>
+    <string name="title_detalhes_anuncio_instituicao">Detalhes</string>
+    <string name="text_detalhes_instituicao_anuncio">A instituição oferece apoio a crianças em situação de vulnerabilidade, com atividades educativas, reforço escolar, alimentação, apoio psicológico e recreação, promovendo um ambiente seguro e acolhedor para seu desenvolvimento integral.</string>
+    <string name="title_endereco_instituicao_anuncio">Endereço</string>
+    <string name="text_endereco_instituicao_anuncio">CEP: 78053-224\nRua Seis, Morada do Ouro - Setor Centro Sul, Cuiabá, MT.</string>
+    <string name="title_cnpj_instituicao_anuncio">CNPJ</string>
+    <string name="text_cnpj_instituicao_anuncio">63.169.795/0001-86</string>
+    <string name="error_instituicao_nao_encontrada">Instituição não encontrada.</string>
+    <string name="error_carregar_detalhes_anuncio">Erro ao carregar detalhes do anúncio.</string>
+    <string name="error_falha_carregar_dados_instituicao">Falha ao carregar dados da instituição.</string>
+
+    //EditarAnuncioFragment, EditEnderecoFragment e InfoPerfilFragment strings
+    <string name="title_editar_anuncio">Editar Anúncio</string>
+    <string name="label_breve_descricao">Breve Descrição</string>
+    <string name="label_hint_breve_descricao">Descreva sua instituição em poucas palavras...</string>
+    <string name="label_detalhes">Detalhes (O que você faz)</string>
+    <string name="label_hint_detalhes">Fale mais sobre o propósito e funcionamento da sua instituição.</string>
+    <string name="label_endereco">Endereço</string>
+    <string name="label_hint_endereco">Endereço Completo</string>
+    <string name="label_hint_carregandocnpj">Carregando CNPJ...</string>
+    <string name="btn_salvar_anuncio">Salvar Anúncio</string>
+    <string name="error_carregar_dados">Erro ao carregar dados.</string>
+    <string name="error_carregar_dados_endereco">Erro ao carregar dados de endereço.</string>
+    <string name="aviso_pressione_editar_salvar_alteracoes">Pressione \'Editar\' para salvar alterações.</string>
+    <string name="aviso_aguarde_o_endereco_ser_carregado_ou_vincule_um_endereco">Aguarde o endereço ser carregado ou vincule um endereço.</string>
+    <string name="sucesso_anuncio_salvo">Anúncio salvo com sucesso!</string>
+    <string name="error_falha_salvar_anuncio">Falha ao salvar anúncio.</string>
+    <string name="error_usuario_nao_encontrado_endereco_nao_carregado">Usuário não encontrado em nenhuma categoria. Não é possível carregar o endereço.</string>
+    <string name="error_endereo_nao_encontrado_nos_dados_do_usuario">O ID do endereço (campo \'endereço\') não foi encontrado no perfil do usuário, ou está vazio.</string>
+    <string name="error_buscar_detalhes_endereco">Erro ao buscar detalhes do endereço: %1$s</string>
+    <string name="error_endereco_encontrado_detalhes_nao">Endereço encontrado no perfil (UID: %1$s), mas os detalhes não foram encontrados na tabela \'enderecos\'.</string>
+    <string name="error_id_endereco_nao_carregado_nao_possivel_salvar">O ID do endereço não foi carregado. Não é possível salvar.</string>
+    <string name="aviso_preencha_todos_os_campos_obrigatorios">Preencha todos os campos obrigatórios (exceto Complemento).</string>
+    <string name="sucesso_endereco_atualizado">Endereço atualizado com sucesso!</string>
+    <string name="error_salvar_endereco">Erro ao salvar endereço: %1$s</string>
+    <string name="sucesso_nova_foto_selecionada_lembre_de_salvar">Nova foto selecionada e convertida! Lembre-se de salvar as alterações.</string>
+    <string name="error_converter_imagem_tente_novamente">Erro ao converter a imagem. Tente novamente.</string>
+    <string name="text_title_dialog_confirm_logout">Deseja sair da sua conta?</string>
+    <string name="text_button_dialog_confirm_logout">Confirmar</string>
+    <string name="text_message_dialog_confirm_logout">Aperte em confirmar para sair da sua conta</string>
+    <string name="aviso_finalize_ou_cancele_edicao_perfil_para_editar_anuncio">Finalize ou cancele a edição do perfil para editar o anúncio.</string>
+    <string name="error_caminho_do_usuario_nao_definido_nao_salvou">Caminho do usuário não definido. Não é possível salvar.</string>
+    <string name="aviso_preencha_todos_os_campos_obritorios">Preencha todos os campos obrigatórios.</string>
+    <string name="sucesso_dados_atualizados">Dados atualizados com sucesso!</string>
+    <string name="error_salvar_dados">Erro ao salvar dados: %1$s</string>
 
 
 </resources>

@@ -83,7 +83,8 @@ class ComprarPecaFragment : Fragment() {
             uidGavetaCarrinho = uid
             if (uid == null) {
                 // Falha na busca da Gaveta. Botão permanece desabilitado.
-                Toast.makeText(requireContext(), "Erro: Gaveta 'Carrinho' não encontrada.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_gaveta_carrinho_nao_encontrada), Toast.LENGTH_LONG).show()
                 binding.btnAdicionarCarrinho.isEnabled = false
                 return@fetchGavetaUidByName
             }
@@ -118,9 +119,9 @@ class ComprarPecaFragment : Fragment() {
     private fun updateCarrinhoButton(isInCarrinho: Boolean) {
         // Lógica de alternância (toggle) do texto
         if (isInCarrinho) {
-            binding.btnAdicionarCarrinho.text = getString(R.string.remover_do_carrinho)
+            binding.btnAdicionarCarrinho.text = getString(R.string.btn_remover_do_carrinho)
         } else {
-            binding.btnAdicionarCarrinho.text = getString(R.string.adicionar_ao_carrinho)
+            binding.btnAdicionarCarrinho.text = getString(R.string.btn_adicionar_ao_carrinho)
         }
     }
 
@@ -167,18 +168,21 @@ class ComprarPecaFragment : Fragment() {
                             pecaNoCarrinhoUid = novaPecaUid
                             updateCarrinhoButton(true)
                             binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
-                            Toast.makeText(requireContext(), "Adicionado ao carrinho com sucesso!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.sucesso_adicionado_ao_carrinho), Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener {
                             Log.e("Carrinho", "Erro ao vincular gaveta: ${it.message}")
                             binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                            Toast.makeText(requireContext(), "Erro ao adicionar ao carrinho.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.error_ao_adicionar_ao_carrinho), Toast.LENGTH_SHORT).show()
                         }
                 }
                 .addOnFailureListener {
                     Log.e("Carrinho", "Erro ao salvar cópia: ${it.message}")
                     binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                    Toast.makeText(requireContext(), "Erro ao salvar peça no banco.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_salvar_peca_banco), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -195,18 +199,21 @@ class ComprarPecaFragment : Fragment() {
                         pecaNoCarrinhoUid = null
                         updateCarrinhoButton(false)
                         binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
-                        Toast.makeText(requireContext(), "Removido do carrinho com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.sucesso_removido_do_carrinho), Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
                         Log.e("Carrinho", "Erro ao remover peça do banco: ${it.message}")
                         binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                        Toast.makeText(requireContext(), "Erro ao remover peça do banco.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_remover_peca_banco), Toast.LENGTH_SHORT).show()
                     }
             }
             .addOnFailureListener {
                 Log.e("Carrinho", "Erro ao desvincular peça da gaveta: ${it.message}")
                 binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                Toast.makeText(requireContext(), "Erro ao remover do carrinho.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_remover_peca_do_carrinho), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -220,12 +227,13 @@ class ComprarPecaFragment : Fragment() {
                     currentPeca = peca
                     updateUI(peca)
                 } else {
-                    Toast.makeText(requireContext(), "Peça não encontrada.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_peca_nao_encontrada, Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
                 Log.e("ComprarPeca", "Erro ao buscar peça: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar dados da peça.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_carregar_dados_peca), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -262,7 +270,7 @@ class ComprarPecaFragment : Fragment() {
                 onComplete(gavetaEncontrada?.key)
             }
             .addOnFailureListener {
-                Log.e("Carrinho", "Erro ao buscar UID da gaveta '$gavetaName': ${it.message}")
+                Log.e("Carrinho", getString(R.string.error_ao_buscar_uid_da_gaveta, gavetaName, it.message))
                 onComplete(null)
             }
     }
@@ -283,7 +291,8 @@ class ComprarPecaFragment : Fragment() {
                 val action = ComprarPecaFragmentDirections.actionComprarPecaFragmentToAvaliacoesFragment(ownerUid)
                 findNavController().navigate(action)
             } else {
-                Toast.makeText(requireContext(), "Informação do vendedor indisponível.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_informacao_vendedor_indisponivel), Toast.LENGTH_SHORT).show()
             }
         }
     }

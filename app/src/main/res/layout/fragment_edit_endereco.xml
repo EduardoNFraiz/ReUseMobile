@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/playfair_display_semibold"
-        android:text="Endereço"
+        android:text="@string/label_endereco"
         android:textColor="#134313"
         android:textSize="26dp" />
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="CEP"
+        android:text="@string/label_cep"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -43,7 +43,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="xxxxx-xxx"
+        android:hint="@string/label_hint_cep"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Rua"
+        android:text="@string/label_rua"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -70,7 +70,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Rua ex"
+        android:hint="@string/label_hint_rua"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Número"
+        android:text="@string/label_numero"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -97,7 +97,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="121"
+        android:hint="@string/label_hint_numero"
         android:inputType="number"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Complemento (opcional)"
+        android:text="@string/label_complemento"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -124,7 +124,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Casa"
+        android:hint="@string/label_hint_complemento"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Bairro"
+        android:text="@string/label_bairro"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -151,7 +151,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Morada"
+        android:hint="@string/label_hint_bairro"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -165,7 +165,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Cidade"
+        android:text="@string/label_cidade"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -178,7 +178,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Serra"
+        android:hint="@string/label_hint_cidade"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -192,7 +192,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="Estado"
+        android:text="@string/label_estado"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -205,7 +205,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Espírito Santo"
+        android:hint="@string/label_hint_estado"
         android:enabled="false"
         android:inputType="text"
         android:paddingHorizontal="20dp"
@@ -219,7 +219,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
-        android:text="País"
+        android:text="@string/label_pais"
         android:textSize="16dp"
         android:textColor="#757575"/>
 
@@ -232,7 +232,7 @@
         android:background="@drawable/editext_perfil"
         android:ems="10"
         android:fontFamily="@font/plus_jakarta_sans_medium"
-        android:hint="Brasil"
+        android:hint="@string/label_hint_pais"
         android:inputType="text"
         android:enabled="false"
         android:paddingHorizontal="20dp"
@@ -248,7 +248,7 @@
         android:layout_gravity="center"
         android:background="@drawable/estilobtt2"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Editar"
+        android:text="@string/btn_editar"
         android:textAllCaps="false"
         android:textColor="@color/VerdeEscuro"
         android:textSize="20dp"
@@ -263,7 +263,7 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/estilobtt1"
         android:fontFamily="@font/nunito_sans_semibold"
-        android:text="Salvar alterações"
+        android:text="@string/btn_salvar_alteracoes"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
         android:textSize="20dp"

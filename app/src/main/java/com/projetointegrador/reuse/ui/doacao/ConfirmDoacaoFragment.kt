@@ -106,7 +106,8 @@ class ConfirmDoacaoFragment : Fragment() {
         var pecasCarregadas = 0
 
         if (totalPecas == 0) {
-            Toast.makeText(requireContext(), "Nenhuma peça selecionada para doação.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_nenhuma_peca_selecionada_para_doacao), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -149,7 +150,8 @@ class ConfirmDoacaoFragment : Fragment() {
             findNavController().navigate(action)
         } catch (e: Exception) {
             Log.e("Navegacao", "Erro ao navegar com Safe Args: ${e.message}")
-            Toast.makeText(requireContext(), "Erro de navegação. Verifique os argumentos do nav_graph.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.error_navegacao_verifique_nav_graph), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -171,7 +173,6 @@ class ConfirmDoacaoFragment : Fragment() {
         _binding = null
     }
 
-    // 🛑 CLASSE ADAPTER LOCAL: Não interage com o clique e apenas visualiza.
     private inner class PecaVisualizacaoAdapter (
         private var pecas: List<PecaCadastro>
     ) : RecyclerView.Adapter<PecaVisualizacaoAdapter.PecaViewHolder> () {

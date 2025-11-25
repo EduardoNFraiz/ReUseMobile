@@ -71,12 +71,12 @@ class ConfirmarCompraFragment : Fragment() {
                     currentPeca = peca
                     updatePecaUI(peca)
                 } else {
-                    Toast.makeText(requireContext(), "Erro: Peça não encontrada.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_peca_nao_encontrada, Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Erro ao buscar peça: ${it.message}")
-                Toast.makeText(requireContext(), "Erro ao carregar dados da peça.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.error_carregar_dados_peca, Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -84,32 +84,24 @@ class ConfirmarCompraFragment : Fragment() {
     private fun loadEnderecoData() {
         val userId = currentUserId
         if (userId.isNullOrEmpty()) {
-            binding.tvEndereco.text = "Erro: Usuário não autenticado."
+            binding.tvEndereco.text = getString(R.string.error_usuario_nao_logado)
             return
         }
-
-        // Tenta o primeiro caminho: Pessoa Física
         tryLoadPFEndereco(userId)
     }
 
-    // --- FUNÇÕES AUXILIARES PARA CADEIA DE BUSCA DE ENDEREÇO ---
-
-    // 1. Tenta Pessoa Física
     private fun tryLoadPFEndereco(userId: String) {
         database.child("usuarios").child("pessoaFisica").child(userId).child("endereço").get()
             .addOnSuccessListener { snapshot ->
                 val enderecoUid = snapshot.getValue(String::class.java)
                 if (enderecoUid.isNullOrEmpty()) {
-                    // Se falhar/nulo, tenta PJ - Instituições
                     tryLoadPJInstEndereco(userId)
                 } else {
-                    // Sucesso: carrega o endereço
                     fetchFullEndereco(enderecoUid)
                 }
             }
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Falha na busca PF: ${it.message}")
-                // Se erro na consulta, tenta PJ - Instituições
                 tryLoadPJInstEndereco(userId)
             }
     }
@@ -142,7 +134,8 @@ class ConfirmarCompraFragment : Fragment() {
                 if (enderecoUid.isNullOrEmpty()) {
                     // Falha total: nenhum endereço encontrado em nenhum caminho
                     Log.d("ConfirmarCompra", "Endereço não encontrado em nenhum caminho para o usuário $userId")
-                    binding.tvEndereco.text = "Endereço de entrega não definido."
+                    binding.tvEndereco.text =
+                        getString(R.string.error_endereco_entrega_nao_definido)
                 } else {
                     // Sucesso: carrega o endereço
                     fetchFullEndereco(enderecoUid)
@@ -151,11 +144,10 @@ class ConfirmarCompraFragment : Fragment() {
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Falha na busca PJ Brechó: ${it.message}")
                 // Falha total, mostra mensagem de erro genérica
-                binding.tvEndereco.text = "Erro ao carregar endereço."
+                binding.tvEndereco.text = getString(R.string.error_ao_carregar_endereco)
             }
     }
 
-    // FUNÇÃO QUE BUSCA OS DETALHES DO ENDEREÇO (mantida)
     private fun fetchFullEndereco(enderecoUid: String) {
         database.child("enderecos").child(enderecoUid).get()
             .addOnSuccessListener { snapshot ->
@@ -173,7 +165,7 @@ class ConfirmarCompraFragment : Fragment() {
             }
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Erro ao buscar detalhes do endereço: ${it.message}")
-                binding.tvEndereco.text = "Erro ao carregar detalhes do endereço."
+                binding.tvEndereco.text = getString(R.string.error_ao_carregar_detalhes_endereco)
             }
     }
 
@@ -195,13 +187,15 @@ class ConfirmarCompraFragment : Fragment() {
 
             // 1. Validação de Pagamento
             if (selectedPaymentId == -1) {
-                Toast.makeText(requireContext(), "Por favor, selecione uma forma de pagamento.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_selecione_uma_forma_de_pagamento), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             // 2. Validação de Dados Essenciais
             if (currentPeca == null || currentUserId.isNullOrEmpty() || enderecoCompletoStr.isEmpty()) {
-                Toast.makeText(requireContext(), "Erro: Dados essenciais para a compra estão faltando. Tente novamente.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.aviso_dados_faltando_compra_tente_novamente), Toast.LENGTH_SHORT).show()
                 Log.e("ConfirmarCompra", "Dados faltantes. Peça: ${currentPeca == null}, User: ${currentUserId.isNullOrEmpty()}, Endereço: ${enderecoCompletoStr.isEmpty()}")
                 return@setOnClickListener
             }
@@ -211,10 +205,6 @@ class ConfirmarCompraFragment : Fragment() {
         }
     }
 
-
-    /**
-     * Executa a sequência de operações: 1. Cria Avaliação, 2. Atualiza Peça, 3. Cria Transação.
-     */
     private fun processarCompra(pecaUid: String, selectedPaymentId: Int) {
         val precoTotal = currentPeca?.preco ?: "0.00"
         val vendedorUid = currentPeca?.ownerUid!!
@@ -228,7 +218,6 @@ class ConfirmarCompraFragment : Fragment() {
             else -> "Pagamento não selecionado"
         }
 
-        // Assumindo forma de envio simples, pois não há seleção na UI fornecida
         val formaEnvio = "Correios"
 
         // 1. 🚀 CRIAR AVALIAÇÃO PENDENTE
@@ -247,10 +236,8 @@ class ConfirmarCompraFragment : Fragment() {
 
         avaliacaoRef.setValue(avaliacaoData)
             .addOnSuccessListener {
-                // 2. 🔄 ATUALIZAR PEÇA
                 atualizarPeca(pecaUid, compradorUid) { sucessoPeca ->
                     if (sucessoPeca) {
-                        // 3. 📝 CRIAR TRANSAÇÃO
                         criarTransacaoCompra(
                             vendedorUid,
                             compradorUid,
@@ -262,19 +249,18 @@ class ConfirmarCompraFragment : Fragment() {
                             avaliacaoUid
                         )
                     } else {
-                        Toast.makeText(requireContext(), "Erro ao atualizar status da peça.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_ao_atualizar_status_da_peca), Toast.LENGTH_LONG).show()
                     }
                 }
             }
             .addOnFailureListener {
                 Log.e("ConfirmarCompra", "Falha ao criar avaliação: ${it.message}")
-                Toast.makeText(requireContext(), "Erro na transação. Tente novamente.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_na_transacao_tente_novamente), Toast.LENGTH_LONG).show()
             }
     }
 
-    /**
-     * Atualiza o status da peça comprada no banco.
-     */
     private fun atualizarPeca(pecaUid: String, novoOwnerUid: String, callback: (Boolean) -> Unit) {
 
         // 1. Buscar a gaveta 'Recebidos' do novo proprietário
@@ -297,7 +283,8 @@ class ConfirmarCompraFragment : Fragment() {
 
                     if (gavetaUid.isNullOrEmpty()) {
                         Log.e("ConfirmarCompra", "Gaveta 'Recebidos' não encontrada para o usuário $novoOwnerUid.")
-                        Toast.makeText(requireContext(), "Erro: Gaveta de destino não encontrada. A compra falhou.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_gaveta_destino_nao_encontrada_falha_compra), Toast.LENGTH_LONG).show()
                         callback(false)
                         return
                     }
@@ -327,9 +314,6 @@ class ConfirmarCompraFragment : Fragment() {
             })
     }
 
-    /**
-     * Cria o registro da transação de compra no banco de dados.
-     */
     private fun criarTransacaoCompra(
         vendedorUid: String,
         compradorUid: String,
@@ -356,7 +340,8 @@ class ConfirmarCompraFragment : Fragment() {
 
         database.child("transacoes").child("compra").push().setValue(novaTransacao)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Pedido confirmado e transação registrada!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.sucesso_pedido_confirmado_transacao_registrada), Toast.LENGTH_LONG).show()
 
                 // 4. ✅ SUCESSO FINAL: Retorna para a tela anterior
                 setFragmentResult("requestKey", bundleOf("REALIZEI_COMPRA" to true, "PECA_UID_COMPRADA" to pecaUid))
@@ -364,7 +349,8 @@ class ConfirmarCompraFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Log.e("ConfirmarCompra", "Falha ao registrar transação: ${e.message}")
-                Toast.makeText(requireContext(), "Erro ao finalizar transação no banco. ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_finalizar_transacao_banco, e.message), Toast.LENGTH_LONG).show()
             }
     }
 

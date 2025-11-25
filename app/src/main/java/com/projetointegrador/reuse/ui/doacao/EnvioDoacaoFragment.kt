@@ -199,12 +199,13 @@ class EnvioDoacaoFragment : Fragment() {
      */
     private fun processDoacaoTransaction(pecasUids: List<String>, instituicaoUid: String, formaEnvio: String) {
         val doadorUid = auth.currentUser?.uid ?: run {
-            Toast.makeText(requireContext(), "Usuário não autenticado.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.error_usuario_nao_logado, Toast.LENGTH_LONG).show()
             return
         }
 
         if (instituicaoEnderecoCompleto.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Aguarde o carregamento do endereço ou tente novamente.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.aviso_espere_carregamento_tente_novamente), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -217,7 +218,7 @@ class EnvioDoacaoFragment : Fragment() {
             if (targetGavetaUid.isNullOrEmpty()) {
                 // Este lançamento DEVE ser mantido, pois showBottomSheet é UI.
                 launch(Dispatchers.Main) {
-                    showBottomSheet(message = "Não foi possível encontrar a gaveta 'Recebidos' na instituição.")
+                    showBottomSheet(message = getString(R.string.error_nao_foi_possivel_encontrar_recebidos_instituicao))
                 }
                 return@launch
             }
@@ -229,7 +230,8 @@ class EnvioDoacaoFragment : Fragment() {
             val avaliacaoRef = database.child("avaliacoes").push()
             val avaliacaoUid = avaliacaoRef.key ?: run {
                 launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Erro ao gerar UID para Avaliação.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_gerar_uid_avaliacao), Toast.LENGTH_LONG).show()
                 }
                 return@launch
             }
@@ -274,7 +276,8 @@ class EnvioDoacaoFragment : Fragment() {
             database.updateChildren(updates)
                 .addOnSuccessListener {
                     // 🛑 launch(Dispatchers.Main) removido aqui. Confiando que o Firebase chama na UI Thread.
-                    Toast.makeText(requireContext(), "Doação registrada com sucesso. Deixe sua avaliação!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.sucesso_doacao_registrada_avalie), Toast.LENGTH_LONG).show()
 
                     val bundle = Bundle().apply {
                         putBoolean("REALIZEI_DOACAO", true)
@@ -286,7 +289,8 @@ class EnvioDoacaoFragment : Fragment() {
                 .addOnFailureListener { e ->
                     // 🛑 launch(Dispatchers.Main) removido aqui. Confiando que o Firebase chama na UI Thread.
                     Log.e("Doacao", "Erro ao realizar transação de doação: ${e.message}")
-                    Toast.makeText(requireContext(), "Erro ao finalizar doação: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_finalizar_doacao, e.message), Toast.LENGTH_LONG).show()
                 }
         }
     }

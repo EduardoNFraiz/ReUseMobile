@@ -48,10 +48,6 @@ class SobreInstituicaoFragment : Fragment() {
         barraDeNavegacao()
     }
 
-    /**
-     * 🛑 Busca e preenche os dados da Instituição.
-     * @param instituicaoUid O UID da instituição obtido via Safe Args.
-     */
     private fun loadInstituicaoData(instituicaoUid: String) {
 
         // Caminho para os dados do perfil (Nome, CNPJ, Foto)
@@ -63,7 +59,8 @@ class SobreInstituicaoFragment : Fragment() {
         database.child(perfilPath).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!snapshot.exists()) {
-                    Toast.makeText(requireContext(), "Instituição não encontrada.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_instituicao_nao_encontrada), Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                     return
                 }
@@ -99,14 +96,16 @@ class SobreInstituicaoFragment : Fragment() {
 
                     override fun onCancelled(error: DatabaseError) {
                         Log.e("SobreInstituicao", "Erro ao buscar anúncio: ${error.message}")
-                        Toast.makeText(requireContext(), "Erro ao carregar detalhes do anúncio.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_carregar_detalhes_anuncio), Toast.LENGTH_SHORT).show()
                     }
                 })
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("SobreInstituicao", "Erro ao buscar perfil: ${error.message}")
-                Toast.makeText(requireContext(), "Falha ao carregar dados da instituição.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_falha_carregar_dados_instituicao), Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
             }
         })

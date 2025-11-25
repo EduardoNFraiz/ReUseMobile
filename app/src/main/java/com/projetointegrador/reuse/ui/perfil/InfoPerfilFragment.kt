@@ -48,9 +48,9 @@ class InfoPerfilFragment : Fragment() {
             newProfileImageBase64 = uriToBase64(requireContext(), it)
 
             if (newProfileImageBase64 != null) {
-                showBottomSheet(message = "Nova foto selecionada e convertida! Lembre-se de salvar as alterações.")
+                showBottomSheet(message = getString(R.string.sucesso_nova_foto_selecionada_lembre_de_salvar))
             } else {
-                showBottomSheet(message = "Erro ao converter a imagem. Tente novamente.")
+                showBottomSheet(message = getString(R.string.error_converter_imagem_tente_novamente))
             }
         }
     }
@@ -108,7 +108,7 @@ class InfoPerfilFragment : Fragment() {
                 // Navega para a tela de edição do anúncio (Configurar no NavGraph!)
                 findNavController().navigate(R.id.action_infoPerfilFragment_to_editarAnuncioFragment)
             } else {
-                showBottomSheet(message = "Finalize ou cancele a edição do perfil para editar o anúncio.")
+                showBottomSheet(message = getString(R.string.aviso_finalize_ou_cancele_edicao_perfil_para_editar_anuncio))
             }
         }
 
@@ -215,7 +215,7 @@ class InfoPerfilFragment : Fragment() {
     private fun loadUserData() {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            showBottomSheet(message = "Usuário não autenticado.")
+            showBottomSheet(message = getString(R.string.error_usuario_nao_logado))
             return
         }
 
@@ -236,7 +236,7 @@ class InfoPerfilFragment : Fragment() {
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    showBottomSheet(message = "Erro ao buscar tipo de conta: ${error.message}")
+                    showBottomSheet(message = getString(R.string.error_buscar_tipo_de_conta, error.message))
                 }
             })
     }
@@ -261,12 +261,12 @@ class InfoPerfilFragment : Fragment() {
                         }
 
                         if (subtipo == subtipos.last() && !found) {
-                            showBottomSheet(message = "Tipo de conta do usuário não identificado.")
+                            showBottomSheet(message = getString(R.string.error__tipo_de_conta_desconhecido))
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        showBottomSheet(message = "Erro ao buscar subtipo: ${error.message}")
+                        showBottomSheet(message = getString(R.string.error_buscar_subtipo, error.message))
                     }
                 })
         }
@@ -309,7 +309,7 @@ class InfoPerfilFragment : Fragment() {
 
     private fun saveUserData() {
         if (userPath == null) {
-            showBottomSheet(message = "Caminho do usuário não definido. Não é possível salvar.")
+            showBottomSheet(message = getString(R.string.error_caminho_do_usuario_nao_definido_nao_salvou))
             return
         }
 
@@ -337,7 +337,7 @@ class InfoPerfilFragment : Fragment() {
 
         // Validação básica
         if (nome.isBlank() || username.isBlank() || telefone.isBlank() || documento.isBlank()) {
-            showBottomSheet(message = "Preencha todos os campos obrigatórios.")
+            showBottomSheet(message = getString(R.string.aviso_preencha_todos_os_campos_obritorios))
             return
         }
 
@@ -345,11 +345,14 @@ class InfoPerfilFragment : Fragment() {
             .updateChildren(updateMap)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    showBottomSheet(message = "Dados atualizados com sucesso!")
+                    showBottomSheet(message = getString(R.string.sucesso_dados_atualizados))
                     toggleEditMode(false)
                     // O loadUserData() chamado em toggleEditMode(false) irá agora carregar a nova foto Base64.
                 } else {
-                    showBottomSheet(message = "Erro ao salvar dados: ${task.exception?.message}")
+                    showBottomSheet(message = getString(
+                        R.string.error_salvar_dados,
+                        task.exception?.message
+                    ))
                 }
             }
     }
