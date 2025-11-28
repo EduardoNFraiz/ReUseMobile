@@ -77,7 +77,7 @@ class PesquisaUsuariosFragment : Fragment() {
         } catch (e: Exception) {
             // Mantenha o log para diagnosticar se houver falha (ex: nome da ação incorreto)
             Log.e("PesquisaUsuarios", "Erro na navegação: ${e.message}", e)
-            Toast.makeText(requireContext(), getString(R.string.error_ao_navegar_para_visualizar_usuario), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.error_navegar_para_perfil_verifique_navgraph), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -197,7 +197,7 @@ class CriarGavetaFragment : Fragment() {
                     if (loadedGaveta != null) {
                         gaveta = loadedGaveta
 
-                        binding.editTextGaveta.setText(gaveta.name)
+                        binding.editTextGaveta.setText(gaveta.nome)
 
                         // 🛑 AJUSTE: Carrega a visibilidade usando o campo 'privado'
                         if (gaveta.privado) {
@@ -212,7 +212,7 @@ class CriarGavetaFragment : Fragment() {
                         }
 
                         // 🛑 CHAMA setupViewMode APÓS CARREGAR O NOME
-                        setupViewMode(arguments?.getBoolean("VISUALIZAR_INFO") ?: false, gaveta.name)
+                        setupViewMode(arguments?.getBoolean("VISUALIZAR_INFO") ?: false, gaveta.nome)
 
                     } else {
                         showError(getString(R.string.error_gaveta_nao_encontrada))
@@ -244,7 +244,7 @@ class CriarGavetaFragment : Fragment() {
         }
 
         // 🛑 BLOQUEIO PARA EDIÇÃO DE NOMES RESERVADOS
-        if (!isCreation && gaveta.name?.let { RESERVED_GAVETA_NAMES.contains(it) } == true) {
+        if (!isCreation && gaveta.nome?.let { RESERVED_GAVETA_NAMES.contains(it) } == true) {
             showError(getString(R.string.msg_gaveta_reservada_nao_editavel))
             return
         }
@@ -282,7 +282,7 @@ class CriarGavetaFragment : Fragment() {
                     var nameExists = false
 
                     for (gavetaSnapshot in snapshot.children) {
-                        val existingGavetaName = gavetaSnapshot.child("name").getValue(String::class.java)
+                        val existingGavetaName = gavetaSnapshot.child("nome").getValue(String::class.java)
                         val existingGavetaId = gavetaSnapshot.key
 
                         if (existingGavetaName.equals(newName, ignoreCase = true)) {
@@ -301,7 +301,7 @@ class CriarGavetaFragment : Fragment() {
                         // Nome é único, prossegue com a criação/atualização
                         if (isCreation) {
                             gaveta = Gaveta(
-                                name = newName,
+                                nome = newName,
                                 ownerUid = userId,
                                 fotoBase64 = imageBase64,
                                 privado = isPrivate // 🛑 Salvando como 'privado'
@@ -309,7 +309,7 @@ class CriarGavetaFragment : Fragment() {
                             saveGaveta(userId)
                         } else {
                             // Atualiza objeto Gaveta existente e salva
-                            gaveta.name = newName
+                            gaveta.nome = newName
                             gaveta.privado = isPrivate // 🛑 Atualizando 'privado'
                             gaveta.fotoBase64 = imageBase64
                             updateGaveta()
@@ -334,7 +334,7 @@ class CriarGavetaFragment : Fragment() {
         binding.bttSalvar.isEnabled = false
 
         val updateMap = mapOf<String, Any?>(
-            "name" to gaveta.name,
+            "nome" to gaveta.nome,
             "privado" to gaveta.privado,
             "fotoBase64" to gaveta.fotoBase64,
         )
@@ -369,21 +369,17 @@ class CriarGavetaFragment : Fragment() {
             return
         }
 
-        // 1. Garante que o ID da gaveta está no objeto ANTES de salvar (para o campo 'id')
-        gaveta.id = tempGavetaId
-
-
         binding.bttCriarGaveta.isEnabled = false
         // 2. Salva a gaveta completa, incluindo 'ownerUid', no nó /gavetas
         reference.child("gavetas")
             .child(tempGavetaId)
             .setValue(gaveta)
             .addOnCompleteListener { taskGaveta ->
+                binding.bttCriarGaveta.isEnabled = true
                 if (taskGaveta.isSuccessful) {
-                    // 3. Vincula a gaveta ao índice do usuário
-                    getUserAccountType(userId, tempGavetaId)
+                    // 🛑 AJUSTE: Não chama a vinculação de usuário, navega diretamente
+                    showSuccessAndNavigate(tempGavetaId)
                 } else {
-                    binding.bttCriarGaveta.isEnabled = true
                     showError(getString(R.string.error_salvar_detalhes_gaveta, taskGaveta.exception?.message))
                 }
             }
@@ -427,97 +423,19 @@ class CriarGavetaFragment : Fragment() {
         }
     }
 
-    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (inalteradas) ---
-
-    private fun getUserAccountType(userId: String, gavetaId: String) {
-        reference.child("usuarios").child("pessoaFisica").child(userId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        updateUserGavetaReference(userId, gavetaId, "pessoaFisica", null)
-                    } else {
-                        searchPessoaJuridica(userId, gavetaId)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    binding.bttCriarGaveta.isEnabled = true
-                    showError(getString(R.string.error_buscar_tipo_de_conta, error.message))
-                }
-            })
-    }
-
-    private fun searchPessoaJuridica(userId: String, gavetaId: String) {
-        val subtipos = listOf("brechos", "instituicoes")
-        var found = false
-        var checkedCount = 0
-
-        for (subtipo in subtipos) {
-            reference.child("usuarios").child("pessoaJuridica").child(subtipo).child(userId)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        checkedCount++
-                        if (snapshot.exists() && !found) {
-                            found = true
-                            updateUserGavetaReference(userId, gavetaId, "pessoaJuridica", subtipo)
-                        }
-                        if (checkedCount == subtipos.size && !found) {
-                            binding.bttCriarGaveta.isEnabled = true
-                            showError(getString(R.string.error_tipo_conta_nao_encontrado))
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        checkedCount++
-                        if (checkedCount == subtipos.size && !found) {
-                            binding.bttCriarGaveta.isEnabled = true
-                            showError(getString(R.string.error_buscar_subtipo, error.message))
-                        }
-                    }
-                })
-        }
-    }
-
-    private fun updateUserGavetaReference(
-        userId: String, gavetaId: String,
-        tipoConta: String, subtipoJuridico: String?
-    ) {
-        var userPath = ""
-        if (tipoConta == "pessoaFisica") {
-            userPath = "usuarios/pessoaFisica/$userId"
-        } else if (tipoConta == "pessoaJuridica" && subtipoJuridico != null) {
-            userPath = "usuarios/pessoaJuridica/$subtipoJuridico/$userId"
-        }
-
-        if (userPath.isNotEmpty()) {
-            // Vincula a gaveta ao nó de índice rápido do usuário
-            val userUpdateMap = mapOf(
-                "gavetas/$gavetaId" to true
-            )
-            reference.child(userPath)
-                .updateChildren(userUpdateMap)
-                .addOnCompleteListener { taskUser ->
-                    binding.bttCriarGaveta.isEnabled = true
-                    if (taskUser.isSuccessful) {
-                        showSuccessAndNavigate(gavetaId)
-                    } else {
-                        showError(getString(R.string.error_vincular_gaveta_usuario, taskUser.exception?.message))
-                    }
-                }
-        } else {
-            binding.bttCriarGaveta.isEnabled = true
-            showError(getString(R.string.error_tipo_conta_invalido))
-        }
-    }
+    // --- FUNÇÕES DE VINCULAÇÃO DE USUÁRIO (REMOVIDAS) ---
+    // getUserAccountType, searchPessoaJuridica, updateUserGavetaReference removidas
 
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

@@ -29,7 +29,7 @@
         android:layout_height="310dp"
         android:paddingHorizontal="15dp"
         android:paddingTop="15dp"
-        android:src=""
+        tools:src="@drawable/camisa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

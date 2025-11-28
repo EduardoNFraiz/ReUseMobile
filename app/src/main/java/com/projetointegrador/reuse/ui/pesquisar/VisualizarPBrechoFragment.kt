@@ -16,6 +16,7 @@ import com.google.firebase.database.database
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentVisualizarPBrechoBinding
 import com.projetointegrador.reuse.ui.adapter.ViewPagerAdapter
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 import com.projetointegrador.reuse.util.displayBase64Image
 import com.projetointegrador.reuse.util.initToolbar
 
@@ -114,10 +115,12 @@ class VisualizarPBrechoFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

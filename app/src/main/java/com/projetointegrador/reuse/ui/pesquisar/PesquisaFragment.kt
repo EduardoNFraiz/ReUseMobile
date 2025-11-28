@@ -14,6 +14,7 @@ import com.projetointegrador.reuse.ui.adapter.ViewPagerAdapter
 
 // 🛑 NOVOS IMPORTS
 import androidx.fragment.app.activityViewModels
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 
 class PesquisaFragment : Fragment() {
     private var _binding: FragmentPesquisaBinding? = null
@@ -72,10 +73,12 @@ class PesquisaFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

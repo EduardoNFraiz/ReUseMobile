@@ -15,5 +15,5 @@ data class PecaCarrinho(
     var finalidade: String? = null,
     var preco: String? = null,
     var titulo: String? = null,
-    var detalhe: String? = null
+    var descricao: String? = null
 ) : Parcelable

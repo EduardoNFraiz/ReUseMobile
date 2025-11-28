@@ -175,6 +175,8 @@
     <string name="error_uid_gaveta_nao_encontrado_tente_novamente">Erro de seleção: ID da gaveta não foi encontrado. Por favor, selecione novamente e aguarde o carregamento do UID.</string>
     <string name="aviso_digite_um_titulo_peca">Por favor, insira um Título para a peça.</string>
     <string name="aviso_digite_um_preco_peca">Por favor, insira o Preço de venda.</string>
+    <string name="sucesso_peca_cadastrada">Peça cadastrada com sucesso!</string>
+    <string name="error_vincular_peca_gaveta">erro ao vincular peça à gaveta!</string>
 
     <string name="title_cadastro_peca">Cadastro de peça</string>
     <string name="subtitle_cores">Cores</string>

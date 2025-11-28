@@ -186,23 +186,24 @@ class ClosetFragment : Fragment() {
 
     // 2. Obtém os UIDs das gavetas a partir do nó do usuário
     private fun getGavetaUidsFromUser(userId: String, tipoConta: String, subtipo: String?, searchText: String?) {
-        val path = if (tipoConta == "pessoaFisica") {
-            "usuarios/pessoaFisica/$userId/gavetas"
-        } else {
-            "usuarios/pessoaJuridica/$subtipo/$userId/gavetas"
-        }
+        // 🛑 AJUSTE: O caminho agora aponta diretamente para o nó principal 'gavetas'
+        // A filtragem será feita pela query 'orderByChild'.
+        val gavetasRef = reference.child("gavetas")
 
-        reference.child(path)
+        gavetasRef.orderByChild("ownerUid")
+            .equalTo(userId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val gavetaUids = mutableListOf<String>()
+
+                    // O snapshot já contém apenas as gavetas onde ownerUid == userId
                     for (gavetaSnapshot in snapshot.children) {
                         gavetaUids.add(gavetaSnapshot.key!!)
                     }
 
                     if (gavetaUids.isNotEmpty()) {
-                        // 🛑 NOVO FLUXO: Primeiro busca a contagem de peças para todos os UIDs,
-                        // e SÓ DEPOIS busca os detalhes e filtra.
+                        // O fluxo de busca da contagem de peças e detalhes permanece o mesmo
+                        // para aproveitar a estrutura existente.
                         fetchPecaCount(gavetaUids) { pecaCountMap ->
                             fetchGavetaDetails(gavetaUids, searchText, pecaCountMap)
                         }
@@ -221,7 +222,6 @@ class ClosetFragment : Fragment() {
                 }
             })
     }
-
     // 🛑 NOVO: 3. Busca a contagem de peças para todos os UIDs
     private fun fetchPecaCount(gavetaUids: List<String>, onCountComplete: (Map<String, Int>) -> Unit) {
         val userId = auth.currentUser?.uid
@@ -277,7 +277,7 @@ class ClosetFragment : Fragment() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val gaveta = snapshot.getValue(Gaveta::class.java)
                         if (gaveta != null) {
-                            val nomeGavetaLower = gaveta.name?.lowercase() ?: ""
+                            val nomeGavetaLower = gaveta.nome?.lowercase() ?: ""
                             if (searchLower.isEmpty() || nomeGavetaLower.contains(searchLower)) {
                                 loadedGavetasWithUids.add(Pair(gaveta, uid))
                             }
@@ -327,10 +327,12 @@ class ClosetFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

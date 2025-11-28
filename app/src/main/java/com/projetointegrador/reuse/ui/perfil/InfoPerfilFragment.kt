@@ -22,6 +22,7 @@ import com.projetointegrador.reuse.databinding.FragmentInfoPerfilBinding
 import com.projetointegrador.reuse.util.showBottomSheet
 import com.bumptech.glide.Glide
 import androidx.activity.result.contract.ActivityResultContracts
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -362,10 +363,12 @@ class InfoPerfilFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

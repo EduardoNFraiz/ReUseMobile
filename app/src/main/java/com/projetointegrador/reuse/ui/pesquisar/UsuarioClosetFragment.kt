@@ -68,11 +68,8 @@ class UsuarioClosetFragment : Fragment() {
                 if (peca != null && !peca.fotoBase64.isNullOrEmpty()) {
                     showAmplifiedImage(peca.fotoBase64!!)
                 } else {
-                    // Se não tiver foto, pode seguir para a tela de detalhes normal da peça
                     Toast.makeText(requireContext(),
                         getString(R.string.aviso_abrir_detalhes_peca, pecaUid), Toast.LENGTH_SHORT).show()
-                    // Exemplo de navegação para detalhes:
-                    // findNavController().navigate(R.id.detalheRoupaFragment, bundleOf("pecaUid" to pecaUid))
                 }
             }
         )

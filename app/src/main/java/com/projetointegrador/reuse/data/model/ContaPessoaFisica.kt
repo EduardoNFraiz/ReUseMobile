@@ -10,7 +10,7 @@ data class ContaPessoaFisica(
     var telefone: String = "",
     var dataNascimento: String = "",
     var cpf: String = "",
-    var endereço: String = "",
+    var endereco: String = "",
     var dataCadastro: String = "",
     var tipoPessoa: String = "",
     var tipoUsuario: String = "",

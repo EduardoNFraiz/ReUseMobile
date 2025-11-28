@@ -91,7 +91,7 @@ class ConfirmarCompraFragment : Fragment() {
     }
 
     private fun tryLoadPFEndereco(userId: String) {
-        database.child("usuarios").child("pessoaFisica").child(userId).child("endereço").get()
+        database.child("usuarios").child("pessoaFisica").child(userId).child("endereco").get()
             .addOnSuccessListener { snapshot ->
                 val enderecoUid = snapshot.getValue(String::class.java)
                 if (enderecoUid.isNullOrEmpty()) {
@@ -108,7 +108,7 @@ class ConfirmarCompraFragment : Fragment() {
 
     // 2. Tenta Pessoa Jurídica - Instituições
     private fun tryLoadPJInstEndereco(userId: String) {
-        database.child("usuarios").child("pessoaJuridica").child("instituicoes").child(userId).child("endereço").get()
+        database.child("usuarios").child("pessoaJuridica").child("instituicoes").child(userId).child("endereco").get()
             .addOnSuccessListener { snapshot ->
                 val enderecoUid = snapshot.getValue(String::class.java)
                 if (enderecoUid.isNullOrEmpty()) {
@@ -128,7 +128,7 @@ class ConfirmarCompraFragment : Fragment() {
 
     // 3. Tenta Pessoa Jurídica - Brechós (última tentativa)
     private fun tryLoadPJBrechoEndereco(userId: String) {
-        database.child("usuarios").child("pessoaJuridica").child("brechos").child(userId).child("endereço").get()
+        database.child("usuarios").child("pessoaJuridica").child("brechos").child(userId).child("endereco").get()
             .addOnSuccessListener { snapshot ->
                 val enderecoUid = snapshot.getValue(String::class.java)
                 if (enderecoUid.isNullOrEmpty()) {
@@ -173,7 +173,7 @@ class ConfirmarCompraFragment : Fragment() {
 
     private fun updatePecaUI(peca: PecaCadastro) {
         binding.tvNomeProduto.text = peca.titulo ?: "Item sem título"
-        binding.tvDescricao.text = peca.detalhe ?: "Sem descrição disponível."
+        binding.tvDescricao.text = peca.descricao ?: "Sem descrição disponível."
         peca.fotoBase64?.let { base64 ->
             displayBase64Image(base64, binding.imgProduto)
         } ?: run {
@@ -273,7 +273,7 @@ class ConfirmarCompraFragment : Fragment() {
 
                     // Itera sobre as gavetas encontradas (todas que pertencem ao novoOwnerUid)
                     for (childSnapshot in snapshot.children) {
-                        val name = childSnapshot.child("name").getValue(String::class.java)
+                        val name = childSnapshot.child("nome").getValue(String::class.java)
                         if (name == "Recebidos") {
                             // Encontrou a gaveta correta
                             gavetaUid = childSnapshot.key

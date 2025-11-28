@@ -42,7 +42,7 @@ class GavetaAdapter(
             holder.binding.drawerImage.setImageDrawable(null)
         }
 
-        holder.binding.drawerName.text = gaveta.name
+        holder.binding.drawerName.text = gaveta.nome
 
         // 🛑 ATUALIZADO: Busca a contagem de peças no mapa usando o UID da gaveta
         val pecaCount = pecaCountMap[uid]?.toString() ?: "0"

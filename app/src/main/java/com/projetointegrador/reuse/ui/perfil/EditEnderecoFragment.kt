@@ -237,18 +237,15 @@ class EditEnderecoFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        showBottomSheet(message = getString(R.string.subtipo_nao_encontrado, error.message))
+                        showBottomSheet(message = getString(R.string.error_buscar_subtipo, error.message))
                     }
                 })
         }
     }
 
-    /**
-     * Passo 2 da busca encadeada: Obter o addressUID (chave: "endereço") e carregar o endereço.
-     */
     private fun getAndLoadAddress(userSnapshot: DataSnapshot) {
         // Obtendo o UID do endereço do campo EXATO "endereço" (minúsculo e com 'ç')
-        val retrievedAddressUID = userSnapshot.child("endereço").getValue(String::class.java)
+        val retrievedAddressUID = userSnapshot.child("endereco").getValue(String::class.java)
 
         if (retrievedAddressUID.isNullOrEmpty()) {
             showBottomSheet(message = getString(R.string.error_endereo_nao_encontrado_nos_dados_do_usuario))

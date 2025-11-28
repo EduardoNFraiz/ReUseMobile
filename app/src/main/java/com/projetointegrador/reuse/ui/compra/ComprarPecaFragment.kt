@@ -43,7 +43,7 @@ class ComprarPecaFragment : Fragment() {
         _binding = FragmentComprarPecaBinding.inflate(inflater, container, false)
         database = Firebase.database.reference
 
-        // 🟢 Correção 1: Desabilita o botão para evitar cliques antes da verificação assíncrona.
+        // Desabilita o botão para evitar cliques antes da verificação assíncrona.
         binding.btnAdicionarCarrinho.isEnabled = false
 
         return binding.root
@@ -106,7 +106,7 @@ class ComprarPecaFragment : Fragment() {
                 pecaNoCarrinhoUid = pecaNoCarrinho?.key
                 updateCarrinhoButton(pecaNoCarrinhoUid != null)
 
-                // 🟢 Correção 2: Habilita o botão APÓS a verificação do estado.
+                // Habilita o botão APÓS a verificação do estado.
                 binding.btnAdicionarCarrinho.isEnabled = true
             }
             .addOnFailureListener {
@@ -126,7 +126,7 @@ class ComprarPecaFragment : Fragment() {
     }
 
     private fun toggleCarrinho(pecaOriginalUid: String) {
-        // 🟢 Correção 3: Desabilita o botão durante a operação para evitar cliques duplicados.
+        // Desabilita o botão durante a operação para evitar cliques duplicados.
         binding.btnAdicionarCarrinho.isEnabled = false
 
         if (pecaNoCarrinhoUid != null) {
@@ -154,7 +154,7 @@ class ComprarPecaFragment : Fragment() {
             categoria = peca.categoria,
             tamanho = peca.tamanho,
             finalidade = peca.finalidade,
-            detalhe = peca.detalhe
+            descricao = peca.descricao
         )
 
         val pecaRef = database.child("pecas").push()
@@ -163,20 +163,11 @@ class ComprarPecaFragment : Fragment() {
         if (novaPecaUid != null) {
             pecaRef.setValue(pecaCopia)
                 .addOnSuccessListener {
-                    database.child("gavetas").child(carrinhoUid).child("peças").child(novaPecaUid).setValue(true)
-                        .addOnSuccessListener {
-                            pecaNoCarrinhoUid = novaPecaUid
-                            updateCarrinhoButton(true)
-                            binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
-                            Toast.makeText(requireContext(),
-                                getString(R.string.sucesso_adicionado_ao_carrinho), Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener {
-                            Log.e("Carrinho", "Erro ao vincular gaveta: ${it.message}")
-                            binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                            Toast.makeText(requireContext(),
-                                getString(R.string.error_ao_adicionar_ao_carrinho), Toast.LENGTH_SHORT).show()
-                        }
+                    pecaNoCarrinhoUid = novaPecaUid
+                    updateCarrinhoButton(true)
+                    binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
+                    Toast.makeText(requireContext(),
+                        getString(R.string.sucesso_adicionado_ao_carrinho), Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
                     Log.e("Carrinho", "Erro ao salvar cópia: ${it.message}")
@@ -188,36 +179,21 @@ class ComprarPecaFragment : Fragment() {
     }
 
     private fun removePecaFromCarrinho(pecaUid: String) {
-        val carrinhoUid = uidGavetaCarrinho ?: return
-
-        // 1. Remove a cópia da gaveta Carrinho
-        database.child("gavetas").child(carrinhoUid).child("peças").child(pecaUid).removeValue()
+        database.child("pecas").child(pecaUid).removeValue()
             .addOnSuccessListener {
-                // 2. Remove a cópia do nó /pecas
-                database.child("pecas").child(pecaUid).removeValue()
-                    .addOnSuccessListener {
-                        pecaNoCarrinhoUid = null
-                        updateCarrinhoButton(false)
-                        binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
-                        Toast.makeText(requireContext(),
-                            getString(R.string.sucesso_removido_do_carrinho), Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Log.e("Carrinho", "Erro ao remover peça do banco: ${it.message}")
-                        binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
-                        Toast.makeText(requireContext(),
-                            getString(R.string.error_remover_peca_banco), Toast.LENGTH_SHORT).show()
-                    }
+                pecaNoCarrinhoUid = null
+                updateCarrinhoButton(false)
+                binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita
+                Toast.makeText(requireContext(),
+                    getString(R.string.sucesso_removido_do_carrinho), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Log.e("Carrinho", "Erro ao desvincular peça da gaveta: ${it.message}")
+                Log.e("Carrinho", "Erro ao remover peça do banco: ${it.message}")
                 binding.btnAdicionarCarrinho.isEnabled = true // Re-habilita em caso de falha
                 Toast.makeText(requireContext(),
-                    getString(R.string.error_remover_peca_do_carrinho), Toast.LENGTH_SHORT).show()
+                    getString(R.string.error_remover_peca_banco), Toast.LENGTH_SHORT).show()
             }
     }
-
-    // --- Outras Funções (Inalteradas) ---
 
     private fun loadPecaData(pecaUid: String) {
         database.child("pecas").child(pecaUid).get()
@@ -238,9 +214,9 @@ class ComprarPecaFragment : Fragment() {
     }
 
     private fun updateUI(peca: PecaCadastro) {
-        binding.textView6.text = "R$${peca.preco ?: "0,00"}"
+        binding.textView6.text = "${peca.preco ?: "0,00"}"
         binding.textView7.text = peca.titulo ?: "N/A"
-        binding.textView8.text = peca.detalhe ?: "Sem descrição."
+        binding.textView8.text = peca.descricao ?: "Sem descrição."
 
         peca.fotoBase64?.let { base64 ->
             displayBase64Image(base64, binding.imageView)
@@ -265,7 +241,7 @@ class ComprarPecaFragment : Fragment() {
             .get()
             .addOnSuccessListener { snapshot ->
                 val gavetaEncontrada = snapshot.children.firstOrNull {
-                    it.child("name").getValue(String::class.java) == gavetaName
+                    it.child("nome").getValue(String::class.java) == gavetaName
                 }
                 onComplete(gavetaEncontrada?.key)
             }

@@ -85,12 +85,6 @@ class CadRoupaFragment : Fragment() {
         }
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // 🛑 LÓGICA DE ARGUMENTOS REMOVIDA: Usaremos navArgs exclusivamente em onViewCreated.
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,8 +101,6 @@ class CadRoupaFragment : Fragment() {
 
         reference = Firebase.database.reference
 
-        // 🟢 INICIALIZAÇÃO CORRETA: Define as variáveis de estado de forma consistente,
-        // usando apenas os Safe Args (args).
         pecaUID = args.pecaUID
         gavetaUID = args.gavetaUID
         isCreating = pecaUID.isNullOrEmpty()
@@ -122,7 +114,7 @@ class CadRoupaFragment : Fragment() {
 
         if (isCreating) {
             // 🚀 MODO DE CRIAÇÃO (Novo Cadastro)
-            binding.toolbar.title = getString(R.string.status_cadastrar_peca2)
+            binding.toolbar.title = getString(R.string.status_cadastrar_peca)
             binding.buttonEditar.visibility = View.GONE
             setFieldsEnabled(true)
             isImageSelected = false
@@ -277,7 +269,7 @@ class CadRoupaFragment : Fragment() {
                 finalidade = pecaEmAndamento.finalidade,
                 preco = pecaEmAndamento.preco,
                 titulo = pecaEmAndamento.titulo,
-                detalhe = pecaEmAndamento.detalhe,
+                descricao = pecaEmAndamento.descricao,
 
                 // --- Campos de Sistema (PRESERVAR O VALOR CARREGADO DO BANCO) ---
                 ownerUid = pecaEmAndamento.ownerUid,
@@ -445,11 +437,6 @@ class CadRoupaFragment : Fragment() {
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
-        binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

@@ -46,6 +46,8 @@ class GavetaFragment : Fragment() {
 
     // Constantes para gavetas especiais
     private val GAVETA_CARRINHO = "Carrinho"
+    private val GAVETA_VENDAS = "Vendas"
+    private val GAVETA_DOACAO = "Doação"
     private val GAVETA_RECEBIDOS = "Recebidos"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,11 +104,11 @@ class GavetaFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val gaveta = snapshot.getValue(Gaveta::class.java)
                     if (gaveta != null) {
-                        gavetaNome = gaveta.name
+                        gavetaNome = gaveta.nome
                         binding.textViewGaveta.text = gavetaNome
 
                         // Determina se é uma gaveta especial (Carrinho ou Recebidos)
-                        val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS
+                        val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS || gavetaNome == GAVETA_VENDAS|| gavetaNome == GAVETA_DOACAO
                         setupViewVisibility(isSpecialGaveta)
 
                         // 🛑 AJUSTE 2: Chama initRecyclerView para garantir que o tipo de adaptador está correto
@@ -290,7 +292,7 @@ class GavetaFragment : Fragment() {
 
         reference.updateChildren(updates).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                removeGavetaReferenceFromUser(gavetaUid, userId)
+                onGavetaDeletionSuccess()
             } else {
                 showBottomSheet(message = getString(
                     R.string.error_falha_excluir_pecas_no_gaveta,
@@ -300,38 +302,6 @@ class GavetaFragment : Fragment() {
         }
     }
 
-
-    private fun removeGavetaReferenceFromUser(gavetaUid: String, userId: String) {
-        reference.child("usuarios").child("pessoaFisica").child(userId).child("gavetas").child(gavetaUid).removeValue()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onGavetaDeletionSuccess()
-                    return@addOnCompleteListener
-                }
-                searchAndRemoveJuridicaReference(gavetaUid, userId)
-            }
-    }
-
-    private fun searchAndRemoveJuridicaReference(gavetaUid: String, userId: String) {
-        val subtipos = listOf("brechos", "instituicoes")
-        var attempts = 0
-
-        for (subtipo in subtipos) {
-            reference.child("usuarios").child("pessoaJuridica").child(subtipo).child(userId).child("gavetas").child(gavetaUid)
-                .removeValue().addOnCompleteListener { task ->
-                    attempts++
-                    if (task.isSuccessful) {
-                        onGavetaDeletionSuccess()
-                        return@addOnCompleteListener
-                    }
-
-                    if (attempts == subtipos.size) {
-                        showBottomSheet(message = getString(R.string.aviso_gaveta_pecas_excluidas_falha_limpar_registro_usuario))
-                        onGavetaDeletionSuccess(skipNotification = true)
-                    }
-                }
-        }
-    }
 
     private fun onGavetaDeletionSuccess(skipNotification: Boolean = false) {
         if (!skipNotification) {
@@ -371,15 +341,13 @@ class GavetaFragment : Fragment() {
     private fun barraDeNavegacao() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
-
         binding.cadastrarRoupa.setOnClickListener {
-            val action = GavetaFragmentDirections.actionGavetaFragmentToCadRoupaFragment(
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
                 pecaUID = null,
-                gavetaUID = gavetaUID
+                gavetaUID = null
             )
             findNavController().navigate(action)
         }
-
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

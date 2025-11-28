@@ -22,6 +22,7 @@ import com.projetointegrador.reuse.data.model.Instituicao
 import com.projetointegrador.reuse.data.model.TipoConta
 import com.projetointegrador.reuse.databinding.FragmentDoacaoBinding
 import com.projetointegrador.reuse.ui.adapter.InstituicaoAdapter
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 import com.projetointegrador.reuse.util.LatLng
 import com.projetointegrador.reuse.util.getLatLngFromCep
 import com.projetointegrador.reuse.util.showBottomSheet
@@ -110,9 +111,9 @@ class DoacaoFragment : Fragment() {
         paths.forEach { path ->
             database.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // Tenta obter o 'enderecoUid' ou 'endereço' (assumindo que PJ usa 'endereço')
-                    val addressUidPF = snapshot.child("enderecoUid").getValue(String::class.java)
-                    val addressUidPJ = snapshot.child("endereço").getValue(String::class.java)
+
+                    val addressUidPF = snapshot.child("endereco").getValue(String::class.java)
+                    val addressUidPJ = snapshot.child("endereco").getValue(String::class.java)
 
                     val foundUid = addressUidPF ?: addressUidPJ
 
@@ -197,7 +198,7 @@ class DoacaoFragment : Fragment() {
                         if (contaPJ == null) return@async null
 
                         var distancia: String
-                        val addressUid = contaPJ.endereço
+                        val addressUid = contaPJ.endereco
 
                         if (userLocation != null && addressUid.isNotEmpty()) {
 
@@ -277,10 +278,12 @@ class DoacaoFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

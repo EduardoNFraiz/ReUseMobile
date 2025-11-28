@@ -88,7 +88,7 @@ class EditarAnuncioFragment : Fragment() {
         database.child("usuarios").child("pessoaJuridica").child("instituicoes").child(currentUserUid).get()
             .addOnSuccessListener { snapshot ->
                 val cnpj = snapshot.child("cnpj").getValue(String::class.java)
-                val enderecoUID = snapshot.child("endereço").getValue(String::class.java)
+                val enderecoUID = snapshot.child("endereco").getValue(String::class.java)
 
                 binding.etCnpj.setText(cnpj)
 

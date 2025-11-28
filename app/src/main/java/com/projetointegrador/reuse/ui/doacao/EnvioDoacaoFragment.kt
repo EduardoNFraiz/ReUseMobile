@@ -112,7 +112,7 @@ class EnvioDoacaoFragment : Fragment() {
     private fun fetchInstituicaoAddress() {
         val instituicaoUid = args.instituicaoUID
 
-        database.child("usuarios/pessoaJuridica/instituicoes").child(instituicaoUid).child("endereço")
+        database.child("usuarios/pessoaJuridica/instituicoes").child(instituicaoUid).child("endereco")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val addressUid = snapshot.getValue(String::class.java)

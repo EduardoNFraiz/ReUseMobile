@@ -22,6 +22,7 @@ import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.data.model.PecaCadastro
 import com.projetointegrador.reuse.databinding.FragmentConfirmDoacaoBinding
 import com.projetointegrador.reuse.databinding.CardviewPecaBinding
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 import com.projetointegrador.reuse.util.displayBase64Image
 import com.projetointegrador.reuse.util.initToolbar
 
@@ -160,10 +161,12 @@ class ConfirmDoacaoFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

@@ -25,6 +25,7 @@
         app:destination="@+id/comprarPecaFragment"/>
 
 
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.projetointegrador.reuse.ui.SplashFragment"
@@ -284,7 +285,8 @@
         <argument
             android:name="pecaUID"
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
     <fragment
         android:id="@+id/cadRoupa2Fragment"
@@ -480,5 +482,5 @@
         android:id="@+id/editarAnuncioFragment"
         android:name="com.projetointegrador.reuse.ui.perfil.EditarAnuncioFragment"
         android:label="fragment_editar_anuncio"
-        tools:layout="@layout/fragment_editar_anuncio" />
+        tools:layout="@layout/fragment_editar_anuncio" /><action android:id="@+id/action_global_cadRoupaFragment" app:destination="@id/cadRoupaFragment"/>
 </navigation>

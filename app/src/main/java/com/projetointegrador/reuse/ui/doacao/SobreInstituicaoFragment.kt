@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.projetointegrador.reuse.R
 import com.projetointegrador.reuse.databinding.FragmentSobreInstituicaoBinding
+import com.projetointegrador.reuse.ui.closet.CriarGavetaFragmentDirections
 import com.projetointegrador.reuse.util.initToolbar
 import com.projetointegrador.reuse.util.displayBase64Image // 🛑 Adicionar import do utilitário de imagem (assumindo que existe)
 
@@ -123,10 +124,12 @@ class SobreInstituicaoFragment : Fragment() {
         binding.closet.setOnClickListener { findNavController().navigate(R.id.closet) }
         binding.pesquisar.setOnClickListener { findNavController().navigate(R.id.pesquisar) }
         binding.cadastrarRoupa.setOnClickListener {
-            val bundle = Bundle().apply {
-                putBoolean("CRIANDO_ROUPA", true)
-            }
-            findNavController().navigate(R.id.cadastrarRoupa,bundle) }
+            val action = CriarGavetaFragmentDirections.actionGlobalCadRoupaFragment(
+                pecaUID = null,
+                gavetaUID = null
+            )
+            findNavController().navigate(action)
+        }
         binding.doacao.setOnClickListener { findNavController().navigate(R.id.doacao) }
         binding.perfil.setOnClickListener { findNavController().navigate(R.id.perfil) }
     }

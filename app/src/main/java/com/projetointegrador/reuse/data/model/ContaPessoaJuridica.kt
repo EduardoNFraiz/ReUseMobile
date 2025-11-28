@@ -9,7 +9,7 @@ data class ContaPessoaJuridica(
     var email: String = "",
     var telefone: String = "",
     var cnpj: String = "",
-    var endereço: String = "",
+    var endereco: String = "",
     var dataCadastro: String = "",
     var tipoPessoa: String = "",
     var tipoUsuario: String = "",

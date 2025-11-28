@@ -234,7 +234,7 @@ class CadastroInstituicaoFragment : Fragment() {
                         email = email,
                         telefone = telefone,
                         cnpj = cnpj,
-                        endereço = "",
+                        endereco = "",
                         dataCadastro = dataCadastro,
                         tipoPessoa = tipoPessoa,
                         tipoUsuario = tipoUsuario,

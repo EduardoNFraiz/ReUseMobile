@@ -198,8 +198,8 @@ class AddFotoperfilFragment : Fragment() {
 
                 // Atualiza a conta com o ID gerado (normalização)
                 when (contaASerSalva) {
-                    is ContaPessoaFisica -> contaASerSalva.endereço = enderecoId
-                    is ContaPessoaJuridica -> contaASerSalva.endereço = enderecoId
+                    is ContaPessoaFisica -> contaASerSalva.endereco = enderecoId
+                    is ContaPessoaJuridica -> contaASerSalva.endereco = enderecoId
                 }
 
                 // ✅ CHAMA O PRÓXIMO PASSO: Lógica Base64 em uma Coroutine
@@ -282,18 +282,13 @@ class AddFotoperfilFragment : Fragment() {
         val defaultGavetas = listOf("Vendas", "Doação", "Carrinho", "Recebidos")
         val gavetasRef = database.getReference("gavetas")
 
-        // Caminho da referência do usuário: {userRootPath}/{userId}/gavetas
-        val userGavetasRef = database.getReference(userRootPath).child(userId).child("gavetas")
-
         for (gavetaName in defaultGavetas) {
             val gavetaUid = gavetasRef.push().key // Gera um UID único para a gaveta
 
             if (gavetaUid != null) {
-                // ✅ CORREÇÃO APLICADA: Inclui o 'ownerUid' no objeto Gaveta para a estrutura desnormalizada
                 val novaGaveta = Gaveta(
-                    id = gavetaUid,
-                    name = gavetaName,
-                    ownerUid = userId, // <-- CRUCIAL: Vincula a gaveta ao usuário no nó /gavetas
+                    nome = gavetaName,
+                    ownerUid = userId,
                     fotoBase64 = "",
                     privado = true,
                 )
@@ -301,8 +296,7 @@ class AddFotoperfilFragment : Fragment() {
                 // 1. Salva a gaveta no nó principal: /gavetas/{gavetaUid}
                 gavetasRef.child(gavetaUid).setValue(novaGaveta)
                     .addOnSuccessListener {
-                        // 2. Salva a referência da gaveta no nó do usuário: {userRootPath}/{userId}/gavetas/{gavetaUid} = true
-                        userGavetasRef.child(gavetaUid).setValue(true)
+
                     }
                     .addOnFailureListener { e ->
                         // Log em caso de falha, mas o fluxo principal de cadastro continua
