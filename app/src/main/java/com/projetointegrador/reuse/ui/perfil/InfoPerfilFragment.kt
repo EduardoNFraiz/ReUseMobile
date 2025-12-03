@@ -253,11 +253,12 @@ class InfoPerfilFragment : Fragment() {
                         if (snapshot.exists() && !found) {
                             found = true
                             userPath = "usuarios/pessoaJuridica/$subtipo/$userId"
-
-                            // 🛑 É UMA INSTITUIÇÃO (PJ)
                             isInstitution = true
-                            binding.bttAnuncio.visibility = View.VISIBLE
-
+                            if(subtipo == "brechos") {
+                                binding.bttAnuncio.visibility = View.INVISIBLE
+                            }else{
+                                binding.bttAnuncio.visibility = View.VISIBLE
+                            }
                             fetchUserDetails(snapshot)
                         }
 
@@ -288,7 +289,7 @@ class InfoPerfilFragment : Fragment() {
 
         // LÓGICA DE CARREGAMENTO DA FOTO DE PERFIL COM BASE64
         // Assumindo que o campo no banco seja 'fotoBase64' ou 'fotoUrl'
-        val fotoBase64 = snapshot.child("fotoUrl").getValue(String::class.java)
+        val fotoBase64 = snapshot.child("fotoBase64").getValue(String::class.java)
             ?: snapshot.child("fotoBase64").getValue(String::class.java) // Verifica a chave correta
 
 
@@ -330,7 +331,7 @@ class InfoPerfilFragment : Fragment() {
         if (newProfileImageBase64 != null) {
             // **IMPORTANTE**: Use a chave que você realmente usa no Firebase, que parece ser "fotoUrl" ou "fotoBase64".
             // Vou usar "fotoUrl" como no seu código original, mas saiba que é Base64.
-            updateMap["fotoUrl"] = newProfileImageBase64!!
+            updateMap["fotoBase64"] = newProfileImageBase64!!
             // Limpa a variável local após adicionar ao mapa
             newProfileImageBase64 = null
         }

@@ -177,7 +177,7 @@ class EnvioDoacaoFragment : Fragment() {
                         val targetName = "Recebidos" // O nome da gaveta de destino
 
                         snapshot.children.forEach { gavetaSnapshot ->
-                            val gavetaName = gavetaSnapshot.child("name").getValue(String::class.java)
+                            val gavetaName = gavetaSnapshot.child("nome").getValue(String::class.java)
 
                             if (gavetaName == targetName) {
                                 continuation.resume(gavetaSnapshot.key)
