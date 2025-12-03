@@ -210,7 +210,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:textSize="13sp"
-            android:text="@string/option_cor_colorido" />
+            android:text="@string/option_cor_outro" />
 
     </GridLayout>
 

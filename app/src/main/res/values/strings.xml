@@ -177,7 +177,6 @@
     <string name="aviso_digite_um_preco_peca">Por favor, insira o Preço de venda.</string>
     <string name="sucesso_peca_cadastrada">Peça cadastrada com sucesso!</string>
     <string name="error_vincular_peca_gaveta">erro ao vincular peça à gaveta!</string>
-
     <string name="title_cadastro_peca">Cadastro de peça</string>
     <string name="subtitle_cores">Cores</string>
     <string name="subtitle_categoria">Categoria</string>
@@ -191,7 +190,7 @@
     <string name="option_cor_verde">Verde</string>
     <string name="option_cor_rosa">Rosa</string>
     <string name="option_cor_laranja">Laranja</string>
-    <string name="option_cor_colorido">Colorido</string>
+    <string name="option_cor_outro">Outro</string>
     <string name="option_tamanho_pp">PP</string>
     <string name="option_tamanho_p">P</string>
     <string name="option_tamanho_m">M</string>
@@ -442,7 +441,5 @@
     <string name="text_message_historico">Você <b>AÇÃO</b> uma peça <b>de/para PERFIL</b></string>
     <string name="btn_adicionar_avaliacao">Adicionar avaliação</string>
     <string name="nome_peca_transacao">Camiseta Flamengo 2024/25</string>
-
-
 
 </resources>

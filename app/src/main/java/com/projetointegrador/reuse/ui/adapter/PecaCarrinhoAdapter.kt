@@ -41,7 +41,7 @@ class PecaCarrinhoAdapter (
                 binding.imagePeca.setImageResource(R.drawable.closeticon)
             }
             binding.itemTitle.text = peca.titulo ?: "Item sem título"
-            binding.itemPrice.text = if (!peca.preco.isNullOrEmpty()) "R$${peca.preco}" else "R$0,00"
+            binding.itemPrice.text = if (!peca.preco.isNullOrEmpty()) "${peca.preco}" else "R$0,00"
 
             // 🛑 Configura o clique para a navegação
             binding.root.setOnClickListener {

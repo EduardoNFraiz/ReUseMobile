@@ -108,8 +108,12 @@ class GavetaFragment : Fragment() {
                         binding.textViewGaveta.text = gavetaNome
 
                         // Determina se é uma gaveta especial (Carrinho ou Recebidos)
-                        val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS || gavetaNome == GAVETA_VENDAS|| gavetaNome == GAVETA_DOACAO
+                        val isSpecialGaveta = gavetaNome == GAVETA_CARRINHO || gavetaNome == GAVETA_RECEBIDOS
                         setupViewVisibility(isSpecialGaveta)
+
+                        if(gavetaNome == GAVETA_DOACAO || gavetaNome == GAVETA_VENDAS){
+                            binding.trash1.visibility = View.GONE
+                        }
 
                         // 🛑 AJUSTE 2: Chama initRecyclerView para garantir que o tipo de adaptador está correto
                         initRecyclerView(gavetaNome == GAVETA_CARRINHO)

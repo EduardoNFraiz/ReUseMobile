@@ -41,7 +41,7 @@ class PecaAdapter (
                 binding.imagePeca.setImageResource(R.drawable.closeticon)
             }
             binding.itemTitle.text = peca.titulo ?: "Item sem título"
-            binding.itemPrice.text = if (!peca.preco.isNullOrEmpty()) "R$${peca.preco}" else "R$0,00"
+            binding.itemPrice.text = if (!peca.preco.isNullOrEmpty()) "${peca.preco}" else "R$0,00"
 
             // 🛑 GARANTE CORES PADRÃO NO RECYCLE
             binding.cardViewItem.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
